@@ -5,40 +5,40 @@
 		type RouterInstance,
 		query,
 		goto,
-		route
-	} from '@mateothegreat/svelte5-router'
-	import { authClient } from './lib/auth-client'
-	import LoadingSpinner from './components/LoadingSpinner.svelte'
-	import Home from './pages/Home.svelte'
-	import Register from './pages/Register.svelte'
-	import Dashboard from './pages/Dashboard.svelte'
+		route,
+	} from "@mateothegreat/svelte5-router";
+	import { authClient } from "./lib/auth-client";
+	import LoadingSpinner from "./components/LoadingSpinner.svelte";
+	import Home from "./pages/Home.svelte";
+	import Register from "./pages/Register.svelte";
+	import Dashboard from "./pages/Dashboard.svelte";
 
-	let instance: RouterInstance = $state()!
+	let instance: RouterInstance = $state()!;
 
-	const session = authClient.useSession()
+	const session = authClient.useSession();
 
-	const error = query('error')
-	let showError = $state(error === 'unauthorized_domain')
+	const error = query("error");
+	let showError = $state(error === "unauthorized_domain");
 
-	if (error) goto('/')
+	if (error) goto("/");
 
 	const routes: RouteConfig[] = [
 		{
-			component: Home
+			component: Home,
 		},
 		{
-			path: 'register',
-			component: Register
+			path: "register",
+			component: Register,
 		},
 		{
-			path: 'dashboard',
-			component: Dashboard
+			path: "dashboard",
+			component: Dashboard,
 		},
 		{
-			path: 'map',
-			component: async () => await import('./pages/Map.svelte')
-		}
-	]
+			path: "map",
+			component: async () => await import("./pages/Map.svelte"),
+		},
+	];
 </script>
 
 <nav
@@ -65,7 +65,9 @@
 					>Home</a
 				>
 				{#if $session.isPending}
-					<div class="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+					<div
+						class="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"
+					></div>
 				{:else if $session.data?.user}
 					<a
 						use:route
@@ -113,9 +115,12 @@
 				></path>
 			</svg>
 			<div>
-				<p class="text-red-800 font-medium">Unauthorized Email Domain</p>
+				<p class="text-red-800 font-medium">
+					Unauthorized Email Domain
+				</p>
 				<p class="text-red-600 text-sm">
-					Only <span class="font-semibold">@pcampus.edu.np</span> emails are allowed.
+					Only <span class="font-semibold">@pcampus.edu.np</span> emails
+					are allowed.
 				</p>
 			</div>
 			<button
@@ -141,7 +146,7 @@
 	</div>
 {/if}
 
-<main class="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
+<main class="min-h-screen bg-blue-200">
 	{#if instance?.navigating}
 		<div
 			class="fixed inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"
@@ -154,6 +159,8 @@
 
 <footer class="bg-white border-t border-gray-200 py-8">
 	<div class="max-w-7xl mx-auto px-6 text-center">
-		<p class="text-gray-600 text-sm">© 2026 PulchowkX. All rights reserved.</p>
+		<p class="text-gray-600 text-sm">
+			© 2026 PulchowkX. All rights reserved.
+		</p>
 	</div>
 </footer>

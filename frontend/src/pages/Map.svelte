@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		MapLibre,
-		Marker,
 		GeolocateControl,
 		FullScreenControl,
 		GeoJSONSource,
@@ -48,7 +47,7 @@
 	{/if}
 
 	<MapLibre
-		zoom={16}
+		zoom={15}
 		center={[85.319319, 27.682102]}
 		class="size-150 mx-auto"
 		style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -58,6 +57,10 @@
 			navigator.clipboard.writeText(`[${longitude}, ${latitude}]`);
 		}}
 		onload={() => (isLoaded = true)}
+		maxBounds={[
+			[85.3169503963058, 27.678307122280273],
+			[85.32594099531451, 27.68641618791375],
+		]}
 	>
 		<GeoJSONSource data={nepalData} maxzoom={22}>
 			<FillLayer
