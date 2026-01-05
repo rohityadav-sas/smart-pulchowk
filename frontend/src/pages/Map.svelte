@@ -8,7 +8,7 @@
 		FillLayer
 	} from 'svelte-maplibre-gl'
 	import type { FeatureCollection } from 'geojson'
-	import nepal from './nepal.json'
+	import nepal from './pulchowk.json'
 	import { fade } from 'svelte/transition'
 
 	const nepalData = nepal as FeatureCollection
@@ -51,6 +51,9 @@
 		center={[85.319319, 27.682102]}
 		class="size-150 mx-auto"
 		style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+		onclick={(e)=>{
+			console.log(e.lngLat)
+		}}
 		onload={() => (isLoaded = true)}
 	>
 		<GeoJSONSource data={nepalData} maxzoom={22}>
