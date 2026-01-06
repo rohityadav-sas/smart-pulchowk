@@ -132,126 +132,127 @@
 
 	let isLoaded = $state(false);
 
+	const icons = [
+		{
+			name: "custom-marker",
+			url: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+			width: 15, // Resizing to 15px width results in ~25px height, matching others
+		},
+		{
+			name: "bank-icon",
+			url: "https://png.pngtree.com/png-clipart/20230805/original/pngtree-bank-location-icon-from-business-bicolor-set-money-business-company-vector-picture-image_9698988.png",
+			width: 15,
+		},
+		{
+			name: "food-icon",
+			url: "https://cdn-icons-png.freepik.com/512/11167/11167112.png",
+		},
+		{
+			name: "library-icon",
+			url: "https://cdn-icons-png.freepik.com/512/7985/7985904.png",
+		},
+		{
+			name: "dept-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/7906/7906888.png",
+		},
+		{
+			name: "temple-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/1183/1183391.png",
+		},
+		{
+			name: "gym-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/11020/11020519.png",
+		},
+		{
+			name: "football-icon",
+			url: "https://cdn-icons-png.freepik.com/512/8893/8893610.png",
+		},
+		{
+			name: "cricket-icon",
+			url: "https://i.postimg.cc/cLb6QFC1/download.png",
+			width: 15,
+		},
+		{
+			name: "hostel-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/7804/7804352.png",
+		},
+		{
+			name: "volleyball-icon",
+			url: "https://i.postimg.cc/mDW05pSw-/volleyball.png",
+			width: 25,
+		},
+		{
+			name: "lab-icon",
+			url: "https://cdn-icons-png.flaticon.com/256/12348/12348567.png",
+		},
+		{
+			name: "parking-icon",
+			url: "https://cdn.iconscout.com/icon/premium/png-256-thumb/parking-place-icon-svg-download-png-897308.png",
+		},
+		{
+			name: "helipad-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/5695/5695654.png",
+		},
+		{
+			name: "electrical-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/9922/9922144.png",
+		},
+		{
+			name: "music-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/5905/5905923.png",
+		},
+		{
+			name: "energy-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/10053/10053795.png",
+		},
+		{
+			name: "helm-icon",
+			url: "https://png.pngtree.com/png-vector/20221130/ourmid/pngtree-airport-location-pin-in-light-blue-color-png-image_6485369.png",
+		},
+		{
+			name: "garden-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/15359/15359437.png",
+		},
+		{
+			name: "store-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/3448/3448673.png",
+		},
+		{
+			name: "quarter-icon",
+			url: "https://static.thenounproject.com/png/331579-200.png",
+		},
+		{
+			name: "robotics-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/10681/10681183.png",
+		},
+		{
+			name: "clinic-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/10714/10714002.png",
+		},
+		{
+			name: "badminton-icon",
+			url: "https://static.thenounproject.com/png/198230-200.png",
+		},
+		{
+			name: "entrance-icon",
+			url: "https://i.postimg.cc/jjLDcb6p/image-removebg-preview.png",
+		},
+		{
+			name: "office-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/3846/3846807.png",
+		},
+		{
+			name: "building-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/5193/5193760.png",
+		},
+		{
+			name: "block-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/3311/3311565.png",
+		},
+	];
+
 	const loadIcons = async () => {
 		if (!map) return;
-		const icons = [
-			{
-				name: "custom-marker",
-				url: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-				width: 15, // Resizing to 15px width results in ~25px height, matching others
-			},
-			{
-				name: "bank-icon",
-				url: "https://png.pngtree.com/png-clipart/20230805/original/pngtree-bank-location-icon-from-business-bicolor-set-money-business-company-vector-picture-image_9698988.png",
-				width: 15,
-			},
-			{
-				name: "food-icon",
-				url: "https://cdn-icons-png.freepik.com/512/11167/11167112.png",
-			},
-			{
-				name: "library-icon",
-				url: "https://cdn-icons-png.freepik.com/512/7985/7985904.png",
-			},
-			{
-				name: "dept-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/7906/7906888.png",
-			},
-			{
-				name: "temple-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/1183/1183391.png",
-			},
-			{
-				name: "gym-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/11020/11020519.png",
-			},
-			{
-				name: "football-icon",
-				url: "https://cdn-icons-png.freepik.com/512/8893/8893610.png",
-			},
-			{
-				name: "cricket-icon",
-				url: "https://i.postimg.cc/cLb6QFC1/download.png",
-				width: 15,
-			},
-			{
-				name: "hostel-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/7804/7804352.png",
-			},
-			{
-				name: "volleyball-icon",
-				url: "https://i.postimg.cc/mDW05pSw-/volleyball.png",
-				width: 25,
-			},
-			{
-				name: "lab-icon",
-				url: "https://cdn-icons-png.flaticon.com/256/12348/12348567.png",
-			},
-			{
-				name: "parking-icon",
-				url: "https://cdn.iconscout.com/icon/premium/png-256-thumb/parking-place-icon-svg-download-png-897308.png",
-			},
-			{
-				name: "helipad-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/5695/5695654.png",
-			},
-			{
-				name: "electrical-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/9922/9922144.png",
-			},
-			{
-				name: "music-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/5905/5905923.png",
-			},
-			{
-				name: "energy-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/10053/10053795.png",
-			},
-			{
-				name: "helm-icon",
-				url: "https://png.pngtree.com/png-vector/20221130/ourmid/pngtree-airport-location-pin-in-light-blue-color-png-image_6485369.png",
-			},
-			{
-				name: "garden-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/15359/15359437.png",
-			},
-			{
-				name: "store-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/3448/3448673.png",
-			},
-			{
-				name: "quarter-icon",
-				url: "https://static.thenounproject.com/png/331579-200.png",
-			},
-			{
-				name: "robotics-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/10681/10681183.png",
-			},
-			{
-				name: "clinic-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/10714/10714002.png",
-			},
-			{
-				name: "badminton-icon",
-				url: "https://static.thenounproject.com/png/198230-200.png",
-			},
-			{
-				name: "entrance-icon",
-				url: "https://i.postimg.cc/jjLDcb6p/image-removebg-preview.png",
-			},
-			{
-				name: "office-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/3846/3846807.png",
-			},
-			{
-				name: "building-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/5193/5193760.png",
-			},
-			{
-				name: "block-icon",
-				url: "https://cdn-icons-png.flaticon.com/512/3311/3311565.png",
-			},
-		];
 
 		await Promise.all(
 			icons.map(async ({ name, url, width }) => {
@@ -453,6 +454,10 @@
 				>
 					<ul class="max-h-[60vh] overflow-y-auto py-2">
 						{#each filteredSuggestions as suggestion, index}
+							{@const iconName = suggestion.properties?.icon}
+							{@const iconUrl = icons.find(
+								(i) => i.name === iconName,
+							)?.url}
 							<li>
 								<button
 									data-suggestion-index={index}
@@ -472,25 +477,33 @@
 											? 'bg-blue-200 text-blue-700'
 											: 'text-blue-500'}"
 									>
-										<svg
-											class="w-4 h-4"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-											></path>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-											></path>
-										</svg>
+										{#if iconUrl}
+											<img
+												src={iconUrl}
+												alt=""
+												class="w-5 h-5 object-contain"
+											/>
+										{:else}
+											<svg
+												class="w-4 h-4"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+												></path>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+												></path>
+											</svg>
+										{/if}
 									</div>
 									<div class="flex-1 min-w-0">
 										<p class="font-medium truncate">
