@@ -754,7 +754,7 @@
         {
             "type": "Feature",
             "properties": {
-                "description": "Helicoptor Parking"
+                "description": "Helicopter Parking"
             },
             "geometry": {
                 "type": "Point",
@@ -1242,6 +1242,71 @@
                 "coordinates": [
                     85.32103017170311,
                     27.681071855710286
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "description": "Om Stationery Store"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    85.31984862292666,
+                    27.681843392083223
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "description": "E Block"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    85.31843868135616,
+                    27.680606526940423
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "description": "D Block"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    85.3200115923417,
+                    27.68247103573296
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "description": "FSU Clinic"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    85.31924168355874,
+                    27.681570244524437
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "description": "Badminton Court"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    85.31850453478063,
+                    27.68195320004999
                 ]
             }
         }
