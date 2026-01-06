@@ -77,7 +77,7 @@
 			feature.properties.icon = "hostel-icon";
 		} else if (desc.includes("lab")) {
 			feature.properties.icon = "lab-icon";
-		} else if (desc.includes("helicopter") || desc.includes("helicoptor")) {
+		} else if (desc.includes("helicopter")) {
 			feature.properties.icon = "helipad-icon";
 		} else if (desc.includes("parking")) {
 			feature.properties.icon = "parking-icon";
@@ -101,6 +101,19 @@
 			feature.properties.icon = "clinic-icon";
 		} else if (desc.includes("badminton")) {
 			feature.properties.icon = "badminton-icon";
+		} else if (desc.includes("entrance")) {
+			feature.properties.icon = "entrance-icon";
+		} else if (
+			desc.includes("office") ||
+			desc.includes("ntbns") ||
+			desc.includes("seds") ||
+			desc.includes("cids")
+		) {
+			feature.properties.icon = "office-icon";
+		} else if (desc.includes("building")) {
+			feature.properties.icon = "building-icon";
+		} else if (desc.includes("block") || desc.includes("embark")) {
+			feature.properties.icon = "block-icon";
 		} else {
 			feature.properties.icon = "custom-marker";
 		}
@@ -221,6 +234,22 @@
 			{
 				name: "badminton-icon",
 				url: "https://static.thenounproject.com/png/198230-200.png",
+			},
+			{
+				name: "entrance-icon",
+				url: "https://i.postimg.cc/jjLDcb6p/image-removebg-preview.png",
+			},
+			{
+				name: "office-icon",
+				url: "https://cdn-icons-png.flaticon.com/512/3846/3846807.png",
+			},
+			{
+				name: "building-icon",
+				url: "https://cdn-icons-png.flaticon.com/512/5193/5193760.png",
+			},
+			{
+				name: "block-icon",
+				url: "https://cdn-icons-png.flaticon.com/512/3311/3311565.png",
 			},
 		];
 

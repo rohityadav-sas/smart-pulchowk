@@ -481,7 +481,7 @@
         {
             "type": "Feature",
             "properties": {
-                "description": "ICTC Bulding"
+                "description": "ICTC Building"
             },
             "geometry": {
                 "type": "Point",
@@ -512,8 +512,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31875195490352,
-                    27.68095603886991
+                    85.31860772765805,
+                    27.681033526909417
                 ]
             }
         },
@@ -603,8 +603,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31875628492219,
-                    27.68182260516565
+                    85.31871288839,
+                    27.68181692613163
                 ]
             }
         },
@@ -676,13 +676,13 @@
         {
             "type": "Feature",
             "properties": {
-                "description": "ICT Bulding"
+                "description": "ICT Building"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31914285425017,
-                    27.681715172918075
+                    85.31910927158208,
+                    27.68172332246239
                 ]
             }
         },
@@ -759,8 +759,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31973837978478,
-                    27.682269017217237
+                    85.31969443930882,
+                    27.68228789473575
                 ]
             }
         },
@@ -949,13 +949,13 @@
         {
             "type": "Feature",
             "properties": {
-                "description": "Second Entrance"
+                "description": "Main Entrance"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31773353764987,
-                    27.681380190252256
+                    85.3177517448579,
+                    27.681366883564905
                 ]
             }
         },
@@ -969,6 +969,19 @@
                 "coordinates": [
                     85.3194594635064,
                     27.68207456812752
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "description": "Second Entrance"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    85.31959562985224,
+                    27.682147085370673
                 ]
             }
         },
@@ -1266,8 +1279,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31843868135616,
-                    27.680606526940423
+                    85.31839835594832,
+                    27.680604750704575
                 ]
             }
         },
@@ -1279,8 +1292,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.3200115923417,
-                    27.68247103573296
+                    85.31998717938649,
+                    27.682486205309274
                 ]
             }
         },
