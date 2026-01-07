@@ -661,8 +661,8 @@
                 "title": "ICTC Building",
                 "about": "This is the location for ICTC Building.",
                 "image": [
-                    "https://media.istockphoto.com/id/523460307/photo/little-girl-at-the-library-picking-a-book.jpg?s=612x612&w=0&k=20&c=aIdRKhvYwbC9hR-tnFP-AuONm2pqb5pv3UrSuoYW-Fo=",
-                    "https://img.freepik.com/free-photo/vibrant-autumn-leaves-reveal-nature-beauty-generated-by-ai_188544-15039.jpg"
+                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxop441mNoVp1q2alOx39U1Xc1ujV2JPZ-XDIpIAX2qqMyE0kie8i4qzm31JWbIIJrIsSHveV5oD3gmrCOnCzucQkovceqHP-V7-Voy7L3pw0w5drA4ILOU47XBQvl5KUqDtW_y=s0",
+                    "https://www.wms.com.np/sites/default/files/photo5.jpg"
                 ]
             },
             "geometry": {
@@ -807,7 +807,7 @@
                 "description": "Department of Electrical, Electronics and Computer Engineering",
                 "title": "Department of Electrical, Electronics and Computer Engineering",
                 "about": "This is the location for Department of Electrical, Electronics and Computer Engineering.",
-                "image": ""
+                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyQO0Ixjez50rAffC5EumXDzxnVjKR0w_AYYrtSXLh9Ge3geV1CUUOud8tstlp0GnWQRHooxLoiewU-14hBNsfrIR96yGi7qFMWygeFYQDgwfp6r-O8z5CIr7tMd6RfIGoL1Uqnrw=s0"
             },
             "geometry": {
                 "type": "Point",
@@ -855,7 +855,7 @@
                 "description": "Pulchowk Library",
                 "title": "Pulchowk Library",
                 "about": "This is the location for Pulchowk Library.",
-                "image": ""
+                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw22S7oiJwDzIbqS3LhcVv8hTOd1VZsF4cC_kCYzmTheQBkXEO22eQmWW2aayWSLEXvpBqcA4JomqKqD_e23H4K4OmKv2urf51JWyikIJX3EITJzXsa0JczF1nAXk_3p-LXGYCW=s0"
             },
             "geometry": {
                 "type": "Point",
@@ -919,7 +919,8 @@
                 "description": "Embark College",
                 "title": "Embark College",
                 "about": "This is the location for Embark College.",
-                "image": ""
+                "image": ["https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzFjaGXicBwAkWEbh1CGVQepFdLr9-BmMLIr4A1iDp3lpvRL7ab7Z2MP565CX_FE9cFOLdLuIbewX23FpODCpl63DUbp_J7POn7h5A9SFbKzSI_tkfPJxClo_js5dFfvzOsEK41Kg=s0",
+                "https://embarkcollege.edu.np/wp-content/uploads/2025/09/embark_highview.webp"]
             },
             "geometry": {
                 "type": "Point",
@@ -935,7 +936,7 @@
                 "description": "Nabil Bank ATM",
                 "title": "Nabil Bank ATM",
                 "about": "This is the location for Nabil Bank ATM.",
-                "image": ""
+                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzkyfUqvlmdNqUbRRRsoefDSQoXbAC4vnzWKCi5GMP0XcF4nNybZ_hqhJTY8gci8M4jzcVjqOlOWgYdk5FLfieqAu02N6OG7ysRgMyoBAH4qeBaRg1VVcymd_M3o7EsyBIl29ac=s0"
             },
             "geometry": {
                 "type": "Point",
@@ -951,7 +952,7 @@
                 "description": "Siddhartha Bank ATM",
                 "title": "Siddhartha Bank ATM",
                 "about": "This is the location for Siddhartha Bank ATM.",
-                "image": ""
+                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwpHMU3GAn4qs9oHsOyx5EIMXLmlvN4VL9Cxuq4_q55349bhqqjdLmZuB2doK6ALbjAMpHz6TUehQW90qwfUbQdECmSIoWbaM4C5ol8pHaQ9IROzZUWlFUZpTL3DxUxvr4K2P67=s0"
             },
             "geometry": {
                 "type": "Point",
