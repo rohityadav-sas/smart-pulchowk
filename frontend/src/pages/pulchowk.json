@@ -654,1049 +654,1064 @@
                 ]
             }
         },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "ICTC Building",
-                "title": "ICTC Building",
-                "about": "This is the location for ICTC Building.",
-                "image": [
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxop441mNoVp1q2alOx39U1Xc1ujV2JPZ-XDIpIAX2qqMyE0kie8i4qzm31JWbIIJrIsSHveV5oD3gmrCOnCzucQkovceqHP-V7-Voy7L3pw0w5drA4ILOU47XBQvl5KUqDtW_y=s0",
-                    "https://www.wms.com.np/sites/default/files/photo5.jpg"
-                ]
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31925432667049,
-                    27.68227948566954
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Campus Mess",
-                "title": "Campus Mess",
-                "about": "This is the location for Campus Mess.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31958339939047,
-                    27.680813732882058
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Dean Office",
-                "title": "Dean Office",
-                "about": "This is the location for Dean Office.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31860772765805,
-                    27.681033526909417
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Architecture",
-                "title": "Department of Architecture",
-                "about": "This is the location for Department of Architecture.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31831152476735,
-                    27.68044934237453
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "ASA Office",
-                "title": "ASA Office",
-                "about": "This is the location for ASA Office.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31840952112645,
-                    27.680433693360456
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "MSC Hostel",
-                "title": "MSC Hostel",
-                "about": "This is the location for MSC Hostel.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.319017191439,
-                    27.680091477233432
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Hydro Lab",
-                "title": "Hydro Lab",
-                "about": "This is the location for Hydro Lab.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31942804361722,
-                    27.68018924241545
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Roads",
-                "title": "Department of Roads",
-                "about": "This is the location for Department of Roads.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31990450135862,
-                    27.68073700031121
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Locus Office",
-                "title": "Locus Office",
-                "about": "This is the location for Locus Office.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3185504866151,
-                    27.68139565322535
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Electrical, Electronics and Computer Engineering",
-                "title": "Department of Electrical, Electronics and Computer Engineering",
-                "about": "This is the location for Department of Electrical, Electronics and Computer Engineering.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyQO0Ixjez50rAffC5EumXDzxnVjKR0w_AYYrtSXLh9Ge3geV1CUUOud8tstlp0GnWQRHooxLoiewU-14hBNsfrIR96yGi7qFMWygeFYQDgwfp6r-O8z5CIr7tMd6RfIGoL1Uqnrw=s0"
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31871288839,
-                    27.68181692613163
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Robotics Club",
-                "title": "Robotics Club",
-                "about": "This is the location for Robotics Club.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31901450533206,
-                    27.68136224565515
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Continuing Education Center",
-                "title": "Continuing Education Center",
-                "about": "This is the location for Continuing Education Center.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31895314397525,
-                    27.681494777843028
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Library",
-                "title": "Pulchowk Library",
-                "about": "This is the location for Pulchowk Library.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw22S7oiJwDzIbqS3LhcVv8hTOd1VZsF4cC_kCYzmTheQBkXEO22eQmWW2aayWSLEXvpBqcA4JomqKqD_e23H4K4OmKv2urf51JWyikIJX3EITJzXsa0JczF1nAXk_3p-LXGYCW=s0"
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31944424082258,
-                    27.681616524851407
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Electrical Club",
-                "title": "Electrical Club",
-                "about": "This is the location for Electrical Club.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3182927681815,
-                    27.682291135732115
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Block C",
-                "title": "Block C",
-                "about": "This is the location for Block C.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31833975128347,
-                    27.682140047755496
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "ICT Building",
-                "title": "ICT Building",
-                "about": "This is the location for ICT Building.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31910927158208,
-                    27.68172332246239
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Embark College",
-                "title": "Embark College",
-                "about": "This is the location for Embark College.",
-                "image": ["https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzFjaGXicBwAkWEbh1CGVQepFdLr9-BmMLIr4A1iDp3lpvRL7ab7Z2MP565CX_FE9cFOLdLuIbewX23FpODCpl63DUbp_J7POn7h5A9SFbKzSI_tkfPJxClo_js5dFfvzOsEK41Kg=s0",
-                "https://embarkcollege.edu.np/wp-content/uploads/2025/09/embark_highview.webp"]
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31888939994957,
-                    27.682712891619232
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Nabil Bank ATM",
-                "title": "Nabil Bank ATM",
-                "about": "This is the location for Nabil Bank ATM.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzkyfUqvlmdNqUbRRRsoefDSQoXbAC4vnzWKCi5GMP0XcF4nNybZ_hqhJTY8gci8M4jzcVjqOlOWgYdk5FLfieqAu02N6OG7ysRgMyoBAH4qeBaRg1VVcymd_M3o7EsyBIl29ac=s0"
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31853678585821,
-                    27.682829607001196
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Siddhartha Bank ATM",
-                "title": "Siddhartha Bank ATM",
-                "about": "This is the location for Siddhartha Bank ATM.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwpHMU3GAn4qs9oHsOyx5EIMXLmlvN4VL9Cxuq4_q55349bhqqjdLmZuB2doK6ALbjAMpHz6TUehQW90qwfUbQdECmSIoWbaM4C5ol8pHaQ9IROzZUWlFUZpTL3DxUxvr4K2P67=s0"
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31945726206425,
-                    27.68210633185008
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Heavy Lab",
-                "title": "Heavy Lab",
-                "about": "This is the location for Heavy Lab.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32044738817302,
-                    27.68209387245163
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Parking",
-                "title": "Parking",
-                "about": "This is the location for Parking.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31992845601593,
-                    27.68214769544541
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Helicopter Parking",
-                "title": "Helicopter Parking",
-                "about": "This is the location for Helicopter Parking.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31969443930882,
-                    27.68228789473575
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "PI Chautari",
-                "title": "PI Chautari",
-                "about": "This is the location for PI Chautari.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31987844126758,
-                    27.68267661712244
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Mechanical and Aerospace Engineering",
-                "title": "Department of Mechanical and Aerospace Engineering",
-                "about": "This is the location for Department of Mechanical and Aerospace Engineering.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31986930605723,
-                    27.682462244093173
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Saraswati Mandir",
-                "title": "Saraswati Mandir",
-                "about": "This is the location for Saraswati Mandir.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31939527713587,
-                    27.68256455316562
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Civil Engineering",
-                "title": "Department of Civil Engineering",
-                "about": "This is the location for Department of Civil Engineering.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31936398409704,
-                    27.682968475303554
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "F Block",
-                "title": "F Block",
-                "about": "This is the location for F Block.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3196061234986,
-                    27.682788668714352
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Mechanical and Aerospace Engineering",
-                "title": "Department of Mechanical and Aerospace Engineering",
-                "about": "This is the location for Department of Mechanical and Aerospace Engineering.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32078190861336,
-                    27.682393906140106
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "The Helm of IOE Pulchowk",
-                "title": "The Helm of IOE Pulchowk",
-                "about": "This is the location for The Helm of IOE Pulchowk.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32083316993328,
-                    27.682629953546424
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "FSU Office",
-                "title": "FSU Office",
-                "about": "This is the location for FSU Office.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3207254626837,
-                    27.682902435847012
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "NTBNS",
-                "title": "NTBNS",
-                "about": "This is the location for NTBNS.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32070525005736,
-                    27.683007442872864
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Applied Sciences and Chemical Engineering",
-                "title": "Department of Applied Sciences and Chemical Engineering",
-                "about": "This is the location for Department of Applied Sciences and Chemical Engineering.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3203848726879,
-                    27.682935941133437
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Applied Sciences and chemical engineering",
-                "title": "Department of Applied Sciences and chemical engineering",
-                "about": "This is the location for Department of Applied Sciences and chemical engineering.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3200449911119,
-                    27.683220527000756
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "G Block",
-                "title": "G Block",
-                "about": "This is the location for G Block.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32018128025857,
-                    27.68310430877834
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "CIDS",
-                "title": "CIDS",
-                "about": "This is the location for CIDS.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31990266456802,
-                    27.683010663794747
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Department of Science and Humanities",
-                "title": "Department of Science and Humanities",
-                "about": "This is the location for Department of Science and Humanities.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32054395296416,
-                    27.683041212054775
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Main Entrance",
-                "title": "Main Entrance",
-                "about": "This is the location for Main Entrance.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3177517448579,
-                    27.681366883564905
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "First Entrance",
-                "title": "First Entrance",
-                "about": "This is the location for First Entrance.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3194594635064,
-                    27.68207456812752
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Second Entrance",
-                "title": "Second Entrance",
-                "about": "This is the location for Second Entrance.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31959562985224,
-                    27.682147085370673
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Hydropower Testing Lab",
-                "title": "Hydropower Testing Lab",
-                "about": "This is the location for Hydropower Testing Lab.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32052846482077,
-                    27.68346942813116
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "SEDS Pulchowk",
-                "title": "SEDS Pulchowk",
-                "about": "This is the location for SEDS Pulchowk.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32041220727473,
-                    27.683617545231883
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Center for Energy Studies",
-                "title": "Center for Energy Studies",
-                "about": "This is the location for Center for Energy Studies.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3208610299663,
-                    27.68321662681744
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Cricket Ground",
-                "title": "Pulchowk Cricket Ground",
-                "about": "This is the location for Pulchowk Cricket Ground.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32215173345384,
-                    27.683328511076553
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Football Ground",
-                "title": "Pulchowk Football Ground",
-                "about": "This is the location for Pulchowk Football Ground.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.322933342042,
-                    27.682630231202694
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Volleyball Court",
-                "title": "Pulchowk Volleyball Court",
-                "about": "This is the location for Pulchowk Volleyball Court.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3232165987614,
-                    27.682254992538773
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Cricket Practice Pitch",
-                "title": "Cricket Practice Pitch",
-                "about": "This is the location for Cricket Practice Pitch.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32345024929077,
-                    27.682835875995877
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Basketball Court",
-                "title": "Basketball Court",
-                "about": "This is the location for Basketball Court.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32258776220266,
-                    27.681816863769555
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Block A Pulchowk Boys Hostel",
-                "title": "Block A Pulchowk Boys Hostel",
-                "about": "This is the location for Block A Pulchowk Boys Hostel.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3239283186274,
-                    27.682188311416212
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Block B Pulchowk Boys Hostel",
-                "title": "Block B Pulchowk Boys Hostel",
-                "about": "This is the location for Block B Pulchowk Boys Hostel.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32390377692212,
-                    27.68184284511355
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Block C Pulchowk Boys Hostel",
-                "title": "Block C Pulchowk Boys Hostel",
-                "about": "This is the location for Block C Pulchowk Boys Hostel.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32390894588298,
-                    27.681485585500837
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Niraula Stores",
-                "title": "Niraula Stores",
-                "about": "This is the location for Niraula Stores.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32321651934609,
-                    27.681833530683008
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Calisthenics park, Outdoor Gym",
-                "title": "Calisthenics park, Outdoor Gym",
-                "about": "This is the location for Calisthenics park, Outdoor Gym.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32277525891658,
-                    27.68190370401871
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Chemical Engineering Lab",
-                "title": "Chemical Engineering Lab",
-                "about": "This is the location for Chemical Engineering Lab.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32328685569604,
-                    27.681784531262693
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Gym Hall",
-                "title": "Pulchowk Gym Hall",
-                "about": "This is the location for Pulchowk Gym Hall.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32348549458561,
-                    27.68144851050316
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Campus Canteen",
-                "title": "Campus Canteen",
-                "about": "This is the location for Campus Canteen.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32354899843239,
-                    27.68125093458133
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Music Club",
-                "title": "Pulchowk Music Club",
-                "about": "This is the location for Pulchowk Music Club.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32322012669403,
-                    27.6816237436294
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Girls Hostel",
-                "title": "Pulchowk Girls Hostel",
-                "about": "This is the location for Pulchowk Girls Hostel.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.3240672595856,
-                    27.683199124783584
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Pulchowk Teacher's Quarter",
-                "title": "Pulchowk Teacher's Quarter",
-                "about": "This is the location for Pulchowk Teacher's Quarter.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.324714775784,
-                    27.683030311890363
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Staff Quarter",
-                "title": "Staff Quarter",
-                "about": "This is the location for Staff Quarter.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32411254835387,
-                    27.68249831633632
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Exam Control Office, IOE",
-                "title": "Exam Control Office, IOE",
-                "about": "This is the location for Exam Control Office, IOE.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.32103017170311,
-                    27.681071855710286
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Om Stationery Store",
-                "title": "Om Stationery Store",
-                "about": "This is the location for Om Stationery Store.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31984862292666,
-                    27.681843392083223
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "E Block",
-                "title": "E Block",
-                "about": "This is the location for E Block.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31839835594832,
-                    27.680604750704575
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "D Block",
-                "title": "D Block",
-                "about": "This is the location for D Block.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31998717938649,
-                    27.682486205309274
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "FSU Clinic",
-                "title": "FSU Clinic",
-                "about": "This is the location for FSU Clinic.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31924168355874,
-                    27.681570244524437
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "description": "Badminton Court",
-                "title": "Badminton Court",
-                "about": "This is the location for Badminton Court.",
-                "image": ""
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    85.31850453478063,
-                    27.68195320004999
-                ]
-            }
-        }
+        [
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "ICTC Building",
+                    "title": "ICTC Building",
+                    "about": "This is the location for ICTC Building.",
+                    "image": [
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxop441mNoVp1q2alOx39U1Xc1ujV2JPZ-XDIpIAX2qqMyE0kie8i4qzm31JWbIIJrIsSHveV5oD3gmrCOnCzucQkovceqHP-V7-Voy7L3pw0w5drA4ILOU47XBQvl5KUqDtW_y=s0",
+                        "https://www.wms.com.np/sites/default/files/photo5.jpg"
+                    ]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31925432667049,
+                        27.68227948566954
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Campus Mess",
+                    "title": "Campus Mess",
+                    "about": "This is the location for Campus Mess.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31958339939047,
+                        27.680813732882058
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Dean Office",
+                    "title": "Dean Office",
+                    "about": "This is the location for Dean Office.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31860772765805,
+                        27.681033526909417
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Architecture",
+                    "title": "Department of Architecture",
+                    "about": "This is the location for Department of Architecture.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31831152476735,
+                        27.68044934237453
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "ASA Office",
+                    "title": "ASA Office",
+                    "about": "This is the location for ASA Office.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31840952112645,
+                        27.680433693360456
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "MSC Hostel",
+                    "title": "MSC Hostel",
+                    "about": "This is the location for MSC Hostel.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.319017191439,
+                        27.680091477233432
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Hydro Lab",
+                    "title": "Hydro Lab",
+                    "about": "This is the location for Hydro Lab.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31942804361722,
+                        27.68018924241545
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Roads",
+                    "title": "Department of Roads",
+                    "about": "This is the location for Department of Roads.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31990450135862,
+                        27.68073700031121
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Locus Office",
+                    "title": "Locus Office",
+                    "about": "This is the location for Locus Office.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3185504866151,
+                        27.68139565322535
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Electrical, Electronics and Computer Engineering",
+                    "title": "Department of Electrical, Electronics and Computer Engineering",
+                    "about": "This is the location for Department of Electrical, Electronics and Computer Engineering.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyQO0Ixjez50rAffC5EumXDzxnVjKR0w_AYYrtSXLh9Ge3geV1CUUOud8tstlp0GnWQRHooxLoiewU-14hBNsfrIR96yGi7qFMWygeFYQDgwfp6r-O8z5CIr7tMd6RfIGoL1Uqnrw=s0"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31871288839,
+                        27.68181692613163
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Robotics Club",
+                    "title": "Robotics Club",
+                    "about": "This is the location for Robotics Club.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31901450533206,
+                        27.68136224565515
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Continuing Education Center",
+                    "title": "Continuing Education Center",
+                    "about": "This is the location for Continuing Education Center.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31895314397525,
+                        27.681494777843028
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Library",
+                    "title": "Pulchowk Library",
+                    "about": "This is the location for Pulchowk Library.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw22S7oiJwDzIbqS3LhcVv8hTOd1VZsF4cC_kCYzmTheQBkXEO22eQmWW2aayWSLEXvpBqcA4JomqKqD_e23H4K4OmKv2urf51JWyikIJX3EITJzXsa0JczF1nAXk_3p-LXGYCW=s0"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31944424082258,
+                        27.681616524851407
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Electrical Club",
+                    "title": "Electrical Club",
+                    "about": "This is the location for Electrical Club.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3182927681815,
+                        27.682291135732115
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Block C",
+                    "title": "Block C",
+                    "about": "This is the location for Block C.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31833975128347,
+                        27.682140047755496
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "ICT Building",
+                    "title": "ICT Building",
+                    "about": "This is the location for ICT Building.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31910927158208,
+                        27.68172332246239
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Embark College",
+                    "title": "Embark College",
+                    "about": "This is the location for Embark College.",
+                    "image": [
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzFjaGXicBwAkWEbh1CGVQepFdLr9-BmMLIr4A1iDp3lpvRL7ab7Z2MP565CX_FE9cFOLdLuIbewX23FpODCpl63DUbp_J7POn7h5A9SFbKzSI_tkfPJxClo_js5dFfvzOsEK41Kg=s0",
+                        "https://embarkcollege.edu.np/wp-content/uploads/2025/09/embark_highview.webp"
+                    ]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31888939994957,
+                        27.682712891619232
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Nabil Bank ATM",
+                    "title": "Nabil Bank ATM",
+                    "about": "This is the location for Nabil Bank ATM.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzkyfUqvlmdNqUbRRRsoefDSQoXbAC4vnzWKCi5GMP0XcF4nNybZ_hqhJTY8gci8M4jzcVjqOlOWgYdk5FLfieqAu02N6OG7ysRgMyoBAH4qeBaRg1VVcymd_M3o7EsyBIl29ac=s0"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31853678585821,
+                        27.682829607001196
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Siddhartha Bank ATM",
+                    "title": "Siddhartha Bank ATM",
+                    "about": "This is the location for Siddhartha Bank ATM.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwpHMU3GAn4qs9oHsOyx5EIMXLmlvN4VL9Cxuq4_q55349bhqqjdLmZuB2doK6ALbjAMpHz6TUehQW90qwfUbQdECmSIoWbaM4C5ol8pHaQ9IROzZUWlFUZpTL3DxUxvr4K2P67=s0"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31945726206425,
+                        27.68210633185008
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Heavy Lab",
+                    "title": "Heavy Lab",
+                    "about": "This is the location for Heavy Lab.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32044738817302,
+                        27.68209387245163
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Parking",
+                    "title": "Parking",
+                    "about": "Parking for the vehicles",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31992845601593,
+                        27.68214769544541
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Helicopter Parking",
+                    "title": "Helicopter Parking",
+                    "about": "The iconic Helicopter Parking.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxSkd9lRuEJ7ODBWNpD70ZhYOHPUyvXYxAXwG5NKa3PP8hPipTLZ3YNgeuM2JE8-cO1onResJjfSEAcJR4sWXS9S0DZk5wZbR6YV9qnYU3-RvTzgmiBXs79tX60o2Q8NjIM8fjNkITfR_HT=s0"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31969443930882,
+                        27.68228789473575
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "PI Chautari",
+                    "title": "PI Chautari",
+                    "about": "This is the location for PI Chautari.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31987844126758,
+                        27.68267661712244
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Mechanical and Aerospace Engineering",
+                    "title": "Department of Mechanical and Aerospace Engineering",
+                    "about": "This is the location for Department of Mechanical and Aerospace Engineering.",
+                    "image": [
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy57X7F1U1HldC9-kK8aozkm4SJAm_RIGy4R09eliY36RFG3Fx_qpMvfoCu-v7NXrfiCI5jctGss-YJZt2cdlgY0h0PhXP4Gz8RieLsmywf3YN5c-bitDv8sW3hGM2ERsuXiBli=s0",
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxMUqAflGq52AKLFxjHukIxgaMvYoLvTPBSEKmfxmOG0ywjmMnPDJpOvigCUWRwAy8g13fLFF5BIf0Z9av5lrEpKqFcEEnoKedS-8tY9A51P7P9HVLxWlQcDpvNg_nUhqOqHLReIA=s0"
+                    ]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31986930605723,
+                        27.682462244093173
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Saraswati Mandir",
+                    "title": "Saraswati Mandir",
+                    "about": "This is Saraswati Mandir to worship.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx7wypYKOcn127tTAnZrnvvtRNp-PWjw9vQ2prmBf2ywpQDf3_oItdgezFNmoy2tvYChS-FkUZm6wm-T2FRgzPl-W2tUTUWP9J1SzNYHKAuy_qRjCmUDabINl66ebJliAFMzeQG8Q=s4000"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31939527713587,
+                        27.68256455316562
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Civil Engineering",
+                    "title": "Department of Civil Engineering",
+                    "about": "This is the location for Department of Civil Engineering.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx9OmbBii3by02nQKjvSrKXTEPbO1acKQNk4tF6WfgU8Ojn0CDJ4TYcefJoExhDmFlrHKXcZ3KsozQZspYDPy2Hs1ZthxhrIA42zp2_ExFNqI1B3zp-K3nrKYB4EEEraBKNHHDi=w408-h544-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31936398409704,
+                        27.682968475303554
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "F Block",
+                    "title": "F Block",
+                    "about": "This is the location for F Block.",
+                    "image": [
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx8HiL_SL_epEpzepLpOspwuOSeOgUWqz3MEfc6cBvMTCCAQhYWrACkzrVwKz5aXiyzzieSd1gHR2H4GyeRHbouhWmyOIrpoCeaYxBlknlC0UiJxRr6DPcr75BMzHi__QjSJN--UQ=s0",
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx9OmbBii3by02nQKjvSrKXTEPbO1acKQNk4tF6WfgU8Ojn0CDJ4TYcefJoExhDmFlrHKXcZ3KsozQZspYDPy2Hs1ZthxhrIA42zp2_ExFNqI1B3zp-K3nrKYB4EEEraBKNHHDi=w408-h544-k-no",
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwbet-_55NLQKtaubpTrm54FyptlSDGUpoaRym1fM-soNB-peeuWCv8at5qFj0KYDw-KpsUFkOcHHKHpb6s_KP3x3b8h3I1KVGLkRk9v6oKuVfQYcEkR1Xe7ohV8xbog9WfgZwG=s0",
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwULJ3WSdju8qjjm3v9oxVSorgq1f0DyblyQo_hIao58Qdob0Jqd-7yV2ULqza5XDXZgZYcygafI5GZPJKMJad-q9FUgdBm6q3goYGXoJLl9FwlKZX5x8haWr1Pb8bWGl3yd6IiC5_Xrsc=s0"
+                    ]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3196061234986,
+                        27.682788668714352
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Mechanical and Aerospace Engineering",
+                    "title": "Department of Mechanical and Aerospace Engineering",
+                    "about": "This is the location for Department of Mechanical and Aerospace Engineering.",
+                    "image": [
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy57X7F1U1HldC9-kK8aozkm4SJAm_RIGy4R09eliY36RFG3Fx_qpMvfoCu-v7NXrfiCI5jctGss-YJZt2cdlgY0h0PhXP4Gz8RieLsmywf3YN5c-bitDv8sW3hGM2ERsuXiBli=s0",
+                        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxMUqAflGq52AKLFxjHukIxgaMvYoLvTPBSEKmfxmOG0ywjmMnPDJpOvigCUWRwAy8g13fLFF5BIf0Z9av5lrEpKqFcEEnoKedS-8tY9A51P7P9HVLxWlQcDpvNg_nUhqOqHLReIA=s0"
+                    ]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32078190861336,
+                        27.682393906140106
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "The Helm of IOE Pulchowk",
+                    "title": "The Helm of IOE Pulchowk",
+                    "about": "This is the location for The Helm of IOE Pulchowk.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzc8vR9eZA5mQAVhm3F77-HNUSBA4zV8JQWGyyYkdvUJFx7x1HqsAmzlXxj2K0hidmfx0Z3IocmCmBhxOSouXWlMnXxuAn0pO79eIONJArw7-dqH8TH_d5LlFtSTQcTfMxQkj0=w408-h544-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32083316993328,
+                        27.682629953546424
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "FSU Office",
+                    "title": "FSU Office",
+                    "about": "This is the location for FSU Office.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3207254626837,
+                        27.682902435847012
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "NTBNS",
+                    "title": "NTBNS",
+                    "about": "This is the location for NTBNS.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32070525005736,
+                        27.683007442872864
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Applied Sciences and Chemical Engineering",
+                    "title": "Department of Applied Sciences and Chemical Engineering",
+                    "about": "This is the location for Department of Applied Sciences and Chemical Engineering.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3203848726879,
+                        27.682935941133437
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Applied Sciences and chemical engineering",
+                    "title": "Department of Applied Sciences and chemical engineering",
+                    "about": "This is the location for Department of Applied Sciences and chemical engineering.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwiodqC9QVG6IOgmrdicUur07onisM3G2ONp51Z1JnbislKt_rhctnI4c8SPgBtzaYwIXvQPGuB-bRhA9UN-u3UpyR4ebCf9DnJG090u37CNDM59E1p4gpSKRUcG_pm0wCJ1AuulF5idNw=w408-h544-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3200449911119,
+                        27.683220527000756
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "G Block",
+                    "title": "G Block",
+                    "about": "This is the location for G Block.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32018128025857,
+                        27.68310430877834
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "CIDS",
+                    "title": "CIDS",
+                    "about": "This is the location for CIDS.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxiPpIErbbczjxGn4AgjO8A3DsLcJT5j7nOLCBXthvKWatBlUHcshgoADqNaH6SGDt7OmBwn5YQUxReugXpJRs74kv38gT-QU5_u2jkQXF3lmdNiRhI-FlEuWfY0fwYUDU8YCma=w408-h306-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31990266456802,
+                        27.683010663794747
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Department of Science and Humanities",
+                    "title": "Department of Science and Humanities",
+                    "about": "This is the location for Department of Science and Humanities.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32054395296416,
+                        27.683041212054775
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Main Entrance",
+                    "title": "Main Entrance",
+                    "about": "This is the location for Main Entrance.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3177517448579,
+                        27.681366883564905
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "First Entrance",
+                    "title": "First Entrance",
+                    "about": "This is the location for First Entrance.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3194594635064,
+                        27.68207456812752
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Second Entrance",
+                    "title": "Second Entrance",
+                    "about": "This is the Entrance for Block D, F and G.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31959562985224,
+                        27.682147085370673
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Hydropower Testing Lab",
+                    "title": "Hydropower Testing Lab",
+                    "about": "This is the location for Hydropower Testing Lab.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx_lW3pmcJQSQxYloepyS7ce1ZOe6gbXZYbyh2D1DV56BSFoEuRbBFhtoB_y5ZSlSKtVVkZo5nw9il0j1h77L4o5eJiC6M_VteSYoE13Q5ecy32EzYpSDrKs597VhVP9MMFWNHB=w408-h240-k-no-pi-20-ya261.2-ro0-fo100"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32052846482077,
+                        27.68346942813116
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "SEDS Pulchowk",
+                    "title": "SEDS Pulchowk",
+                    "about": "This is the location for SEDS Pulchowk.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy0v82-kn_aT3e_5AeNTk43nGxebrataZXO-IcmCEc2IextjvAeRSoSjMEUveLyBiWVZNZU2WarJTfIMz_vAjFhrrrO7VaPFYZD5a-Ol0xX6BoE0s2fCXXbyodLgRcVmdxXTQulvWRgVso3=s0"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32041220727473,
+                        27.683617545231883
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Center for Energy Studies",
+                    "title": "Center for Energy Studies",
+                    "about": "This is the location for Center for Energy Studies.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwlZ-oLvi9Ee2nfjBO8SjsTkPzxP1LM-GkCm03h4h90GE85MDU84n7BScJzFcoU000-GzE5yj6EUtdVRnQGK_1zS5LKi50OTmE30s8EEx6PBwSDPE0nTSS0ujThHJFt-NMDd8Ex6w=w408-h306-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3208610299663,
+                        27.68321662681744
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Cricket Ground",
+                    "title": "Pulchowk Cricket Ground",
+                    "about": "This is the location for Pulchowk Cricket Ground.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyP2d7VaiQ-MAzjieotInFvQfg0CCPojYmS9Cowpxw9W7v8pXfqTQGOyQop3NTtws7POlmIDjY2vp0AQCAI70Dz6Ki19qwVV_qAGS2JQqxoHkqeyGY_cKOGNwIiAyY0fpxG5nvs=w408-h306-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32215173345384,
+                        27.683328511076553
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Football Ground",
+                    "title": "Pulchowk Football Ground",
+                    "about": "This is the location for Pulchowk Football Ground.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwRBA8JDJs6EX2KVvQP7FK62qSlPVaCo_iqZBzxX4DAX799KybMnlSmbsdQpQloYJ1WMtQdXhQ0Jd6LOeX7ZoiJXtZzwlwVvnR0fd7XuG_DjDDpkCFrTrhYoWL6GoriA5wrydbRuyCOWKpb=w408-h544-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.322933342042,
+                        27.682630231202694
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Volleyball Court",
+                    "title": "Pulchowk Volleyball Court",
+                    "about": "This is the location for Pulchowk Volleyball Court.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyWUIaxPra4ERqsV5dvEBdzrN1NxKIlZ-OIeYUYa3BWcG4bvFkf-uwOcYbmL5TODFCI9vqdSn7xAx0mvG28cyoJFJowkVCVdtPf8XmLwScv53prdPaI1ogWgHBCfx4YBUe31JxC=w408-h725-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3232165987614,
+                        27.682254992538773
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Cricket Practice Pitch",
+                    "title": "Cricket Practice Pitch",
+                    "about": "This is the location for Cricket Practice Pitch.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32345024929077,
+                        27.682835875995877
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Basketball Court",
+                    "title": "Basketball Court",
+                    "about": "This is the location for Basketball Court.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzPZBZKss36UihBeCeuwDUGMLDXVxSfDeQ61MtFiI32mWC7_MGbkzHhVY3btJV-N7dxnMIuzf8EYOPTxRURlogdsRGoVV0cCKeLN8e1jtibLOmKKqBlseQXtLDeBtRp6Gjc9cC5=w408-h544-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32258776220266,
+                        27.681816863769555
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Block A Pulchowk Boys Hostel",
+                    "title": "Block A Pulchowk Boys Hostel",
+                    "about": "This is the location for Block A Pulchowk Boys Hostel.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3239283186274,
+                        27.682188311416212
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Block B Pulchowk Boys Hostel",
+                    "title": "Block B Pulchowk Boys Hostel",
+                    "about": "This is the location for Block B Pulchowk Boys Hostel.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32390377692212,
+                        27.68184284511355
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Block C Pulchowk Boys Hostel",
+                    "title": "Block C Pulchowk Boys Hostel",
+                    "about": "This is the location for Block C Pulchowk Boys Hostel.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32390894588298,
+                        27.681485585500837
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Niraula Stores",
+                    "title": "Niraula Stores",
+                    "about": "Store for ",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzRDCmU9brtc5xB_89V-xUzlvopFiyHb9gRwTMS5w0Oozmr8fnbprHXOukQhXuuULXHfhmv1PVF9ge2O89iiUtZI_SR2DWb0RPJNGIQQt1qQi5-gq3YJmkRlUCqTXeYczQ72pcK=w426-h240-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32321651934609,
+                        27.681833530683008
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Calisthenics park, Outdoor Gym",
+                    "title": "Calisthenics park, Outdoor Gym",
+                    "about": "This is the location for Calisthenics park, Outdoor Gym.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyLilpBb3svpsr-SEGh5AKDA3alTwmQcr0ZcUvZPGOeTwmOv05AyZEhbe3p7-BhBge8zNE8ItDtGDNVcIOcgh__z0aRxDfO4R-ZdlDrwDtNdTqOqNBKBy4ha3FzuueTu4ojVixQZw=w426-h240-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32277525891658,
+                        27.68190370401871
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Chemical Engineering Lab",
+                    "title": "Chemical Engineering Lab",
+                    "about": "This is the location for Chemical Engineering Lab.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32328685569604,
+                        27.681784531262693
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Gym Hall",
+                    "title": "Pulchowk Gym Hall",
+                    "about": "Gym for students. Open from 9 AM to 6 PM.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz95SXqwaOong86nhfvpzTeyPKRYu8_NBUZaqTnUBGkJtXCLhdGYzG6PEY5dVy90bi0pHjlj13tY7dUADMnVe96yZtLpWgk3o6pLwPsP1hR8ke2edxEz0wn5fT3K8QBIo0hvTeu1ztLREg=w408-h408-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32348549458561,
+                        27.68144851050316
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Campus Canteen",
+                    "title": "Campus Canteen",
+                    "about": "Campus Canteen near ground.",
+                    "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwo8muh3tm-AMAJIvVq-aY1OdkBHZQvDCIp39-MgqB7c7tH13rHgC04QXcD6q5xks6BN2MnCKxSt1oGpLZaRYvAuQwv2-wR955uGfXsasW8gYzz9yl31hpVngmTawz5yKhXNRprEw=w408-h306-k-no"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32354899843239,
+                        27.68125093458133
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Music Club",
+                    "title": "Pulchowk Music Club",
+                    "about": "This is the location for Pulchowk Music Club.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32322012669403,
+                        27.6816237436294
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Girls Hostel",
+                    "title": "Pulchowk Girls Hostel",
+                    "about": "This is the location for Pulchowk Girls Hostel.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.3240672595856,
+                        27.683199124783584
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Pulchowk Teacher's Quarter",
+                    "title": "Pulchowk Teacher's Quarter",
+                    "about": "This is the location for Pulchowk Teacher's Quarter.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.324714775784,
+                        27.683030311890363
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Staff Quarter",
+                    "title": "Staff Quarter",
+                    "about": "This is the location for Staff Quarter.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32411254835387,
+                        27.68249831633632
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Exam Control Office, IOE",
+                    "title": "Exam Control Office, IOE",
+                    "about": "This is the location for Exam Control Office, IOE.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.32103017170311,
+                        27.681071855710286
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Om Stationery Store",
+                    "title": "Om Stationery Store",
+                    "about": "Place for printing and stationery items.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31984862292666,
+                        27.681843392083223
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "E Block",
+                    "title": "E Block",
+                    "about": "This is the location for E Block.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31839835594832,
+                        27.680604750704575
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "D Block",
+                    "title": "D Block",
+                    "about": "This is the location for D Block.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31998717938649,
+                        27.682486205309274
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "FSU Clinic",
+                    "title": "FSU Clinic",
+                    "about": "This is the location for FSU Clinic.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31924168355874,
+                        27.681570244524437
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "description": "Badminton Court",
+                    "title": "Badminton Court",
+                    "about": "This is the location for Badminton Court.",
+                    "image": ""
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        85.31850453478063,
+                        27.68195320004999
+                    ]
+                }
+            }
+        ]
     ]
 }
