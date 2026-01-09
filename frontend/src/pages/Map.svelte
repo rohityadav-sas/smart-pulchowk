@@ -160,12 +160,11 @@
 	}>({ title: "", description: "" });
 	let imagesLoaded = $state<Record<number, boolean>>({});
 	let imageProgress = $state<Record<number, number | undefined>>({});
-	let xhrFailedUrls = new Set<string>();
+	let progressFailedUrls = new Set<string>();
 
-	function loadWithProgress(url: string, index: number) {
-		// If we already know this URL fails CORS/XHR, skip straight to fallback
-		// Also skip if it's already loaded to avoid re-triggering
-		if (!url || xhrFailedUrls.has(url)) {
+	async function loadWithProgress(url: string, index: number) {
+		// Skip if we know this URL fails to provide progress (CORS/No-Content-Length)
+		if (!url || progressFailedUrls.has(url)) {
 			imageProgress[index] = undefined;
 			return;
 		}
@@ -173,33 +172,36 @@
 		imageProgress[index] = 0;
 		imagesLoaded[index] = false;
 
-		const xhr = new XMLHttpRequest();
-		xhr.open("GET", url, true);
-		xhr.responseType = "blob";
+		try {
+			const response = await fetch(url);
 
-		xhr.onprogress = (event) => {
-			if (event.lengthComputable) {
-				const percent = Math.round((event.loaded / event.total) * 100);
-				imageProgress[index] = percent;
+			if (!response.ok) throw new Error("Network response was not ok");
+
+			const contentLength = response.headers.get("content-length");
+			if (!contentLength) {
+				throw new Error("Content-Length missing");
 			}
-		};
 
-		xhr.onload = () => {
-			if (xhr.status === 200) {
-				imageProgress[index] = 100;
-			} else {
-				xhrFailedUrls.add(url);
-				imageProgress[index] = undefined;
+			const total = parseInt(contentLength, 10);
+			let loaded = 0;
+
+			const reader = response.body?.getReader();
+			if (!reader) throw new Error("ReadableStream not supported");
+
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break;
+
+				loaded += value.length;
+				imageProgress[index] = Math.round((loaded / total) * 100);
 			}
-		};
 
-		xhr.onerror = () => {
-			console.log("XHR load failed (CORS), falling back", url);
-			xhrFailedUrls.add(url);
+			imageProgress[index] = 100;
+		} catch (error) {
+			console.log("Fetch progress failed, falling back", url);
+			progressFailedUrls.add(url);
 			imageProgress[index] = undefined;
-		};
-
-		xhr.send();
+		}
 	}
 
 	const prefetchedUrls = new Set<string>();
