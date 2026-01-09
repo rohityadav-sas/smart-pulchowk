@@ -472,7 +472,7 @@
 		const url = `https://router.project-osrm.org/route/v1/foot/${query}?overview=full&geometries=geojson&radiuses=200;200`;
 
 		isCalculatingRoute = true;
-		routeDuration = null;
+		routeDuration = "";
 
 		try {
 			const res = await fetch(url);
