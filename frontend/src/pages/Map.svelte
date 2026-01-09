@@ -93,7 +93,7 @@
 			feature.properties.icon = "energy-icon";
 		} else if (desc.includes("the helm of ioe pulchowk")) {
 			feature.properties.icon = "helm-icon";
-		} else if (desc.includes("pi chautari")) {
+		} else if (desc.includes("pi chautari") || desc.includes("park")) {
 			feature.properties.icon = "garden-icon";
 		} else if (desc.includes("store") || desc.includes("bookshop")) {
 			feature.properties.icon = "store-icon";
@@ -118,6 +118,19 @@
 			feature.properties.icon = "building-icon";
 		} else if (desc.includes("block") || desc.includes("embark")) {
 			feature.properties.icon = "block-icon";
+		} else if (desc.includes("cave")) {
+			feature.properties.icon = "cave-icon";
+		} else if (desc.includes("fountain")) {
+			feature.properties.icon = "fountain-icon";
+		} else if (
+			desc.includes("water vending machine") ||
+			desc.includes("water")
+		) {
+			feature.properties.icon = "water-vending-machine-icon";
+		} else if (desc.includes("workshop")) {
+			feature.properties.icon = "workshop-icon";
+		} else if (desc.includes("toilet") || desc.includes("washroom")) {
+			feature.properties.icon = "toilet-icon";
 		} else {
 			feature.properties.icon = "custom-marker";
 		}
@@ -622,6 +635,26 @@
 		{
 			name: "block-icon",
 			url: "https://cdn-icons-png.flaticon.com/512/3311/3311565.png",
+		},
+		{
+			name: "cave-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/210/210567.png",
+		},
+		{
+			name: "fountain-icon",
+			url: "https://cdn.iconscout.com/icon/free/png-256/free-fountain-icon-svg-download-png-449881.png",
+		},
+		{
+			name: "water-vending-machine-icon",
+			url: "https://static.vecteezy.com/system/resources/thumbnails/044/570/540/small_2x/single-water-drop-on-transparent-background-free-png.png",
+		},
+		{
+			name: "workshop-icon",
+			url: "https://cdn-icons-png.flaticon.com/512/7258/7258548.png",
+		},
+		{
+			name: "toilet-icon",
+			url: "https://png.pngtree.com/png-clipart/20240426/ourmid/pngtree-yellow-male-sign-for-toilet-washroom-png-image_12330179.png",
 		},
 	];
 
