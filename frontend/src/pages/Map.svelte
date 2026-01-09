@@ -94,7 +94,11 @@
 			feature.properties.icon = "energy-icon";
 		} else if (desc.includes("the helm of ioe pulchowk")) {
 			feature.properties.icon = "helm-icon";
-		} else if (desc.includes("pi chautari") || desc.includes("park")) {
+		} else if (
+			desc.includes("pi chautari") ||
+			desc.includes("park") ||
+			desc.includes("garden")
+		) {
 			feature.properties.icon = "garden-icon";
 		} else if (desc.includes("store") || desc.includes("bookshop")) {
 			feature.properties.icon = "store-icon";
@@ -132,6 +136,8 @@
 			feature.properties.icon = "workshop-icon";
 		} else if (desc.includes("toilet") || desc.includes("washroom")) {
 			feature.properties.icon = "toilet-icon";
+		} else if (desc.includes("bridge")) {
+			feature.properties.icon = "bridge-icon";
 		} else {
 			feature.properties.icon = "custom-marker";
 		}
@@ -790,6 +796,10 @@
 		{
 			name: "toilet-icon",
 			url: "https://png.pngtree.com/png-clipart/20240426/ourmid/pngtree-yellow-male-sign-for-toilet-washroom-png-image_12330179.png",
+		},
+		{
+			name: "bridge-icon",
+			url: "https://static.thenounproject.com/png/5954264-200.png",
 		},
 	];
 
