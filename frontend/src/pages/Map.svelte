@@ -13,6 +13,7 @@
 	import type { FeatureCollection, Feature } from "geojson";
 	import pulchowk from "./pulchowk.json";
 	import { fade, fly, slide } from "svelte/transition";
+	import { cubicOut, quintOut, backOut } from "svelte/easing";
 	import LoadingSpinner from "../components/LoadingSpinner.svelte";
 
 	const SATELLITE_STYLE: any = {
@@ -1192,245 +1193,277 @@
 					</div>
 					<button
 						aria-label={isNavMinimized ? "Expand" : "Minimize"}
-						class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+						class="p-2 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
 						onclick={() => (isNavMinimized = !isNavMinimized)}
 					>
-						{#if isNavMinimized}
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5 text-gray-600"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M19 9l-7 7-7-7"
-								/>
-							</svg>
-						{:else}
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5 text-gray-600"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M5 15l7-7 7 7"
-								/>
-							</svg>
-						{/if}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5 text-gray-600 transition-transform duration-300 ease-out {isNavMinimized
+								? 'rotate-180'
+								: 'rotate-0'}"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M5 15l7-7 7 7"
+							/>
+						</svg>
 					</button>
 				</div>
 
 				{#if !isNavMinimized}
-					<div class="flex flex-col gap-3 relative" transition:slide>
-						<!-- Start Input -->
-						<div class="relative group">
-							<div
-								class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-gray-400"
-							></div>
-							<input
-								bind:value={navStartSearch}
-								type="text"
-								placeholder="Choose starting point"
-								class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium"
-								onfocus={() => {
-									showNavStartSuggestions = true;
-									focusedInput = "start";
-								}}
-								oninput={() => (showNavStartSuggestions = true)}
-							/>
-							{#if showNavStartSuggestions}
+					<div
+						class="flex flex-col gap-3 relative overflow-hidden"
+						transition:slide={{ duration: 350, easing: quintOut }}
+					>
+						<div class="relative flex flex-col gap-3">
+							<!-- Start Input -->
+							<div class="relative group">
 								<div
-									class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-60 overflow-y-auto"
-								>
+									class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-gray-400"
+								></div>
+								<input
+									bind:value={navStartSearch}
+									type="text"
+									placeholder="Choose starting point"
+									class="w-full pl-10 pr-10 py-3 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium"
+									onfocus={() => {
+										showNavStartSuggestions = true;
+										showNavEndSuggestions = false;
+										focusedInput = "start";
+									}}
+									oninput={() =>
+										(showNavStartSuggestions = true)}
+								/>
+								{#if navStartSearch || showNavStartSuggestions}
 									<button
-										class="w-full px-4 py-3 text-left hover:bg-blue-50 text-blue-600 font-medium flex items-center gap-2"
-										onclick={useUserLocation}
+										class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200 transition-colors"
+										onclick={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+											navStartSearch = "";
+											showNavStartSuggestions = false;
+										}}
+										aria-label="Clear start location"
 									>
 										<svg
-											class="w-4 h-4"
+											xmlns="http://www.w3.org/2000/svg"
+											class="h-4 w-4"
 											fill="none"
-											stroke="currentColor"
 											viewBox="0 0 24 24"
+											stroke="currentColor"
 										>
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
 												stroke-width="2"
-												d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-											/>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+												d="M6 18L18 6M6 6l12 12"
 											/>
 										</svg>
-										Your Location
-										{#if waitingForLocation}
-											<span
-												class="text-xs text-gray-400 font-normal"
-												>(Locating...)</span
-											>
-										{/if}
 									</button>
-									{#each filteredNavStartSuggestions as suggestion}
+								{/if}
+								{#if showNavStartSuggestions}
+									<div
+										class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-60 overflow-y-auto"
+									>
 										<button
-											class="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-3"
-											onclick={() =>
-												selectNavStart(suggestion)}
+											class="w-full px-4 py-3 text-left hover:bg-blue-50 text-blue-600 font-medium flex items-center gap-2"
+											onclick={useUserLocation}
 										>
-											<img
-												src={getIconUrl(
-													suggestion.properties?.icon,
-												)}
-												alt=""
-												class="w-5 h-5 object-contain"
-											/>
-											<span class="truncate"
-												>{suggestion.properties
-													?.description}</span
+											<svg
+												class="w-4 h-4"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
 											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+												/>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+												/>
+											</svg>
+											Your Location
+											{#if waitingForLocation}
+												<span
+													class="text-xs text-gray-400 font-normal"
+													>(Locating...)</span
+												>
+											{/if}
 										</button>
-									{/each}
-								</div>
-							{/if}
-						</div>
+										{#each filteredNavStartSuggestions as suggestion}
+											<button
+												class="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-3"
+												onclick={() =>
+													selectNavStart(suggestion)}
+											>
+												<img
+													src={getIconUrl(
+														suggestion.properties
+															?.icon,
+													)}
+													alt=""
+													class="w-5 h-5 object-contain"
+												/>
+												<span class="truncate"
+													>{suggestion.properties
+														?.description}</span
+												>
+											</button>
+										{/each}
+									</div>
+								{/if}
+							</div>
 
-						<!-- Connecting Line -->
-						<div
-							class="absolute left-4.5 top-10 bottom-10 w-0.5 bg-gray-300 border-l border-dashed border-gray-300 pointer-events-none"
-						></div>
-
-						<!-- End Input -->
-						<div class="relative group">
+							<!-- Connecting Line -->
 							<div
-								class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-red-500"
+								class="absolute left-4.5 top-10 bottom-10 w-0.5 bg-gray-300 border-l border-dashed border-gray-300 pointer-events-none"
 							></div>
-							<input
-								bind:value={navEndSearch}
-								type="text"
-								placeholder="Choose destination"
-								class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-gray-200 text-gray-800 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-								onfocus={() => {
-									showNavEndSuggestions = true;
-									focusedInput = "end";
-								}}
-								oninput={() => (showNavEndSuggestions = true)}
-							/>
-							{#if showNavEndSuggestions}
+
+							<!-- End Input -->
+							<div class="relative group">
 								<div
-									class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-60 overflow-y-auto"
-								>
-									{#each filteredNavEndSuggestions as suggestion}
-										<button
-											class="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-3"
-											onclick={() =>
-												selectNavEnd(suggestion)}
+									class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-red-500"
+								></div>
+								<input
+									bind:value={navEndSearch}
+									type="text"
+									placeholder="Choose destination"
+									class="w-full pl-10 pr-10 py-3 rounded-xl bg-gray-50 border-gray-200 text-gray-800 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+									onfocus={() => {
+										showNavEndSuggestions = true;
+										showNavStartSuggestions = false;
+										focusedInput = "end";
+									}}
+									oninput={() =>
+										(showNavEndSuggestions = true)}
+								/>
+								{#if navEndSearch || showNavEndSuggestions}
+									<button
+										class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200 transition-colors"
+										onclick={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+											navEndSearch = "";
+											showNavEndSuggestions = false;
+										}}
+										aria-label="Clear destination"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											class="h-4 w-4"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
 										>
-											<img
-												src={getIconUrl(
-													suggestion.properties?.icon,
-												)}
-												alt=""
-												class="w-5 h-5 object-contain"
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M6 18L18 6M6 6l12 12"
 											/>
-											<span class="truncate"
-												>{suggestion.properties
-													?.description}</span
+										</svg>
+									</button>
+								{/if}
+								{#if showNavEndSuggestions}
+									<div
+										class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-60 overflow-y-auto"
+									>
+										{#each filteredNavEndSuggestions as suggestion}
+											<button
+												class="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-3"
+												onclick={() =>
+													selectNavEnd(suggestion)}
 											>
-										</button>
-									{/each}
-								</div>
-							{/if}
+												<img
+													src={getIconUrl(
+														suggestion.properties
+															?.icon,
+													)}
+													alt=""
+													class="w-5 h-5 object-contain"
+												/>
+												<span class="truncate"
+													>{suggestion.properties
+														?.description}</span
+												>
+											</button>
+										{/each}
+									</div>
+								{/if}
+							</div>
 						</div>
-					</div>
 
-					{#if isCalculatingRoute}
-						<div
-							class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between"
-							transition:slide
-						>
-							<div class="flex flex-col gap-2">
-								<div
-									class="h-7 w-24 bg-gray-200 rounded animate-pulse"
-								></div>
-								<div
-									class="h-3 w-32 bg-gray-100 rounded animate-pulse"
-								></div>
-							</div>
+						{#if isCalculatingRoute}
 							<div
-								class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center"
+								class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between"
 							>
-								<LoadingSpinner size="sm" />
+								<div class="flex flex-col gap-2">
+									<div
+										class="h-7 w-24 bg-gray-200 rounded animate-pulse"
+									></div>
+									<div
+										class="h-3 w-32 bg-gray-100 rounded animate-pulse"
+									></div>
+								</div>
+								<div
+									class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center"
+								>
+									<LoadingSpinner size="sm" />
+								</div>
 							</div>
-						</div>
-					{/if}
+						{/if}
 
-					{#if routeDuration}
-						<div
-							class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between"
-							transition:slide
-						>
-							<div>
-								<div class="flex items-baseline gap-2">
-									<span
-										class="text-2xl font-bold text-blue-600"
-										>{routeDuration}</span
-									>
-									<span
-										class="text-sm text-gray-500 font-medium"
-										>({routeDistance})</span
-									>
-								</div>
-								<div class="text-xs text-gray-400 mt-0.5">
-									{isDirectFallback
-										? "Straight line (Internal paths not mapped)"
-										: "Walking via campus paths"}
-								</div>
-							</div>
+						{#if routeDuration}
 							<div
-								class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-600/30"
+								class="mt-4 p-4 border-t border-gray-100 flex items-center justify-between"
 							>
-								<svg
-									class="w-5 h-5"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
+								<div>
+									<div class="flex items-baseline gap-2">
+										<span
+											class="text-2xl font-bold text-blue-600"
+											>{routeDuration}</span
+										>
+										<span
+											class="text-sm text-gray-500 font-medium"
+											>({routeDistance})</span
+										>
+									</div>
+									<div class="text-xs text-gray-400 mt-0.5">
+										{isDirectFallback
+											? "Straight line (Internal paths not mapped)"
+											: "Walking via campus paths"}
+									</div>
+								</div>
+								<div
+									class="size-10 bg-blue-600 text-white rounded-full flex items-center justify-center filter drop-shadow-lg drop-shadow-gray-600"
 								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-									/>
-								</svg>
+									<svg
+										class="w-5 h-5"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+										/>
+									</svg>
+								</div>
 							</div>
-						</div>
-					{/if}
-				{:else if routeDuration}
-					<div
-						class="pt-2 border-t border-gray-100 flex items-center justify-between"
-						transition:slide
-					>
-						<div>
-							<div class="flex items-baseline gap-2">
-								<span class="text-xl font-bold text-blue-600"
-									>{routeDuration}</span
-								>
-								<span class="text-sm text-gray-500 font-medium"
-									>({routeDistance})</span
-								>
-							</div>
-						</div>
+						{/if}
 					</div>
 				{/if}
 			</div>
