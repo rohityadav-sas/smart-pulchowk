@@ -12,7 +12,7 @@
 	} from "svelte-maplibre-gl";
 	import type { FeatureCollection, Feature } from "geojson";
 	import pulchowk from "./pulchowk.json";
-	import { fade, fly } from "svelte/transition";
+	import { fade, fly, slide } from "svelte/transition";
 	import LoadingSpinner from "../components/LoadingSpinner.svelte";
 
 	const SATELLITE_STYLE: any = {
@@ -260,12 +260,14 @@
 	let routeDuration = $state<string>("");
 	let isDirectFallback = $state(false);
 
+	let isNavMinimized = $state(false);
 	// Navigation Search State
 	let navStartSearch = $state("");
 	let navEndSearch = $state("");
 	let showNavStartSuggestions = $state(false);
 	let showNavEndSuggestions = $state(false);
-	let waitingForLocation = $state(false); // Add this line
+	let waitingForLocation = $state(false);
+	let focusedInput = $state<"start" | "end">("end");
 
 	function handleGeolocate(e: any) {
 		console.log("Geolocate event:", e);
@@ -352,10 +354,14 @@
 			},
 		};
 
-		const walkingSpeed = 1.4; // m/s (approx 5 km/h)
-		const duration = Math.round(distance / walkingSpeed / 60);
+		const walkingSpeed = 1.2; // m/s
+		const totalSeconds = distance / walkingSpeed;
 
-		routeDuration = `${duration || 1} min`;
+		if (totalSeconds < 60) {
+			routeDuration = `${Math.round(totalSeconds)} sec`;
+		} else {
+			routeDuration = `${Math.round(totalSeconds / 60)} min`;
+		}
 		routeDistance =
 			distance < 1000
 				? `${Math.round(distance)} m`
@@ -519,13 +525,18 @@
 					geometry: fullGeometry,
 				};
 
-				const duration = Math.round(route.duration / 60);
+				const totalSeconds = route.distance / 1.2;
+
+				if (totalSeconds < 60) {
+					routeDuration = `${Math.round(totalSeconds)} sec`;
+				} else {
+					routeDuration = `${Math.round(totalSeconds / 60)} min`;
+				}
+
 				const distance =
 					route.distance < 1000
 						? `${Math.round(route.distance)} m`
 						: `${(route.distance / 1000).toFixed(1)} km`;
-
-				routeDuration = `${duration} min`;
 				routeDistance = distance;
 
 				fitBoundsToRoute(route.geometry.coordinates);
@@ -565,6 +576,18 @@
 			: [],
 	);
 
+	const filteredNavEndSuggestions = $derived(
+		navEndSearch.trim()
+			? labels
+					.filter((label) =>
+						label.properties?.description
+							?.toLowerCase()
+							.includes(navEndSearch.toLowerCase()),
+					)
+					.slice(0, 5)
+			: [],
+	);
+
 	function selectNavStart(suggestion: any) {
 		const coords = getCentroid(suggestion);
 		startPoint = {
@@ -574,6 +597,18 @@
 		};
 		navStartSearch = suggestion.properties.description;
 		showNavStartSuggestions = false;
+		getDirections();
+	}
+
+	function selectNavEnd(suggestion: any) {
+		const coords = getCentroid(suggestion);
+		endPoint = {
+			coords,
+			name: suggestion.properties.description,
+			feature: suggestion,
+		};
+		navEndSearch = suggestion.properties.description;
+		showNavEndSuggestions = false;
 		getDirections();
 	}
 
@@ -736,6 +771,11 @@
 			url: "https://png.pngtree.com/png-clipart/20240426/ourmid/pngtree-yellow-male-sign-for-toilet-washroom-png-image_12330179.png",
 		},
 	];
+
+	function getIconUrl(iconName: string) {
+		const icon = icons.find((i) => i.name === iconName);
+		return icon ? icon.url : icons[0].url;
+	}
 
 	const loadIcons = async () => {
 		if (!map) return;
@@ -1104,149 +1144,251 @@
 			<div
 				class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-4"
 			>
-				<div class="flex items-center gap-3 mb-4">
-					<button
-						aria-label="Exit navigation"
-						class="p-2 hover:bg-gray-100 rounded-full transition-colors"
-						onclick={exitNavigation}
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-6 w-6 text-gray-600"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
+				<div class="flex items-center justify-between mb-4">
+					<div class="flex items-center gap-3">
+						<button
+							aria-label="Exit navigation"
+							class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+							onclick={exitNavigation}
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M10 19l-7-7m0 0l7-7m-7 7h18"
-							/>
-						</svg>
-					</button>
-					<h2 class="font-semibold text-lg text-gray-800">
-						Directions
-					</h2>
-				</div>
-
-				<div class="flex flex-col gap-3 relative">
-					<!-- Start Input -->
-					<div class="relative group">
-						<div
-							class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-gray-400"
-						></div>
-						<input
-							bind:value={navStartSearch}
-							type="text"
-							placeholder="Choose starting point"
-							class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium"
-							onfocus={() => (showNavStartSuggestions = true)}
-							oninput={() => (showNavStartSuggestions = true)}
-						/>
-						{#if showNavStartSuggestions}
-							<div
-								class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-60 overflow-y-auto"
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-6 w-6 text-gray-600"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
 							>
-								<button
-									class="w-full px-4 py-3 text-left hover:bg-blue-50 text-blue-600 font-medium flex items-center gap-2"
-									onclick={useUserLocation}
-								>
-									<svg
-										class="w-4 h-4"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-										/>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-										/>
-									</svg>
-									Your Location
-									{#if waitingForLocation}
-										<span
-											class="text-xs text-gray-400 font-normal"
-											>(Locating...)</span
-										>
-									{/if}
-								</button>
-								{#each filteredNavStartSuggestions as suggestion}
-									<button
-										class="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50"
-										onclick={() =>
-											selectNavStart(suggestion)}
-									>
-										{suggestion.properties?.description}
-									</button>
-								{/each}
-							</div>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M10 19l-7-7m0 0l7-7m-7 7h18"
+								/>
+							</svg>
+						</button>
+						<h2 class="font-semibold text-lg text-gray-800">
+							Directions
+						</h2>
+					</div>
+					<button
+						aria-label={isNavMinimized ? "Expand" : "Minimize"}
+						class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+						onclick={() => (isNavMinimized = !isNavMinimized)}
+					>
+						{#if isNavMinimized}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 text-gray-600"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						{:else}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 text-gray-600"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M5 15l7-7 7 7"
+								/>
+							</svg>
 						{/if}
-					</div>
-
-					<!-- Connecting Line -->
-					<div
-						class="absolute left-4.5 top-10 bottom-10 w-0.5 bg-gray-300 border-l border-dashed border-gray-300 pointer-events-none"
-					></div>
-
-					<!-- End Input -->
-					<div class="relative">
-						<div
-							class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-red-500"
-						></div>
-						<input
-							bind:value={navEndSearch}
-							readonly
-							type="text"
-							class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-gray-200 text-gray-800 font-medium text-sm"
-						/>
-					</div>
+					</button>
 				</div>
 
-				{#if routeDuration}
+				{#if !isNavMinimized}
+					<div class="flex flex-col gap-3 relative" transition:slide>
+						<!-- Start Input -->
+						<div class="relative group">
+							<div
+								class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-gray-400"
+							></div>
+							<input
+								bind:value={navStartSearch}
+								type="text"
+								placeholder="Choose starting point"
+								class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium"
+								onfocus={() => {
+									showNavStartSuggestions = true;
+									focusedInput = "start";
+								}}
+								oninput={() => (showNavStartSuggestions = true)}
+							/>
+							{#if showNavStartSuggestions}
+								<div
+									class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-60 overflow-y-auto"
+								>
+									<button
+										class="w-full px-4 py-3 text-left hover:bg-blue-50 text-blue-600 font-medium flex items-center gap-2"
+										onclick={useUserLocation}
+									>
+										<svg
+											class="w-4 h-4"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+											/>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+											/>
+										</svg>
+										Your Location
+										{#if waitingForLocation}
+											<span
+												class="text-xs text-gray-400 font-normal"
+												>(Locating...)</span
+											>
+										{/if}
+									</button>
+									{#each filteredNavStartSuggestions as suggestion}
+										<button
+											class="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-3"
+											onclick={() =>
+												selectNavStart(suggestion)}
+										>
+											<img
+												src={getIconUrl(
+													suggestion.properties?.icon,
+												)}
+												alt=""
+												class="w-5 h-5 object-contain"
+											/>
+											<span class="truncate"
+												>{suggestion.properties
+													?.description}</span
+											>
+										</button>
+									{/each}
+								</div>
+							{/if}
+						</div>
+
+						<!-- Connecting Line -->
+						<div
+							class="absolute left-4.5 top-10 bottom-10 w-0.5 bg-gray-300 border-l border-dashed border-gray-300 pointer-events-none"
+						></div>
+
+						<!-- End Input -->
+						<div class="relative group">
+							<div
+								class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-red-500"
+							></div>
+							<input
+								bind:value={navEndSearch}
+								type="text"
+								placeholder="Choose destination"
+								class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-gray-200 text-gray-800 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+								onfocus={() => {
+									showNavEndSuggestions = true;
+									focusedInput = "end";
+								}}
+								oninput={() => (showNavEndSuggestions = true)}
+							/>
+							{#if showNavEndSuggestions}
+								<div
+									class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20 max-h-60 overflow-y-auto"
+								>
+									{#each filteredNavEndSuggestions as suggestion}
+										<button
+											class="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-3"
+											onclick={() =>
+												selectNavEnd(suggestion)}
+										>
+											<img
+												src={getIconUrl(
+													suggestion.properties?.icon,
+												)}
+												alt=""
+												class="w-5 h-5 object-contain"
+											/>
+											<span class="truncate"
+												>{suggestion.properties
+													?.description}</span
+											>
+										</button>
+									{/each}
+								</div>
+							{/if}
+						</div>
+					</div>
+
+					{#if routeDuration}
+						<div
+							class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between"
+							transition:fade
+						>
+							<div>
+								<div class="flex items-baseline gap-2">
+									<span
+										class="text-2xl font-bold text-blue-600"
+										>{routeDuration}</span
+									>
+									<span
+										class="text-sm text-gray-500 font-medium"
+										>({routeDistance})</span
+									>
+								</div>
+								<div class="text-xs text-gray-400 mt-0.5">
+									{isDirectFallback
+										? "Straight line (Internal paths not mapped)"
+										: "Walking via campus paths"}
+								</div>
+							</div>
+							<div
+								class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-600/30"
+							>
+								<svg
+									class="w-5 h-5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+									/>
+								</svg>
+							</div>
+						</div>
+					{/if}
+				{:else if routeDuration}
 					<div
-						class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between"
-						transition:fade
+						class="pt-2 border-t border-gray-100 flex items-center justify-between"
+						transition:slide
 					>
 						<div>
 							<div class="flex items-baseline gap-2">
-								<span class="text-2xl font-bold text-blue-600"
+								<span class="text-xl font-bold text-blue-600"
 									>{routeDuration}</span
 								>
 								<span class="text-sm text-gray-500 font-medium"
 									>({routeDistance})</span
 								>
 							</div>
-							<div class="text-xs text-gray-400 mt-0.5">
-								{isDirectFallback
-									? "Straight line (Internal paths not mapped)"
-									: "Walking via campus paths"}
-							</div>
-						</div>
-						<div
-							class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-600/30"
-						>
-							<svg
-								class="w-5 h-5"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-								/>
-							</svg>
 						</div>
 					</div>
 				{/if}
@@ -1379,6 +1521,39 @@
 									lng: centroid[0],
 									lat: centroid[1],
 								};
+							}
+
+							if (isNavigating) {
+								const name = props.description || "Location";
+								const point = {
+									coords: [
+										centerLngLat.lng,
+										centerLngLat.lat,
+									],
+									name: name,
+									feature: feature,
+								};
+
+								if (focusedInput === "start") {
+									startPoint = point as any;
+									navStartSearch = name;
+									showNavStartSuggestions = false;
+								} else {
+									endPoint = point as any;
+									navEndSearch = name;
+									showNavEndSuggestions = false;
+								}
+
+								// Unfocus input to hide keyboard on mobile / remove cursor
+								if (
+									document.activeElement instanceof
+									HTMLElement
+								) {
+									document.activeElement.blur();
+								}
+
+								getDirections();
+								return;
 							}
 
 							popupLngLat = centerLngLat;

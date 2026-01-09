@@ -668,8 +668,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31925432667049,
-                    27.68227948566954
+                    85.31914514155119,
+                    27.68224422611749
                 ]
             }
         },
@@ -679,13 +679,13 @@
                 "description": "Campus Mess",
                 "title": "Campus Mess",
                 "about": "This is the location for Campus Mess.",
-                "image": ""
+                "image": "https://i.imageupload.app/813e366192f3d5c64954.jpeg"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    85.31958339939047,
-                    27.680813732882058
+                    85.31953172446174,
+                    27.68100688137129
                 ]
             }
         },
