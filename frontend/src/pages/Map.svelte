@@ -282,25 +282,6 @@
 			useUserLocation();
 			waitingForLocation = false;
 		}
-
-		const [sw, ne] = PULCHOWK_BOUNDS;
-		const [minLng, minLat] = sw;
-		const [maxLng, maxLat] = ne;
-
-		if (
-			longitude < minLng ||
-			longitude > maxLng ||
-			latitude < minLat ||
-			latitude > maxLat
-		) {
-			showOutsideMessage = true;
-
-			if (geolocateControl) geolocateControl.trigger();
-
-			setTimeout(() => {
-				showOutsideMessage = false;
-			}, 4000);
-		}
 	}
 
 	function getCentroid(feature: any): [number, number] {
@@ -420,6 +401,27 @@
 	function startNavigation(destinationFeature: any) {
 		isNavigating = true;
 		popupOpen = false;
+
+		// Silent pre-fetch of user location to speed up "Your Location" selection later
+		if (navigator.geolocation && !userLocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					userLocation = [
+						position.coords.longitude,
+						position.coords.latitude,
+					];
+				},
+				(error) => {
+					// Just ignore errors for silent pre-fetch
+					console.debug("Silent location pre-fetch failed:", error);
+				},
+				{
+					enableHighAccuracy: true,
+					maximumAge: 30000,
+					timeout: 10000,
+				},
+			);
+		}
 
 		const destName =
 			destinationFeature.properties?.description || "Destination";
