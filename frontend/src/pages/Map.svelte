@@ -168,11 +168,30 @@
 	let imagesLoaded = $state<Record<number, boolean>>({});
 	let imageProgress = $state<Record<number, number | undefined>>({});
 	let progressFailedUrls = new Set<string>();
+	const fullyLoadedUrls = new Set<string>();
 
 	async function loadWithProgress(url: string, index: number) {
 		// Skip if we know this URL fails to provide progress (CORS/No-Content-Length)
 		if (!url || progressFailedUrls.has(url)) {
 			imageProgress[index] = undefined;
+			return;
+		}
+
+		// Check if we've already fully loaded this image previously in the session
+		if (fullyLoadedUrls.has(url)) {
+			console.log("Skipping progress fetch for known url:", url);
+			if (!imagesLoaded[index]) {
+				console.log("Forcing image show for known url");
+				imagesLoaded[index] = true;
+				imageProgress[index] = 100;
+			}
+			return;
+		}
+
+		// If the image is already loaded (from cache/onload firing first), don't reset
+		if (imagesLoaded[index]) {
+			imageProgress[index] = 100;
+			fullyLoadedUrls.add(url);
 			return;
 		}
 
@@ -184,6 +203,7 @@
 
 			if (!response.ok) throw new Error("Network response was not ok");
 
+			// If served from cache, it might pass quickly, but we mark it as loaded at the end.
 			const contentLength = response.headers.get("content-length");
 			if (!contentLength) {
 				throw new Error("Content-Length missing");
@@ -204,6 +224,8 @@
 			}
 
 			imageProgress[index] = 100;
+			imagesLoaded[index] = true;
+			fullyLoadedUrls.add(url);
 		} catch (error) {
 			console.log("Fetch progress failed, falling back", url);
 			progressFailedUrls.add(url);
@@ -249,6 +271,7 @@
 	let showOutsideMessage = $state(false);
 	let geolocateControl: any = $state();
 	let userLocation = $state<[number, number] | null>(null);
+	let showFullScreenImage = $state(false);
 
 	// Navigation State
 	let isNavigating = $state(false);
@@ -1705,6 +1728,7 @@
 							};
 							currentImageIndex = 0;
 							imagesLoaded = {};
+							imageProgress = {};
 							popupOpen = true;
 						}
 					}}
@@ -1841,8 +1865,10 @@
 									<img
 										src={img}
 										alt={popupData.title}
-										loading="lazy"
-										onload={() => (imagesLoaded[i] = true)}
+										onload={() => {
+											imagesLoaded[i] = true;
+											fullyLoadedUrls.add(img);
+										}}
 										class="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-in-out {imagesLoaded[
 											i
 										]
@@ -1964,8 +1990,12 @@
 								<img
 									src={popupData.image}
 									alt={popupData.title}
-									loading="lazy"
-									onload={() => (imagesLoaded[0] = true)}
+									onload={() => {
+										imagesLoaded[0] = true;
+										fullyLoadedUrls.add(
+											popupData.image as string,
+										);
+									}}
 									class="w-full h-32 object-cover transition-transform duration-700 group-hover:scale-110 {imagesLoaded[0]
 										? 'opacity-100'
 										: 'opacity-0'}"
@@ -1974,6 +2004,31 @@
 							<div
 								class="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
 							></div>
+
+							<button
+								class="absolute top-2 right-2 p-1.5 bg-black/40 hover:bg-black/60 rounded-full text-white/90 transition-all opacity-0 group-hover:opacity-100 backdrop-blur-[2px] z-20"
+								onclick={(e) => {
+									e.stopPropagation();
+									showFullScreenImage = true;
+								}}
+								aria-label="View Fullscreen"
+								ontouchstart={(e) => e.stopPropagation()}
+								ontouchend={(e) => e.stopPropagation()}
+							>
+								<svg
+									class="w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 4l-5-5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+									/>
+								</svg>
+							</button>
 						</div>
 					{/if}
 					<div class="px-2 pb-2">
@@ -2042,6 +2097,147 @@
 		<FullScreenControl position="top-right" />
 	</MapLibre>
 </div>
+
+{#if showFullScreenImage && popupData.image}
+	<div
+		class="fixed inset-0 z-100 bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm"
+		transition:fade={{ duration: 200 }}
+		onclick={() => (showFullScreenImage = false)}
+		onkeydown={(e) => e.key === "Escape" && (showFullScreenImage = false)}
+		role="dialog"
+		aria-modal="true"
+		tabindex="-1"
+	>
+		<button
+			class="absolute top-4 right-4 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors z-50"
+			onclick={() => (showFullScreenImage = false)}
+			aria-label="Close full screen"
+		>
+			<svg
+				class="w-8 h-8"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 18L18 6M6 6l12 12"
+				/>
+			</svg>
+		</button>
+
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+		<div
+			class="relative w-full h-full max-w-7xl max-h-[85vh] flex items-center justify-center group overflow-hidden"
+			onclick={(e) => e.stopPropagation()}
+			ontouchstart={handleTouchStart}
+			ontouchend={handleTouchEnd}
+			role="document"
+		>
+			{#if Array.isArray(popupData.image)}
+				{#each popupData.image as img, i}
+					<div
+						class="absolute top-0 left-0 w-full h-full flex items-center justify-center transition-transform duration-300 ease-in-out"
+						style="transform: translateX({(i - currentImageIndex) *
+							100}%)"
+					>
+						<img
+							src={img}
+							alt={popupData.title}
+							class="w-full h-full object-contain select-none shadow-2xl"
+						/>
+					</div>
+				{/each}
+
+				{#if popupData.image.length > 1}
+					<button
+						class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 rounded-full p-3 transition-all hover:scale-105 active:scale-95"
+						aria-label="Previous image"
+						onclick={(e) => {
+							e.stopPropagation();
+							if (Array.isArray(popupData.image)) {
+								currentImageIndex =
+									(currentImageIndex -
+										1 +
+										popupData.image.length) %
+									popupData.image.length;
+							}
+						}}
+					>
+						<svg
+							class="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M15 19l-7-7 7-7"
+							/>
+						</svg>
+					</button>
+
+					<button
+						class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 rounded-full p-3 transition-all hover:scale-105 active:scale-95"
+						aria-label="Next image"
+						onclick={(e) => {
+							e.stopPropagation();
+							if (Array.isArray(popupData.image)) {
+								currentImageIndex =
+									(currentImageIndex + 1) %
+									popupData.image.length;
+							}
+						}}
+					>
+						<svg
+							class="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 5l7 7-7 7"
+							/>
+						</svg>
+					</button>
+
+					<div
+						class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full"
+					>
+						{#each popupData.image as _, i}
+							<div
+								class="w-2 h-2 rounded-full transition-colors {i ===
+								currentImageIndex
+									? 'bg-white'
+									: 'bg-white/40'}"
+							></div>
+						{/each}
+					</div>
+
+					<div
+						class="absolute top-4 left-1/2 -translate-x-1/2 text-white/90 font-medium bg-black/50 backdrop-blur px-4 py-1.5 rounded-full text-sm"
+					>
+						{currentImageIndex + 1} / {popupData.image.length}
+					</div>
+				{/if}
+			{:else}
+				<img
+					src={popupData.image}
+					alt={popupData.title}
+					class="w-full h-full object-contain select-none shadow-2xl"
+				/>
+			{/if}
+		</div>
+	</div>
+{/if}
 
 <style>
 	:global(.maplibregl-popup-content) {

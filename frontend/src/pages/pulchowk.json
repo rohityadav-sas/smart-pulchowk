@@ -661,8 +661,8 @@
                 "title": "ICTC Building",
                 "about": "This is the location for ICTC Building.",
                 "image": [
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxop441mNoVp1q2alOx39U1Xc1ujV2JPZ-XDIpIAX2qqMyE0kie8i4qzm31JWbIIJrIsSHveV5oD3gmrCOnCzucQkovceqHP-V7-Voy7L3pw0w5drA4ILOU47XBQvl5KUqDtW_y=s0",
-                    "https://www.wms.com.np/sites/default/files/photo5.jpg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050705/AG0ilSxop441mNoVp1q2alOx39U1Xc1ujV2JPZ-XDIpIAX2qqMyE0kie8i4qzm31JWbIIJrIsSHveV5oD3gmrCOnCzucQkovceqHP-V7-Voy7L3pw0w5drA4ILOU47XBQvl5KUqDtW_y_s0_x2lt8m.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050722/photo5_vghj6m.jpg"
                 ]
             },
             "geometry": {
@@ -679,7 +679,7 @@
                 "description": "Campus Mess",
                 "title": "Campus Mess",
                 "about": "This is the location for Campus Mess.",
-                "image": "https://i.imageupload.app/813e366192f3d5c64954.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768048831/campus_mess_kcyirm.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -696,8 +696,8 @@
                 "title": "Dean Office",
                 "about": "This is the location for Dean Office.",
                 "image": [
-                    "https://i.imageupload.app/c29c75aabe8395ef3972.jpeg",
-                    "https://i.imageupload.app/ab6b8746f0397c5e6bd1.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768048868/c29c75aabe8395ef3972_vkwpsh.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768048879/ab6b8746f0397c5e6bd1_ltezo3.jpg"
                 ]
             },
             "geometry": {
@@ -715,7 +715,7 @@
                 "title": "Department of Architecture",
                 "about": "This is the location for Department of Architecture.",
                 "image": [
-                    "https://i.imageupload.app/94c8a6cb627b4d29415e.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768048987/94c8a6cb627b4d29415e_hfo4kw.jpg"
                 ]
             },
             "geometry": {
@@ -796,7 +796,7 @@
                 "description": "Locus Office",
                 "title": "Locus Office",
                 "about": "This is the location for Locus Office.",
-                "image": "https://i.imageupload.app/16c6f4436ab30f8770c5.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049031/16c6f4436ab30f8770c5_hc7chy.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -813,8 +813,8 @@
                 "title": "Department of Electrical, Electronics and Computer Engineering",
                 "about": "This is the location for Department of Electrical, Electronics and Computer Engineering.",
                 "image": [
-                    "https://i.imageupload.app/df60e34d608189b1eec0.jpeg",
-                    "https://i.imageupload.app/577b7492ac230083e987.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049050/df60e34d608189b1eec0_xelok8.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049063/577b7492ac230083e987_kmvltq.jpg"
                 ]
             },
             "geometry": {
@@ -848,9 +848,9 @@
                 "title": "Continuing Education Center",
                 "about": "This is the location for Continuing Education Center.",
                 "image": [
-                    "https://i.imageupload.app/888d37bdf1f73fdf0d3d.jpeg",
-                    "https://i.imageupload.app/38b5b50bb2346a286a8d.jpeg",
-                    "https://i.imageupload.app/a45729c1dd74b49198dc.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049083/888d37bdf1f73fdf0d3d_syxckl.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049101/38b5b50bb2346a286a8d_fu0y1i.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049114/a45729c1dd74b49198dc_djp5qp.jpg"
                 ]
             },
             "geometry": {
@@ -868,9 +868,9 @@
                 "title": "Pulchowk Library",
                 "about": "This is the location for Pulchowk Library.",
                 "image": [
-                    "https://i.imageupload.app/e65054690fa0e14b565a.jpeg",
-                    "https://i.imageupload.app/4a8f875e3d20f0af9263.jpeg",
-                    "https://i.imageupload.app/2e8246580d6eb8f4b325.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049129/e65054690fa0e14b565a_uyeekd.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049140/4a8f875e3d20f0af9263_vv4mj6.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049152/2e8246580d6eb8f4b325_uiwicr.jpg"
                 ]
             },
             "geometry": {
@@ -887,7 +887,7 @@
                 "description": "Electrical Club",
                 "title": "Electrical Club",
                 "about": "This is the location for Electrical Club.",
-                "image": "https://i.imageupload.app/a3040e599637be7f7c17.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049166/a3040e599637be7f7c17_mhsyhu.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -920,8 +920,8 @@
                 "title": "ICT Building",
                 "about": "This is the location for ICT Building.",
                 "image": [
-                    "https://i.imageupload.app/554d81fe37e15e94fc60.jpeg",
-                    "https://i.imageupload.app/499c26c422739e1565e4.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049181/554d81fe37e15e94fc60_wwopgc.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049194/499c26c422739e1565e4_htyqx1.jpg"
                 ]
             },
             "geometry": {
@@ -939,8 +939,8 @@
                 "title": "Embark College",
                 "about": "This is the location for Embark College.",
                 "image": [
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzFjaGXicBwAkWEbh1CGVQepFdLr9-BmMLIr4A1iDp3lpvRL7ab7Z2MP565CX_FE9cFOLdLuIbewX23FpODCpl63DUbp_J7POn7h5A9SFbKzSI_tkfPJxClo_js5dFfvzOsEK41Kg=s0",
-                    "https://embarkcollege.edu.np/wp-content/uploads/2025/09/embark_highview.webp"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049211/AG0ilSzFjaGXicBwAkWEbh1CGVQepFdLr9-BmMLIr4A1iDp3lpvRL7ab7Z2MP565CX_FE9cFOLdLuIbewX23FpODCpl63DUbp_J7POn7h5A9SFbKzSI_tkfPJxClo_js5dFfvzOsEK41Kg_s0_sf8hma.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049223/embark_highview_eybcwf.webp"
                 ]
             },
             "geometry": {
@@ -957,7 +957,7 @@
                 "description": "Nabil Bank ATM",
                 "title": "Nabil Bank ATM",
                 "about": "This is the location for Nabil Bank ATM.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzkyfUqvlmdNqUbRRRsoefDSQoXbAC4vnzWKCi5GMP0XcF4nNybZ_hqhJTY8gci8M4jzcVjqOlOWgYdk5FLfieqAu02N6OG7ysRgMyoBAH4qeBaRg1VVcymd_M3o7EsyBIl29ac=s0"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049241/AG0ilSzkyfUqvlmdNqUbRRRsoefDSQoXbAC4vnzWKCi5GMP0XcF4nNybZ_hqhJTY8gci8M4jzcVjqOlOWgYdk5FLfieqAu02N6OG7ysRgMyoBAH4qeBaRg1VVcymd_M3o7EsyBIl29ac_s0_ooafgc.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -973,7 +973,7 @@
                 "description": "Siddhartha Bank ATM",
                 "title": "Siddhartha Bank ATM",
                 "about": "This is the location for Siddhartha Bank ATM.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwpHMU3GAn4qs9oHsOyx5EIMXLmlvN4VL9Cxuq4_q55349bhqqjdLmZuB2doK6ALbjAMpHz6TUehQW90qwfUbQdECmSIoWbaM4C5ol8pHaQ9IROzZUWlFUZpTL3DxUxvr4K2P67=s0"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049255/AG0ilSwpHMU3GAn4qs9oHsOyx5EIMXLmlvN4VL9Cxuq4_q55349bhqqjdLmZuB2doK6ALbjAMpHz6TUehQW90qwfUbQdECmSIoWbaM4C5ol8pHaQ9IROzZUWlFUZpTL3DxUxvr4K2P67_s0_bn8duo.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -989,7 +989,7 @@
                 "description": "Heavy Lab Block",
                 "title": "Heavy Lab Block",
                 "about": "This is the location for Heavy Lab Block.",
-                "image": "https://i.imageupload.app/575f003d6aa36f80d6a3.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049270/575f003d6aa36f80d6a3_y7at3h.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1005,7 +1005,7 @@
                 "description": "Heavy Lab",
                 "title": "Heavy Lab",
                 "about": "This is the location for Heavy Lab.",
-                "image": "https://i.imageupload.app/b6862e30c9e529c84325.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049283/b6862e30c9e529c84325_nvv6zp.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1022,10 +1022,10 @@
                 "title": "Hydraulic Lab",
                 "about": "This is the location for Hydraulic Lab.",
                 "image": [
-                    "https://i.imageupload.app/dc83c93080d20e386e10.jpeg",
-                    "https://i.imageupload.app/9f043c5d254326482655.jpeg",
-                    "https://i.imageupload.app/e63ebebf30681d10c5c7.jpeg",
-                    "https://i.imageupload.app/d1ccc4673921579ffd3f.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049302/dc83c93080d20e386e10_aaptcy.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049317/9f043c5d254326482655_qlo7qp.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049330/e63ebebf30681d10c5c7_zghcqo.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049344/d1ccc4673921579ffd3f_x8npuf.jpg"
                 ]
             },
             "geometry": {
@@ -1042,7 +1042,7 @@
                 "description": "Parking",
                 "title": "Parking",
                 "about": "Parking for the vehicles",
-                "image": "https://i.imageupload.app/7631a9eed0f76db484bc.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049360/7631a9eed0f76db484bc_rwjwme.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1058,7 +1058,7 @@
                 "description": "Helicopter Parking",
                 "title": "Helicopter Parking",
                 "about": "The iconic Helicopter Parking.",
-                "image": "https://i.imageupload.app/aa36557e54f04fd4c2b7.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049372/aa36557e54f04fd4c2b7_twalak.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1075,8 +1075,8 @@
                 "title": "PI Chautari",
                 "about": "This is the location for PI Chautari.",
                 "image": [
-                    "https://i.imageupload.app/c130c782c05a00f00dc6.jpeg",
-                    "https://i.imageupload.app/afcf404c3a65642de799.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049395/c130c782c05a00f00dc6_vlzdhc.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049409/afcf404c3a65642de799_njzrvb.jpg"
                 ]
             },
             "geometry": {
@@ -1094,8 +1094,8 @@
                 "title": "Department of Mechanical and Aerospace Engineering",
                 "about": "This is the location for Department of Mechanical and Aerospace Engineering.",
                 "image": [
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy57X7F1U1HldC9-kK8aozkm4SJAm_RIGy4R09eliY36RFG3Fx_qpMvfoCu-v7NXrfiCI5jctGss-YJZt2cdlgY0h0PhXP4Gz8RieLsmywf3YN5c-bitDv8sW3hGM2ERsuXiBli=s0",
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxMUqAflGq52AKLFxjHukIxgaMvYoLvTPBSEKmfxmOG0ywjmMnPDJpOvigCUWRwAy8g13fLFF5BIf0Z9av5lrEpKqFcEEnoKedS-8tY9A51P7P9HVLxWlQcDpvNg_nUhqOqHLReIA=s0"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049427/AG0ilSy57X7F1U1HldC9-kK8aozkm4SJAm_RIGy4R09eliY36RFG3Fx_qpMvfoCu-v7NXrfiCI5jctGss-YJZt2cdlgY0h0PhXP4Gz8RieLsmywf3YN5c-bitDv8sW3hGM2ERsuXiBli_s0_o18oiz.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049439/AG0ilSxMUqAflGq52AKLFxjHukIxgaMvYoLvTPBSEKmfxmOG0ywjmMnPDJpOvigCUWRwAy8g13fLFF5BIf0Z9av5lrEpKqFcEEnoKedS-8tY9A51P7P9HVLxWlQcDpvNg_nUhqOqHLReIA_s0_tadp7i.jpg"
                 ]
             },
             "geometry": {
@@ -1113,9 +1113,9 @@
                 "title": "Saraswati Mandir",
                 "about": "This is Saraswati Mandir to worship.",
                 "image": [
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx7wypYKOcn127tTAnZrnvvtRNp-PWjw9vQ2prmBf2ywpQDf3_oItdgezFNmoy2tvYChS-FkUZm6wm-T2FRgzPl-W2tUTUWP9J1SzNYHKAuy_qRjCmUDabINl66ebJliAFMzeQG8Q=s4000",
-                    "https://i.imageupload.app/0e13fedc81f23c13412d.jpeg",
-                    "https://i.imageupload.app/75f287835a439c22eeee.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049454/AG0ilSx7wypYKOcn127tTAnZrnvvtRNp-PWjw9vQ2prmBf2ywpQDf3_oItdgezFNmoy2tvYChS-FkUZm6wm-T2FRgzPl-W2tUTUWP9J1SzNYHKAuy_qRjCmUDabINl66ebJliAFMzeQG8Q_s4000_txpcaw.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049468/0e13fedc81f23c13412d_f2fr08.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049481/75f287835a439c22eeee_gvqxlq.jpg"
                 ]
             },
             "geometry": {
@@ -1132,7 +1132,7 @@
                 "description": "Department of Civil Engineering",
                 "title": "Department of Civil Engineering",
                 "about": "This is the location for Department of Civil Engineering.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx9OmbBii3by02nQKjvSrKXTEPbO1acKQNk4tF6WfgU8Ojn0CDJ4TYcefJoExhDmFlrHKXcZ3KsozQZspYDPy2Hs1ZthxhrIA42zp2_ExFNqI1B3zp-K3nrKYB4EEEraBKNHHDi=w408-h544-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049499/AG0ilSx9OmbBii3by02nQKjvSrKXTEPbO1acKQNk4tF6WfgU8Ojn0CDJ4TYcefJoExhDmFlrHKXcZ3KsozQZspYDPy2Hs1ZthxhrIA42zp2_ExFNqI1B3zp-K3nrKYB4EEEraBKNHHDi_w408-h544-k-no_riz3ve.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1149,9 +1149,9 @@
                 "title": "F Block",
                 "about": "This is the location for F Block.",
                 "image": [
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx8HiL_SL_epEpzepLpOspwuOSeOgUWqz3MEfc6cBvMTCCAQhYWrACkzrVwKz5aXiyzzieSd1gHR2H4GyeRHbouhWmyOIrpoCeaYxBlknlC0UiJxRr6DPcr75BMzHi__QjSJN--UQ=s0",
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx9OmbBii3by02nQKjvSrKXTEPbO1acKQNk4tF6WfgU8Ojn0CDJ4TYcefJoExhDmFlrHKXcZ3KsozQZspYDPy2Hs1ZthxhrIA42zp2_ExFNqI1B3zp-K3nrKYB4EEEraBKNHHDi=w408-h544-k-no",
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwULJ3WSdju8qjjm3v9oxVSorgq1f0DyblyQo_hIao58Qdob0Jqd-7yV2ULqza5XDXZgZYcygafI5GZPJKMJad-q9FUgdBm6q3goYGXoJLl9FwlKZX5x8haWr1Pb8bWGl3yd6IiC5_Xrsc=s0"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049516/AG0ilSx8HiL_SL_epEpzepLpOspwuOSeOgUWqz3MEfc6cBvMTCCAQhYWrACkzrVwKz5aXiyzzieSd1gHR2H4GyeRHbouhWmyOIrpoCeaYxBlknlC0UiJxRr6DPcr75BMzHi__QjSJN--UQ_s0_qazxzp.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049538/AG0ilSx9OmbBii3by02nQKjvSrKXTEPbO1acKQNk4tF6WfgU8Ojn0CDJ4TYcefJoExhDmFlrHKXcZ3KsozQZspYDPy2Hs1ZthxhrIA42zp2_ExFNqI1B3zp-K3nrKYB4EEEraBKNHHDi_w408-h544-k-no_x10szp.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049570/AG0ilSwULJ3WSdju8qjjm3v9oxVSorgq1f0DyblyQo_hIao58Qdob0Jqd-7yV2ULqza5XDXZgZYcygafI5GZPJKMJad-q9FUgdBm6q3goYGXoJLl9FwlKZX5x8haWr1Pb8bWGl3yd6IiC5_Xrsc_s0_yc29cv.jpg"
                 ]
             },
             "geometry": {
@@ -1169,8 +1169,8 @@
                 "title": "Department of Mechanical and Aerospace Engineering",
                 "about": "This is the location for Department of Mechanical and Aerospace Engineering.",
                 "image": [
-                    "https://i.imageupload.app/9ba01ed76debb8515be6.jpeg",
-                    "https://i.imageupload.app/36cfb68a7870538d650e.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049584/9ba01ed76debb8515be6_myow9q.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049597/36cfb68a7870538d650e_agszuw.jpg"
                 ]
             },
             "geometry": {
@@ -1187,7 +1187,7 @@
                 "description": "The Helm of IOE Pulchowk",
                 "title": "The Helm of IOE Pulchowk",
                 "about": "This is the location for The Helm of IOE Pulchowk.",
-                "image": "https://i.imageupload.app/d504e434b4a7eeb3a4ad.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049615/d504e434b4a7eeb3a4ad_xzpigq.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1203,7 +1203,7 @@
                 "description": "FSU Office",
                 "title": "FSU Office",
                 "about": "This is the location for FSU Office.",
-                "image": "https://i.imageupload.app/fcb9107e741cc93e9c07.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049635/fcb9107e741cc93e9c07_rxqzry.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1219,7 +1219,7 @@
                 "description": "NTBNS",
                 "title": "NTBNS",
                 "about": "This is the location for NTBNS.",
-                "image": "https://i.imageupload.app/4196f6c89da06431860a.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049651/4196f6c89da06431860a_mppgqk.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1235,7 +1235,7 @@
                 "description": "Pulchowk Girls",
                 "title": "Pulchowk Girls",
                 "about": "This is the location for Pulchowk Girls.",
-                "image": "https://i.imageupload.app/4ca588aa5c97d0b6ca7d.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049666/4ca588aa5c97d0b6ca7d_dfjnbs.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1267,7 +1267,7 @@
                 "description": "Department of Applied Sciences and chemical engineering",
                 "title": "Department of Applied Sciences and chemical engineering",
                 "about": "This is the location for Department of Applied Sciences and chemical engineering.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwiodqC9QVG6IOgmrdicUur07onisM3G2ONp51Z1JnbislKt_rhctnI4c8SPgBtzaYwIXvQPGuB-bRhA9UN-u3UpyR4ebCf9DnJG090u37CNDM59E1p4gpSKRUcG_pm0wCJ1AuulF5idNw=w408-h544-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049683/AG0ilSwiodqC9QVG6IOgmrdicUur07onisM3G2ONp51Z1JnbislKt_rhctnI4c8SPgBtzaYwIXvQPGuB-bRhA9UN-u3UpyR4ebCf9DnJG090u37CNDM59E1p4gpSKRUcG_pm0wCJ1AuulF5idNw_w408-h544-k-no_vom8mm.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1299,7 +1299,7 @@
                 "description": "CIDS",
                 "title": "CIDS",
                 "about": "This is the location for CIDS.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxiPpIErbbczjxGn4AgjO8A3DsLcJT5j7nOLCBXthvKWatBlUHcshgoADqNaH6SGDt7OmBwn5YQUxReugXpJRs74kv38gT-QU5_u2jkQXF3lmdNiRhI-FlEuWfY0fwYUDU8YCma=w408-h306-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049703/AG0ilSxiPpIErbbczjxGn4AgjO8A3DsLcJT5j7nOLCBXthvKWatBlUHcshgoADqNaH6SGDt7OmBwn5YQUxReugXpJRs74kv38gT-QU5_u2jkQXF3lmdNiRhI-FlEuWfY0fwYUDU8YCma_w408-h306-k-no_cdo2d4.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1332,8 +1332,8 @@
                 "title": "Main Entrance",
                 "about": "This is the location for Main Entrance.",
                 "image": [
-                    "https://i.imageupload.app/662d59819c48fa131738.jpeg",
-                    "https://i.imageupload.app/94047dc912b8e68b170c.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049719/662d59819c48fa131738_zq7cbz.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049732/94047dc912b8e68b170c_d9vcbs.jpg"
                 ]
             },
             "geometry": {
@@ -1366,7 +1366,7 @@
                 "description": "Second Entrance",
                 "title": "Second Entrance",
                 "about": "This is the Entrance for Block D, F and G.",
-                "image": "https://i.imageupload.app/4e94d012793008140001.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049748/4e94d012793008140001_dqjfw1.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1382,7 +1382,7 @@
                 "description": "Hydropower Testing Lab",
                 "title": "Hydropower Testing Lab",
                 "about": "This is the location for Hydropower Testing Lab.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx_lW3pmcJQSQxYloepyS7ce1ZOe6gbXZYbyh2D1DV56BSFoEuRbBFhtoB_y5ZSlSKtVVkZo5nw9il0j1h77L4o5eJiC6M_VteSYoE13Q5ecy32EzYpSDrKs597VhVP9MMFWNHB=w408-h240-k-no-pi-20-ya261.2-ro0-fo100"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049771/AG0ilSx_lW3pmcJQSQxYloepyS7ce1ZOe6gbXZYbyh2D1DV56BSFoEuRbBFhtoB_y5ZSlSKtVVkZo5nw9il0j1h77L4o5eJiC6M_VteSYoE13Q5ecy32EzYpSDrKs597VhVP9MMFWNHB_w408-h240-k-no-pi-20-ya261_kt0un8.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1398,7 +1398,7 @@
                 "description": "SEDS Pulchowk",
                 "title": "SEDS Pulchowk",
                 "about": "This is the location for SEDS Pulchowk.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy0v82-kn_aT3e_5AeNTk43nGxebrataZXO-IcmCEc2IextjvAeRSoSjMEUveLyBiWVZNZU2WarJTfIMz_vAjFhrrrO7VaPFYZD5a-Ol0xX6BoE0s2fCXXbyodLgRcVmdxXTQulvWRgVso3=s0"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049784/AG0ilSy0v82-kn_aT3e_5AeNTk43nGxebrataZXO-IcmCEc2IextjvAeRSoSjMEUveLyBiWVZNZU2WarJTfIMz_vAjFhrrrO7VaPFYZD5a-Ol0xX6BoE0s2fCXXbyodLgRcVmdxXTQulvWRgVso3_s0_bmt59c.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1414,7 +1414,7 @@
                 "description": "Center for Energy Studies",
                 "title": "Center for Energy Studies",
                 "about": "This is the location for Center for Energy Studies.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwlZ-oLvi9Ee2nfjBO8SjsTkPzxP1LM-GkCm03h4h90GE85MDU84n7BScJzFcoU000-GzE5yj6EUtdVRnQGK_1zS5LKi50OTmE30s8EEx6PBwSDPE0nTSS0ujThHJFt-NMDd8Ex6w=w408-h306-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049802/AG0ilSwlZ-oLvi9Ee2nfjBO8SjsTkPzxP1LM-GkCm03h4h90GE85MDU84n7BScJzFcoU000-GzE5yj6EUtdVRnQGK_1zS5LKi50OTmE30s8EEx6PBwSDPE0nTSS0ujThHJFt-NMDd8Ex6w_w408-h306-k-no_biq5ft.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1430,7 +1430,7 @@
                 "description": "Pulchowk Cricket Ground",
                 "title": "Pulchowk Cricket Ground",
                 "about": "This is the location for Pulchowk Cricket Ground.",
-                "image": "https://i.imageupload.app/0dfccd73292c9a01934a.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049816/0dfccd73292c9a01934a_g5o2h3.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1446,7 +1446,7 @@
                 "description": "Pulchowk Football Ground",
                 "title": "Pulchowk Football Ground",
                 "about": "This is the location for Pulchowk Football Ground.",
-                "image": "https://i.imageupload.app/d2aa167241903a0edf2d.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049831/d2aa167241903a0edf2d_vtxisq.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1462,7 +1462,7 @@
                 "description": "Pulchowk Volleyball Court",
                 "title": "Pulchowk Volleyball Court",
                 "about": "This is the location for Pulchowk Volleyball Court.",
-                "image": "https://i.imageupload.app/c6f41e67e20f9e8f42af.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049845/c6f41e67e20f9e8f42af_jpdow5.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1478,7 +1478,7 @@
                 "description": "Cricket Practice Pitch",
                 "title": "Cricket Practice Pitch",
                 "about": "This is the location for Cricket Practice Pitch.",
-                "image": "https://i.imageupload.app/0b64cb1743860cf5df53.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049860/0b64cb1743860cf5df53_w7hlsk.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1494,7 +1494,7 @@
                 "description": "Basketball Court",
                 "title": "Basketball Court",
                 "about": "This is the location for Basketball Court.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzPZBZKss36UihBeCeuwDUGMLDXVxSfDeQ61MtFiI32mWC7_MGbkzHhVY3btJV-N7dxnMIuzf8EYOPTxRURlogdsRGoVV0cCKeLN8e1jtibLOmKKqBlseQXtLDeBtRp6Gjc9cC5=w408-h544-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049873/AG0ilSzPZBZKss36UihBeCeuwDUGMLDXVxSfDeQ61MtFiI32mWC7_MGbkzHhVY3btJV-N7dxnMIuzf8EYOPTxRURlogdsRGoVV0cCKeLN8e1jtibLOmKKqBlseQXtLDeBtRp6Gjc9cC5_w408-h544-k-no_yelhtq.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1511,8 +1511,8 @@
                 "title": "Block A Pulchowk Boys Hostel",
                 "about": "This is the location for Block A Pulchowk Boys Hostel.",
                 "image": [
-                    "https://i.imageupload.app/225b30ab0b72debe11eb.jpeg",
-                    "https://i.imageupload.app/dc332493009ca6201cfa.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049889/225b30ab0b72debe11eb_ithz36.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049901/dc332493009ca6201cfa_lqikda.jpg"
                 ]
             },
             "geometry": {
@@ -1530,8 +1530,8 @@
                 "title": "Block B Pulchowk Boys Hostel",
                 "about": "This is the location for Block B Pulchowk Boys Hostel.",
                 "image": [
-                    "https://i.imageupload.app/225b30ab0b72debe11eb.jpeg",
-                    "https://i.imageupload.app/dc332493009ca6201cfa.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049916/225b30ab0b72debe11eb_qp044p.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049929/dc332493009ca6201cfa_c9jbb9.jpg"
                 ]
             },
             "geometry": {
@@ -1549,8 +1549,8 @@
                 "title": "Block C Pulchowk Boys Hostel",
                 "about": "This is the location for Block C Pulchowk Boys Hostel.",
                 "image": [
-                    "https://i.imageupload.app/225b30ab0b72debe11eb.jpeg",
-                    "https://i.imageupload.app/dc332493009ca6201cfa.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049946/225b30ab0b72debe11eb_awbvzo.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049959/dc332493009ca6201cfa_g9rqul.jpg"
                 ]
             },
             "geometry": {
@@ -1567,7 +1567,7 @@
                 "description": "Niraula Stores",
                 "title": "Niraula Stores",
                 "about": "Store for ",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzRDCmU9brtc5xB_89V-xUzlvopFiyHb9gRwTMS5w0Oozmr8fnbprHXOukQhXuuULXHfhmv1PVF9ge2O89iiUtZI_SR2DWb0RPJNGIQQt1qQi5-gq3YJmkRlUCqTXeYczQ72pcK=w426-h240-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049975/AG0ilSzRDCmU9brtc5xB_89V-xUzlvopFiyHb9gRwTMS5w0Oozmr8fnbprHXOukQhXuuULXHfhmv1PVF9ge2O89iiUtZI_SR2DWb0RPJNGIQQt1qQi5-gq3YJmkRlUCqTXeYczQ72pcK_w426-h240-k-no_h1pzf2.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1583,7 +1583,7 @@
                 "description": "Calisthenics park, Outdoor Gym",
                 "title": "Calisthenics park, Outdoor Gym",
                 "about": "This is the location for Calisthenics park, Outdoor Gym.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyLilpBb3svpsr-SEGh5AKDA3alTwmQcr0ZcUvZPGOeTwmOv05AyZEhbe3p7-BhBge8zNE8ItDtGDNVcIOcgh__z0aRxDfO4R-ZdlDrwDtNdTqOqNBKBy4ha3FzuueTu4ojVixQZw=w426-h240-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768049989/AG0ilSyLilpBb3svpsr-SEGh5AKDA3alTwmQcr0ZcUvZPGOeTwmOv05AyZEhbe3p7-BhBge8zNE8ItDtGDNVcIOcgh__z0aRxDfO4R-ZdlDrwDtNdTqOqNBKBy4ha3FzuueTu4ojVixQZw_w426-h240-k-no_itv6bn.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1599,7 +1599,7 @@
                 "description": "Chemical Engineering Lab",
                 "title": "Chemical Engineering Lab",
                 "about": "This is the location for Chemical Engineering Lab.",
-                "image": "https://i.imageupload.app/0e902a8de97b15838f5a.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050005/0e902a8de97b15838f5a_nmyxnh.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1616,8 +1616,8 @@
                 "title": "Pulchowk Gym Hall",
                 "about": "Gym for students. Open from 9 AM to 6 PM.",
                 "image": [
-                    "https://i.imageupload.app/694ab492094fc3094b65.jpeg",
-                    "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz95SXqwaOong86nhfvpzTeyPKRYu8_NBUZaqTnUBGkJtXCLhdGYzG6PEY5dVy90bi0pHjlj13tY7dUADMnVe96yZtLpWgk3o6pLwPsP1hR8ke2edxEz0wn5fT3K8QBIo0hvTeu1ztLREg=w408-h408-k-no"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050032/694ab492094fc3094b65_mkdxkp.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050049/AG0ilSz95SXqwaOong86nhfvpzTeyPKRYu8_NBUZaqTnUBGkJtXCLhdGYzG6PEY5dVy90bi0pHjlj13tY7dUADMnVe96yZtLpWgk3o6pLwPsP1hR8ke2edxEz0wn5fT3K8QBIo0hvTeu1ztLREg_w408-h408-k-no_bdk6do.jpg"
                 ]
             },
             "geometry": {
@@ -1634,7 +1634,7 @@
                 "description": "Campus Canteen",
                 "title": "Campus Canteen",
                 "about": "Campus Canteen near ground.",
-                "image": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwo8muh3tm-AMAJIvVq-aY1OdkBHZQvDCIp39-MgqB7c7tH13rHgC04QXcD6q5xks6BN2MnCKxSt1oGpLZaRYvAuQwv2-wR955uGfXsasW8gYzz9yl31hpVngmTawz5yKhXNRprEw=w408-h306-k-no"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050068/AG0ilSwo8muh3tm-AMAJIvVq-aY1OdkBHZQvDCIp39-MgqB7c7tH13rHgC04QXcD6q5xks6BN2MnCKxSt1oGpLZaRYvAuQwv2-wR955uGfXsasW8gYzz9yl31hpVngmTawz5yKhXNRprEw_w408-h306-k-no_sdk4kk.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1650,7 +1650,7 @@
                 "description": "Pulchowk Music Club",
                 "title": "Pulchowk Music Club",
                 "about": "This is the location for Pulchowk Music Club.",
-                "image": "https://i.imageupload.app/2e9d7a1264d3f9b4c79e.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050083/2e9d7a1264d3f9b4c79e_efwmt6.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1666,7 +1666,7 @@
                 "description": "Pulchowk Girls Hostel",
                 "title": "Pulchowk Girls Hostel",
                 "about": "This is the location for Pulchowk Girls Hostel.",
-                "image": "https://i.imageupload.app/f794fc7a2584769f73b0.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050099/f794fc7a2584769f73b0_g5ytoh.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1683,10 +1683,10 @@
                 "title": "Pulchowk Teacher's Quarter",
                 "about": "This is the location for Pulchowk Teacher's Quarter.",
                 "image": [
-                    "https://i.imageupload.app/a550dff0c0182f0ffc86.jpeg",
-                    "https://i.imageupload.app/60d13632cc66f62a3b19.jpeg",
-                    "https://i.imageupload.app/c678e1ee0160da32f7f9.jpeg",
-                    "https://i.imageupload.app/73566251e6eba1e89799.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050129/a550dff0c0182f0ffc86_qug0ag.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050133/60d13632cc66f62a3b19_rzhb1s.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050138/c678e1ee0160da32f7f9_v7aktr.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050142/73566251e6eba1e89799_a2lan8.jpg"
                 ]
             },
             "geometry": {
@@ -1704,8 +1704,8 @@
                 "title": "Staff Quarter",
                 "about": "This is the location for Staff Quarter.",
                 "image": [
-                    "https://i.imageupload.app/1f358f5991fff22b80b0.jpeg",
-                    "https://i.imageupload.app/dedfab6cbf1539734115.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050181/1f358f5991fff22b80b0_zchj48.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050200/dedfab6cbf1539734115_qtzikl.jpg"
                 ]
             },
             "geometry": {
@@ -1738,7 +1738,7 @@
                 "description": "Om Stationery Store",
                 "title": "Om Stationery Store",
                 "about": "Place for printing and stationery items.",
-                "image": "https://i.imageupload.app/554c87f7ae29a76ac688.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050221/554c87f7ae29a76ac688_sflb2c.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1754,7 +1754,7 @@
                 "description": "E Block",
                 "title": "E Block",
                 "about": "This is the location for E Block.",
-                "image": "https://i.imageupload.app/d60a388b187d9058c42e.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050234/d60a388b187d9058c42e_xtn0ug.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1787,8 +1787,8 @@
                 "title": "FSU Clinic",
                 "about": "This is the location for FSU Clinic.",
                 "image": [
-                    "https://i.imageupload.app/2db16f144f106851348a.jpeg",
-                    "https://i.imageupload.app/3f3a8deb1cc70544f7d6.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050259/2db16f144f106851348a_v1sjrv.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050264/3f3a8deb1cc70544f7d6_fi8zte.jpg"
                 ]
             },
             "geometry": {
@@ -1805,7 +1805,7 @@
                 "description": "Badminton Court",
                 "title": "Badminton Court",
                 "about": "This is the location for Badminton Court.",
-                "image": "https://i.imageupload.app/ec68fb8f53311cce59ef.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050293/ec68fb8f53311cce59ef_ijvpxu.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1822,8 +1822,8 @@
                 "title": "Central Material Testing Laboratory",
                 "about": "This is the location for Central Material Testing Laboratory.",
                 "image": [
-                    "https://i.imageupload.app/34a78b41ff36ed2ab6ab.jpeg",
-                    "https://i.imageupload.app/7afddecdcaaa438aaecd.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050313/34a78b41ff36ed2ab6ab_aflrlh.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050331/7afddecdcaaa438aaecd_isqx06.jpg"
                 ]
             },
             "geometry": {
@@ -1840,7 +1840,7 @@
                 "description": "Badminton Court",
                 "title": "Badminton Court",
                 "about": "This is the location for Badminton Court.",
-                "image": "https://i.imageupload.app/85c94fb86c9e7227a4a4.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050347/85c94fb86c9e7227a4a4_hpg1uk.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1856,7 +1856,7 @@
                 "description": "Cave",
                 "title": "Cave",
                 "about": "There is a hidden treasure in this cave. Find it if you can!",
-                "image": "https://i.imageupload.app/5da52e1c7f0ddfb5ec47.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050368/5da52e1c7f0ddfb5ec47_sggzb4.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1872,7 +1872,7 @@
                 "description": "Fountain",
                 "title": "Fountain",
                 "about": "This is the location for Fountain.",
-                "image": "https://i.imageupload.app/614903d792e09af4e7ec.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050389/614903d792e09af4e7ec_eo2yt5.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1904,7 +1904,7 @@
                 "description": "High Voltage Lab",
                 "title": "High Voltage Lab",
                 "about": "This is the location for High Voltage Lab.",
-                "image": "https://i.imageupload.app/ff552f57d017829aaeff.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050408/ff552f57d017829aaeff_fzokbl.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1920,7 +1920,7 @@
                 "description": "Machine Workshop",
                 "title": "Machine Workshop",
                 "about": "This is the location for Machine Workshop.",
-                "image": "https://i.imageupload.app/daf8166314cf9efad4e0.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050424/daf8166314cf9efad4e0_vpqozx.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -1937,8 +1937,8 @@
                 "title": "Water Vending Machine",
                 "about": "This is the location for Water Vending Machine.",
                 "image": [
-                    "https://i.imageupload.app/16467e87e31dcc004d85.jpeg",
-                    "https://i.imageupload.app/2c97209de3cb21239fd0.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050439/16467e87e31dcc004d85_z273if.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050453/2c97209de3cb21239fd0_juspua.jpg"
                 ]
             },
             "geometry": {
@@ -1956,9 +1956,9 @@
                 "title": "Saheed Shukra Park",
                 "about": "This is the location for Saheed Shukra Park.",
                 "image": [
-                    "https://i.imageupload.app/0623811f4a239c8a54d6.jpeg",
-                    "https://i.imageupload.app/0bd2e2ef072d41c86ed1.jpeg",
-                    "https://i.imageupload.app/eb3272d3fc17b8f367ad.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050471/0623811f4a239c8a54d6_cyxtok.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050484/0bd2e2ef072d41c86ed1_aetsxp.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050498/eb3272d3fc17b8f367ad_jh1wc6.jpg"
                 ]
             },
             "geometry": {
@@ -1991,7 +1991,7 @@
                 "description": "Parking",
                 "title": "Parking",
                 "about": "This is the location for Parking.",
-                "image": "https://i.imageupload.app/e971d631d17b9427c6f5.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050518/e971d631d17b9427c6f5_jprlit.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -2040,8 +2040,8 @@
                 "title": "Badminton Court",
                 "about": "This is the location for Badminton Court.",
                 "image": [
-                    "https://i.imageupload.app/7e74755e5b96bb3f2777.jpeg",
-                    "https://i.imageupload.app/a61519f628caddba150b.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050536/7e74755e5b96bb3f2777_siqeg7.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050552/a61519f628caddba150b_lfmacb.jpg"
                 ]
             },
             "geometry": {
@@ -2058,7 +2058,7 @@
                 "description": "Garden Area",
                 "title": "Garden Area",
                 "about": "This is the location for Garden Area.",
-                "image": "https://i.imageupload.app/d429a23f6d926673af5d.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050569/d429a23f6d926673af5d_rmga24.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -2074,7 +2074,7 @@
                 "description": "Paraphet",
                 "title": "Paraphet",
                 "about": "This is the location for Paraphet.",
-                "image": "https://i.imageupload.app/a4efa30fd6f3f0d9ff61.jpeg"
+                "image": "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768048296/Paraphet_hb7pqt.jpg"
             },
             "geometry": {
                 "type": "Point",
@@ -2091,8 +2091,8 @@
                 "title": "Changing Room and Toilet",
                 "about": "This is the location for Changing Room and Toilet.",
                 "image": [
-                    "https://i.imageupload.app/dd1e491988cf51f5956d.jpeg",
-                    "https:i.imageupload.app/0d03baeb0edf6606ea42.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050586/dd1e491988cf51f5956d_ysuvqr.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050612/0d03baeb0edf6606ea42_a3ldqw.jpg"
                 ]
             },
             "geometry": {
@@ -2110,7 +2110,7 @@
                 "title": "Parking",
                 "about": "This is the location for Parking.",
                 "image": [
-                    "https://i.imageupload.app/a7ab0b6555a6787c3def.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050635/a7ab0b6555a6787c3def_kcycy8.jpg"
                 ]
             },
             "geometry": {
@@ -2128,8 +2128,8 @@
                 "title": "Suspension Bridge",
                 "about": "This is the location for Suspension Bridge.",
                 "image": [
-                    "https://i.imageupload.app/01fe9ff9766ee15e9bfe.jpeg",
-                    "https://i.imageupload.app/ac7b55922920924ceaab.jpeg"
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050651/01fe9ff9766ee15e9bfe_motbnb.jpg",
+                    "https://res.cloudinary.com/drvr9wk8j/image/upload/v1768050667/ac7b55922920924ceaab_gdsacq.jpg"
                 ]
             },
             "geometry": {
