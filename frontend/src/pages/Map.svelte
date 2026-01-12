@@ -249,7 +249,10 @@
 				: popupData.image;
 
 			if (currentUrl) {
-				loadWithProgress(currentUrl, 0);
+				const index = Array.isArray(popupData.image)
+					? currentImageIndex
+					: 0;
+				loadWithProgress(currentUrl, index);
 			}
 
 			if (Array.isArray(popupData.image)) {
@@ -1857,9 +1860,31 @@
 												currentImageIndex) *
 												100}%)"
 										>
-											<div
-												class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"
-											></div>
+											{#if imageProgress[i] !== undefined}
+												<div
+													class="flex flex-col items-center gap-2"
+												>
+													<div
+														class="text-xs text-gray-500 font-medium"
+													>
+														{imageProgress[i]}%
+													</div>
+													<div
+														class="w-16 h-1 bg-gray-200 rounded-full overflow-hidden"
+													>
+														<div
+															class="h-full bg-blue-500 transition-all duration-200"
+															style="width: {imageProgress[
+																i
+															]}%"
+														></div>
+													</div>
+												</div>
+											{:else}
+												<div
+													class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"
+												></div>
+											{/if}
 										</div>
 									{/if}
 									<img
