@@ -130,7 +130,7 @@
             >Map</a
           >
           {#if $session.isPending}
-            <div class="px-4 py-2 flex items-center justify-center min-w-[90px]">
+            <div class="px-4 py-2 flex items-center justify-center min-w-22.5">
               <div
                 class="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"
               ></div>
