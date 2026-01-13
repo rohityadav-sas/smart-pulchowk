@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite-svelte";
 
 @layer base {
   body {

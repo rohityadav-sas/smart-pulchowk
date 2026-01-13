@@ -40,14 +40,13 @@ export const auth = betterAuth({
 			const session = ctx.context.newSession;
 			// if (!session?.user?.email?.endsWith("@pcampus.edu.np")) {
 			// 	// // Delete the session first
-			// 	await ctx.context.internalAdapter.deleteSession(session.session.token);
+			await ctx.context.internalAdapter.deleteSession(session.session.token);
 
 			// 	// Delete the user account
 			// 	// await ctx.context.internalAdapter.deleteUser(session.user.id);
 
 			// 	// Redirect to frontend with error
-			// 	throw ctx.redirect("/?message=unauthorized_domain");
-			// }
+			throw ctx.redirect("/?message=unauthorized_domain");
 		})
 	}
 })

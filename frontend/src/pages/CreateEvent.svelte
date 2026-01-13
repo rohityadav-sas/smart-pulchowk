@@ -4,6 +4,7 @@
   import { createEvent, getClub, type Club, getClubAdmins } from "../lib/api";
   import LoadingSpinner from "../components/LoadingSpinner.svelte";
   import { fade, fly, slide } from "svelte/transition";
+  import { Datepicker, Input, Label, Timepicker } from "flowbite-svelte";
 
   const { route } = $props();
   const clubId = $derived(route.result.path.params.clubId);
@@ -16,17 +17,44 @@
   let submitting = $state(false);
   let error = $state<string | null>(null);
   let success = $state(false);
-  let isAuthorized = $state(false);
+  let isAuthorized = $state<boolean | null>(null);
 
   let title = $state("");
   let description = $state("");
   let eventType = $state("workshop");
   let venue = $state("");
   let maxParticipants = $state<number | null>(null);
-  let registrationDeadline = $state("");
-  let eventStartTime = $state("");
-  let eventEndTime = $state("");
+
+  // Date/Time States
+  let startDate = $state<Date | undefined>(undefined);
+  let startTime = $state("");
+
+  let endDate = $state<Date | undefined>(undefined);
+  let endTime = $state("");
+
+  let regDate = $state<Date | undefined>(undefined);
+  let regTime = $state("");
+
   let bannerUrl = $state("");
+
+  // Derived ISO Strings
+  const eventStartTime = $derived(
+    startDate && startTime
+      ? `${startDate.toISOString().split("T")[0]}T${startTime}`
+      : ""
+  );
+
+  const eventEndTime = $derived(
+    endDate && endTime
+      ? `${endDate.toISOString().split("T")[0]}T${endTime}`
+      : ""
+  );
+
+  const registrationDeadline = $derived(
+    regDate && regTime
+      ? `${regDate.toISOString().split("T")[0]}T${regTime}`
+      : ""
+  );
 
   const eventTypes = [
     "workshop",
@@ -52,6 +80,13 @@
     }
   });
 
+  $effect(() => {
+    if (!$session.isPending && !$session.data?.user) {
+      error = "You must be logged in to create events";
+      isAuthorized = false;
+    }
+  });
+
   async function loadClub() {
     loading = true;
     try {
@@ -59,12 +94,14 @@
       if (result.success && result.clubData) {
         club = result.clubData;
         // Initial permission check if user already loaded
-        if (userId) checkPermissions();
+        if (userId) await checkPermissions();
       } else {
         error = "Club not found";
+        isAuthorized = false;
       }
     } catch (err: any) {
       error = err.message || "An error occurred";
+      isAuthorized = false;
     } finally {
       loading = false;
     }
@@ -84,9 +121,12 @@
           isAuthorized = adminRes.admins.some(
             (admin: any) => admin.id === userId
           );
+        } else {
+          isAuthorized = false;
         }
       } catch (e) {
         console.error("Failed to check admin status", e);
+        isAuthorized = false;
       }
     }
   }
@@ -201,7 +241,7 @@
       <span class="text-gray-900 font-medium">Create Event</span>
     </nav>
 
-    {#if loading}
+    {#if loading || $session.isPending || isAuthorized === null}
       <div class="flex items-center justify-center py-20" in:fade>
         <LoadingSpinner size="lg" text="Checking permissions..." />
       </div>
@@ -305,7 +345,7 @@
                     id="title"
                     bind:value={title}
                     placeholder="e.g., Annual Tech Symposium 2024"
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none placeholder:text-gray-400"
                     required
                   />
                 </div>
@@ -331,23 +371,6 @@
                         >
                       {/each}
                     </select>
-                    <div
-                      class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500"
-                    >
-                      <svg
-                        class="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 9l-7 7-7-7"
-                        ></path>
-                      </svg>
-                    </div>
                   </div>
                 </div>
 
@@ -363,7 +386,7 @@
                     id="venue"
                     bind:value={venue}
                     placeholder="e.g., Block A, Room 101"
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none placeholder:text-gray-400"
                   />
                 </div>
               </div>
@@ -380,7 +403,7 @@
                   bind:value={description}
                   placeholder="Describe what your event is about..."
                   rows="4"
-                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none resize-y"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none resize-y placeholder:text-gray-400"
                 ></textarea>
               </div>
             </div>
@@ -393,50 +416,78 @@
 
               <div class="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label
-                    for="eventStartTime"
-                    class="block text-sm font-semibold text-gray-700 mb-2"
+                  <Label class="mb-2 block text-sm font-semibold text-gray-700"
+                    >Start Date & Time <span class="text-red-500">*</span
+                    ></Label
                   >
-                    Start Date & Time <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="eventStartTime"
-                    bind:value={eventStartTime}
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600"
-                    required
-                  />
+                  <div class="flex gap-2">
+                    <div class="grow">
+                      <Datepicker
+                        bind:value={startDate}
+                        required
+                        class="w-72"
+                        monthBtnSelected="bg-blue-600 text-white"
+                        placeholder="Select Date"
+                        inputClass="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600 placeholder:text-gray-400"
+                      />
+                    </div>
+                    <div class="w-32">
+                      <Timepicker
+                        bind:value={startTime}
+                        required
+                        inputClass="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600 placeholder:text-gray-400"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <label
-                    for="eventEndTime"
-                    class="block text-sm font-semibold text-gray-700 mb-2"
+                  <Label class="mb-2 block text-sm font-semibold text-gray-700"
+                    >End Date & Time <span class="text-red-500">*</span></Label
                   >
-                    End Date & Time <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="eventEndTime"
-                    bind:value={eventEndTime}
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600"
-                    required
-                  />
+                  <div class="flex gap-2">
+                    <div class="grow">
+                      <Datepicker
+                        bind:value={endDate}
+                        required
+                        class="w-72"
+                        monthBtnSelected="bg-blue-600 text-white"
+                        placeholder="Select Date"
+                        inputClass="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600 placeholder:text-gray-400"
+                      />
+                    </div>
+                    <div class="w-32">
+                      <Timepicker
+                        bind:value={endTime}
+                        required
+                        inputClass="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600 placeholder:text-gray-400"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div>
-                  <label
-                    for="registrationDeadline"
-                    class="block text-sm font-semibold text-gray-700 mb-2"
+                  <Label class="mb-2 block text-sm font-semibold text-gray-700"
+                    >Registration Deadline</Label
                   >
-                    Registration Deadline
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="registrationDeadline"
-                    bind:value={registrationDeadline}
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600"
-                    required
-                  />
+                  <div class="flex gap-2">
+                    <div class="grow">
+                      <Datepicker
+                        bind:value={regDate}
+                        required
+                        class="w-72"
+                        monthBtnSelected="bg-blue-600 text-white"
+                        placeholder="Select Date"
+                        inputClass="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600 placeholder:text-gray-400"
+                      />
+                    </div>
+                    <div class="w-32">
+                      <Timepicker
+                        bind:value={regTime}
+                        required
+                        inputClass="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none text-gray-600 placeholder:text-gray-400"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -452,7 +503,7 @@
                     bind:value={maxParticipants}
                     placeholder="No limit"
                     min="1"
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none placeholder:text-gray-400"
                   />
                 </div>
               </div>
@@ -478,7 +529,7 @@
                       id="bannerUrl"
                       bind:value={bannerUrl}
                       placeholder="https://example.com/image.jpg"
-                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none rounded-r-none placeholder:text-gray-400"
                     />
                     <p class="text-xs text-gray-500 mt-2">
                       Paste a direct link to an image to be displayed on the
