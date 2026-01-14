@@ -1,7 +1,22 @@
 import { Request, Response } from "express";
-import { createClub, getClubEvents, getClubs, getUpcomingevents, getClubById, getAllEvents, addClubAdmin, removeClubAdmin, getClubAdmins } from "../services/clubEvents.service.js";
+import {
+    createClub,
+    getClubEvents,
+    getClubs,
+    getUpcomingevents,
+    getClubById,
+    getAllEvents,
+    addClubAdmin,
+    removeClubAdmin,
+    getClubAdmins
+} from "../services/clubEvents.service.js";
 import { createEvent } from "../services/createEvent.service.js";
-import { cancelEventRegistration, getEventRegistrations, getStudentActiveRegistration, registerStudentForEvent } from "../services/registerEvent.js";
+import {
+    cancelEventRegistration,
+    getEventRegistrations,
+    getStudentActiveRegistration,
+    registerStudentForEvent
+} from "../services/registerEvent.js";
 import { db } from "../lib/db.js";
 import { user } from "../models/auth-schema.js";
 import { eq } from "drizzle-orm";
@@ -197,5 +212,4 @@ export async function eventEnrollment(req: Request, res: Response) {
         return res.json({ message: error.message });
     }
 }
-
 

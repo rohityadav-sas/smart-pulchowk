@@ -44,9 +44,6 @@ export async function createEvent(userId: string, clubId: number, eventInput: Cr
             throw new Error('Unauthorized to create events for this club');
         }
 
-
-
-        console.log('Converting dates...');
         let eventStartTime: Date;
         let eventEndTime: Date;
         let registrationDeadline: Date;
@@ -59,16 +56,6 @@ export async function createEvent(userId: string, clubId: number, eventInput: Cr
             console.error('Date parsing error:', err);
             throw new Error('Failed to parse dates');
         }
-
-        console.log('Converted dates:', {
-            eventStartTime,
-            eventEndTime,
-            registrationDeadline,
-            eventStartTimeValid: !isNaN(eventStartTime.getTime()),
-            eventEndTimeValid: !isNaN(eventEndTime.getTime()),
-            registrationDeadlineValid: !isNaN(registrationDeadline.getTime()),
-        });
-
 
         if (isNaN(eventStartTime.getTime()) || isNaN(eventEndTime.getTime()) || isNaN(registrationDeadline.getTime())) {
             throw new Error('Invalid date format received from client');
@@ -98,14 +85,6 @@ export async function createEvent(userId: string, clubId: number, eventInput: Cr
             status: 'draft' as const,
         };
 
-        console.log('Insert data prepared:', {
-            ...insertData,
-            registrationDeadline: registrationDeadline.toISOString(),
-            eventStartTime: eventStartTime.toISOString(),
-            eventEndTime: eventEndTime.toISOString(),
-        });
-
-        console.log('Attempting database insert...');
         const [event] = await db.insert(events).values(insertData).returning();
 
         console.log('Event created successfully:', event);
@@ -117,11 +96,6 @@ export async function createEvent(userId: string, clubId: number, eventInput: Cr
         };
 
     } catch (error: any) {
-        console.error('=== BACKEND ERROR ===');
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
-        console.error('Full error:', error);
-
         return {
             success: false,
             message: error.message || 'Failed to create event'

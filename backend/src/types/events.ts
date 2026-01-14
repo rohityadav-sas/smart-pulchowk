@@ -22,3 +22,44 @@ export interface createClubInput {
     email: string;
     logoUrl?: string;
 }
+
+export interface CreateClubProfileInput {
+    aboutClub?: string;
+    mission?: string;
+    vision?: string;
+    achievements?: string;
+    benefits?: string;
+    contactPhone?: string;
+    websiteUrl?: string;
+    socialLinks?: {
+        facebook?: string;
+        instagram?: string;
+        twitter?: string;
+        linkedin?: string;
+        youtube?: string;
+        discord?: string;
+        github?: string;
+        tiktok?: string;
+    };
+    establishedYear?: number;
+}
+
+export interface CreateEventDetailsInput {
+    fullDescription?: string;
+    objectives?: string;
+    targetAudience?: string;
+    prerequisites?: string;
+    rules?: string;
+    judgingCriteria?: string;
+}
+
+export interface CreateEventCategoryInput {
+    name: string;
+    description?: string;
+    objectives?: string;
+    targetAudience?: string;
+    prerequisites?: string;
+    rules?: string;
+    judgingCriteria?: string;
+    bannerUrl?: string;
+}

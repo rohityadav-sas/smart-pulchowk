@@ -4,6 +4,8 @@ import path from 'path'
 import { auth } from './lib/auth.js'
 import ENV from './config/ENV.js'
 import eventRoutes from './routes/events.route.js'
+import clubProfileRoutes from './routes/clubProfile.route.js'
+
 
 const app = express()
 
@@ -12,6 +14,8 @@ const __dirname = import.meta.dirname
 app.all('/api/auth/{*any}', toNodeHandler(auth))
 app.use(express.json())
 app.use("/api/event", eventRoutes)
+app.use("/api/event", clubProfileRoutes)
+
 app.use(express.static(path.join(__dirname, '../../frontend/dist')))
 
 app.get('/{*splat}', async (_, res) =>

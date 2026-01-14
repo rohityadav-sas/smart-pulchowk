@@ -20,6 +20,7 @@
   import ClubEvents from "./pages/ClubEvents.svelte";
   import AllEvents from "./pages/AllEvents.svelte";
   import EventDetails from "./pages/EventDetails.svelte";
+  import EventCategoryDetails from "./pages/EventCategoryDetails.svelte";
   import CreateEvent from "./pages/CreateEvent.svelte";
   import CreateClub from "./pages/CreateClub.svelte";
   import { onMount } from "svelte";
@@ -71,6 +72,10 @@
     {
       path: /^\/clubs\/(?<clubId>\d+)\/events\/(?<eventId>\d+)\/?$/,
       component: EventDetails,
+    },
+    {
+      path: /^\/clubs\/(?<clubId>\d+)\/categories\/(?<categoryId>\d+)\/?$/,
+      component: EventCategoryDetails,
     },
     {
       path: /^\/clubs\/(?<clubId>\d+)\/events\/?$/,

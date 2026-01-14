@@ -57,6 +57,20 @@
       "when": 1768332225563,
       "tag": "0007_nasty_night_thrasher",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1768385951228,
+      "tag": "0008_panoramic_george_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1768398236373,
+      "tag": "0009_lucky_marvel_apes",
+      "breakpoints": true
     }
   ]
 }

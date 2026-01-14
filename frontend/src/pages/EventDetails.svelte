@@ -8,8 +8,12 @@
     cancelRegistration,
     getRegisteredStudents,
     getEnrollments,
+     getExtraEventDetails,
+    createExtraEventDetails,
+    updateExtraEventDetails,
     type ClubEvent,
     type Club,
+    type ExtraEventDetail,
   } from "../lib/api";
   import LoadingSpinner from "../components/LoadingSpinner.svelte";
   import { fade, fly, slide } from "svelte/transition";
@@ -33,6 +37,12 @@
   let isRegistered = $state(false);
   let registeredStudents = $state<any[]>([]);
   let isClubOwner = $state(false);
+
+  // Extra details state
+  let extraDetails = $state<ExtraEventDetail | null>(null);
+  let isEditingDetails = $state(false);
+  let editedDetails = $state<Partial<ExtraEventDetail>>({});
+  let saveLoading = $state(false);
 
   $effect(() => {
     if (clubId && eventId) {
@@ -73,18 +83,25 @@
     loading = true;
     error = null;
     try {
-      const clubResult = await getClub(parseInt(clubId));
+      const [clubResult, eventsResult, detailsResult] = await Promise.all([
+        getClub(parseInt(clubId)),
+        getClubEvents(parseInt(clubId)),
+        getExtraEventDetails(parseInt(eventId)),
+      ]);
+
       if (clubResult.success && clubResult.clubData) {
         club = clubResult.clubData;
-      } else {
-        console.error("Club not found");
       }
 
-      const eventsResult = await getClubEvents(parseInt(clubId));
       if (eventsResult.success && eventsResult.clubEvents) {
         event =
           eventsResult.clubEvents.find((e) => e.id === parseInt(eventId)) ||
           null;
+      }
+
+      if (detailsResult.success) {
+        extraDetails = detailsResult.details;
+        if (extraDetails) editedDetails = { ...extraDetails };
       }
 
       if (!event) {
@@ -98,6 +115,34 @@
     }
   }
 
+  async function handleUpdateDetails() {
+    saveLoading = true;
+    try {
+      let result;
+      if (extraDetails) {
+        result = await updateExtraEventDetails(parseInt(eventId), editedDetails);
+      } else {
+        result = await createExtraEventDetails(parseInt(eventId), editedDetails);
+      }
+
+      if (result.success && result.details) {
+        extraDetails = result.details;
+        isEditingDetails = false;
+      } else {
+        alert(result.message || "Failed to update details");
+      }
+    } catch (err: any) {
+      alert(err.message || "An error occurred");
+    } finally {
+      saveLoading = false;
+    }
+  }
+
+  function startEditing() {
+    editedDetails = extraDetails ? { ...extraDetails } : {};
+    isEditingDetails = true;
+  }
+
   async function checkRegistrationStatus() {
     if (!userId) return;
 
@@ -105,7 +150,7 @@
       const result = await getEnrollments(userId);
       if (result.success && result.registrations) {
         isRegistered = result.registrations.some(
-          (reg) => reg.eventId === parseInt(eventId)
+          (reg) => reg.eventId === parseInt(eventId),
         );
       }
     } catch (err) {
@@ -157,7 +202,7 @@
     try {
       const result = await cancelRegistration(
         $session.data.user.id,
-        parseInt(eventId)
+        parseInt(eventId),
       );
       if (result.success) {
         isRegistered = false;
@@ -421,12 +466,131 @@
           <div
             class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8"
           >
-            <h2 class="text-xl font-bold text-gray-900 mb-4">
-              About this Event
-            </h2>
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-bold text-gray-900">
+                About this Event
+              </h2>
+              {#if isClubOwner && !isEditingDetails}
+                <button
+                  onclick={startEditing}
+                  class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors"
+                >
+                  Edit Details
+                </button>
+              {/if}
+            </div>
+            
             <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">
               {event.description || "No description provided."}
             </p>
+
+            {#if isEditingDetails}
+              <div class="mt-8 space-y-6 border-t pt-8" in:slide>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="fullDescription" class="block text-sm font-bold text-gray-700 mb-2">Full Description</label>
+                    <textarea id="fullDescription" bind:value={editedDetails.fullDescription} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                  </div>
+                  <div>
+                    <label for="objectives" class="block text-sm font-bold text-gray-700 mb-2">Objectives</label>
+                    <textarea id="objectives" bind:value={editedDetails.objectives} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                  </div>
+                  <div>
+                    <label for="rules" class="block text-sm font-bold text-gray-700 mb-2">Rules</label>
+                    <textarea id="rules" bind:value={editedDetails.rules} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                  </div>
+                  <div>
+                    <label for="judgingCriteria" class="block text-sm font-bold text-gray-700 mb-2">Judging Criteria</label>
+                    <textarea id="judgingCriteria" bind:value={editedDetails.judgingCriteria} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                  </div>
+                  <div>
+                    <label for="targetAudience" class="block text-sm font-bold text-gray-700 mb-2">Target Audience</label>
+                    <input id="targetAudience" type="text" bind:value={editedDetails.targetAudience} class="w-full px-4 py-3 rounded-xl border-gray-200" />
+                  </div>
+                  <div>
+                    <label for="prerequisites" class="block text-sm font-bold text-gray-700 mb-2">Prerequisites</label>
+                    <input id="prerequisites" type="text" bind:value={editedDetails.prerequisites} class="w-full px-4 py-3 rounded-xl border-gray-200" />
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <button
+                    onclick={handleUpdateDetails}
+                    disabled={saveLoading}
+                    class="px-6 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {saveLoading ? "Saving..." : "Save Details"}
+                  </button>
+                  <button
+                    onclick={() => (isEditingDetails = false)}
+                    class="px-6 py-2 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            {:else if extraDetails}
+              <div class="mt-8 space-y-8 border-t pt-8" in:fade>
+                {#if extraDetails.fullDescription}
+                  <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">Detailed Information</h3>
+                    <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">{extraDetails.fullDescription}</p>
+                  </div>
+                {/if}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {#if extraDetails.objectives}
+                    <div class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
+                      <h3 class="text-md font-bold text-blue-900 mb-3">Objectives</h3>
+                      <p class="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap">{extraDetails.objectives}</p>
+                    </div>
+                  {/if}
+                  
+                  {#if extraDetails.rules}
+                    <div class="p-6 bg-amber-50/50 rounded-2xl border border-amber-100">
+                      <h3 class="text-md font-bold text-amber-900 mb-3">Rules & Regulations</h3>
+                      <p class="text-sm text-amber-800 leading-relaxed whitespace-pre-wrap">{extraDetails.rules}</p>
+                    </div>
+                  {/if}
+                </div>
+
+                {#if extraDetails.judgingCriteria}
+                   <div class="p-6 bg-purple-50/50 rounded-2xl border border-purple-100">
+                      <h3 class="text-md font-bold text-purple-900 mb-3">Judging Criteria</h3>
+                      <p class="text-sm text-purple-800 leading-relaxed whitespace-pre-wrap">{extraDetails.judgingCriteria}</p>
+                    </div>
+                {/if}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   {#if extraDetails.targetAudience}
+                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                      <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-400 shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Target Audience</p>
+                        <p class="text-sm font-semibold text-gray-700">{extraDetails.targetAudience}</p>
+                      </div>
+                    </div>
+                  {/if}
+
+                   {#if extraDetails.prerequisites}
+                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                      <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-400 shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Prerequisites</p>
+                        <p class="text-sm font-semibold text-gray-700">{extraDetails.prerequisites}</p>
+                      </div>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {/if}
 
             <div class="mt-8 pt-8 border-t border-gray-100">
               <p class="text-gray-500 text-sm">
@@ -542,7 +706,7 @@
                 </p>
                 <p class="text-sm text-gray-500">
                   {formatTime(event.eventStartTime)} - {formatTime(
-                    event.eventEndTime
+                    event.eventEndTime,
                   )}
                 </p>
               </div>
@@ -620,7 +784,7 @@
                   <p class="text-xs text-gray-500 mt-0.5">
                     {Math.max(
                       0,
-                      event.maxParticipants - event.currentParticipants
+                      event.maxParticipants - event.currentParticipants,
                     )} spots remaining
                   </p>
                 {/if}

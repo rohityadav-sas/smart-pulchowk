@@ -9,9 +9,10 @@ import {
   pgEnum,
   uniqueIndex,
   index,
+  jsonb
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { user } from "./auth-schema.js";
+import { user } from "./auth-schema.ts";
 
 export const eventStatusEnum = pgEnum("event_status", [
   "draft",
@@ -38,8 +39,8 @@ export const clubs = pgTable(
     email: varchar("email", { length: 255 }).notNull(),
     logoUrl: varchar("logo_url", { length: 500 }),
     isActive: boolean("is_active").default(true).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
   },
   (table) => [
     index("clubs_email_idx").on(table.email),
@@ -59,7 +60,7 @@ export const clubAdmins = pgTable(
       .references(() => user.id, { onDelete: "cascade" })
       .notNull(),
     role: varchar("role", { length: 50 }).default("admin").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   },
   (table) => [
     uniqueIndex("club_admins_unique_idx").on(table.clubId, table.userId),
@@ -106,12 +107,12 @@ export const eventRegistrations = pgTable(
       .notNull()
       .references(() => events.id, { onDelete: "cascade" }),
     status: registrationStatusEnum("status").default("registered").notNull(),
-    registeredAt: timestamp("registered_at").defaultNow().notNull(),
-    attendedAt: timestamp("attended_at"),
-    cancelledAt: timestamp("cancelled_at"),
+    registeredAt: timestamp("registered_at", { mode: "date" }).defaultNow().notNull(),
+    attendedAt: timestamp("attended_at", { mode: "date" }),
+    cancelledAt: timestamp("cancelled_at", { mode: "date" }),
     notes: text("notes"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
   },
   (table) => [
     uniqueIndex("unique_user_event_idx").on(
@@ -129,8 +130,92 @@ export const eventRegistrations = pgTable(
   ]
 );
 
-export const clubsRelations = relations(clubs, ({ many }) => ({
+export const clubProfiles = pgTable('club_profiles',
+  {
+    id: serial('id').primaryKey(),
+    clubId: integer('club_id').notNull().references(() => clubs.id, { onDelete: 'cascade' }),
+
+    aboutClub: text('about_club'),
+    mission: text('mission'),
+    vision: text('vision'),
+    achievements: text('achievements'),
+
+    benefits: text('benefits'),
+
+    contactPhone: varchar('contact_phone', { length: 50 }),
+    websiteUrl: varchar('website_url', { length: 500 }),
+
+    socialLinks: jsonb('social_links').$type<{
+      facebook?: string;
+      instagram?: string;
+      twitter?: string;
+      linkedin?: string;
+      youtube?: string;
+      discord?: string;
+      github?: string;
+      tiktok?: string;
+    }>(),
+
+    totalEventHosted: integer('total_events_hosted').default(0).notNull(),
+    establishedYear: integer('established_year'),
+
+    createdAt: timestamp('created_at', { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: "date" }).defaultNow().notNull(),
+  }, (table) => [
+    uniqueIndex('club_profiles_club_id_idx').on(table.clubId),
+  ]);
+
+
+export const aboutEvents = pgTable('event_details',
+  {
+    id: serial('id').primaryKey(),
+    eventId: integer('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
+
+    fullDescription: text('full_description'),
+    objectives: text('objectives'),
+    targetAudience: text('target_audience'),
+    prerequisites: text('prerequisites'),
+
+    rules: text('rules'),
+    judgingCriteria: text('judging_criteria'),
+
+
+    createdAt: timestamp('created_at', { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: "date" }).defaultNow().notNull(),
+  }, (table) => [
+    uniqueIndex('event_details_event_id_idx').on(table.eventId),
+  ]);
+
+export const eventCategories = pgTable('event_categories',
+  {
+    id: serial('id').primaryKey(),
+    clubId: integer('club_id').notNull().references(() => clubs.id, { onDelete: 'cascade' }),
+
+    name: varchar('name', { length: 100 }).notNull(),
+    description: text('description'),
+    objectives: text('objectives'),
+    targetAudience: text('target_audience'),
+    prerequisites: text('prerequisites'),
+    rules: text('rules'),
+    judgingCriteria: text('judging_criteria'),
+    bannerUrl: varchar('banner_url', { length: 500 }),
+
+    createdAt: timestamp('created_at', { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: "date" }).defaultNow().notNull(),
+  }, (table) => [
+    index('event_categories_club_id_idx').on(table.clubId),
+  ]);
+
+
+
+export const clubsRelations = relations(clubs, ({ one, many }) => ({
   events: many(events),
+  profiles: one(clubProfiles, {
+    fields: [clubs.id],
+    references: [clubProfiles.clubId],
+  }),
+  admins: many(clubAdmins),
+  eventCategories: many(eventCategories),
 }));
 
 export const eventsRelations = relations(events, ({ one, many }) => ({
@@ -138,6 +223,11 @@ export const eventsRelations = relations(events, ({ one, many }) => ({
     fields: [events.clubId],
     references: [clubs.id],
   }),
+  details: one(aboutEvents, {
+    fields: [events.id],
+    references: [aboutEvents.eventId],
+  }),
+
   registrations: many(eventRegistrations),
 }));
 
@@ -154,3 +244,24 @@ export const eventRegistrationsRelations = relations(
     }),
   })
 );
+
+export const clubProfilesRelations = relations(clubProfiles, ({ one }) => ({
+  club: one(clubs, {
+    fields: [clubProfiles.clubId],
+    references: [clubs.id],
+  }),
+}));
+
+export const aboutEventsRelations = relations(aboutEvents, ({ one }) => ({
+  event: one(events, {
+    fields: [aboutEvents.eventId],
+    references: [events.id],
+  }),
+}));
+
+export const eventCategoriesRelations = relations(eventCategories, ({ one }) => ({
+  club: one(clubs, {
+    fields: [eventCategories.clubId],
+    references: [clubs.id],
+  }),
+}));
