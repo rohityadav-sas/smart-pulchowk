@@ -1,7 +1,7 @@
-import { db } from "../lib/db.ts";
-import { clubs, eventCategories } from "../models/event-schema.ts";
+import { db } from "../lib/db.js";
+import { clubs, eventCategories } from "../models/event-schema.js";
 import { eq } from "drizzle-orm";
-import { CreateEventCategoryInput } from "../types/events.ts";
+import { CreateEventCategoryInput } from "../types/events.js";
 
 
 export async function createEventCategory(clubId: number, data: CreateEventCategoryInput) {

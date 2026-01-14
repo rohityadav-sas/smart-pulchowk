@@ -1,8 +1,8 @@
-import { CreateClubProfileInput, CreateEventDetailsInput } from "../types/events.ts";
-import { db } from "../lib/db.ts";
-import { clubs, clubProfiles } from "../models/event-schema.ts";
+import { CreateClubProfileInput, CreateEventDetailsInput } from "../types/events.js";
+import { db } from "../lib/db.js";
+import { clubs, clubProfiles } from "../models/event-schema.js";
 import { eq } from "drizzle-orm";
-import { events, aboutEvents } from "../models/event-schema.ts";
+import { events, aboutEvents } from "../models/event-schema.js";
 
 export async function createClubProfile(clubId: number, profileData: CreateClubProfileInput) {
     try {

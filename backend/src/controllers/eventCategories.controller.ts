@@ -5,7 +5,7 @@ import {
     getEventCategories,
     getEventCategory,
     deleteEventCategory
-} from "../services/eventCategories.services.ts";
+} from "../services/eventCategories.services.js";
 
 export async function CreateEventCategory(req: Request, res: Response) {
     try {

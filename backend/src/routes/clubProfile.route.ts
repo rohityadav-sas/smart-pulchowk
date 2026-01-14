@@ -6,14 +6,14 @@ import {
     getProfile,
     UpdateClubProfile,
     UpdateEventDetail
-} from "../controllers/clubProfiles.controller.ts";
+} from "../controllers/clubProfiles.controller.js";
 import {
     CreateEventCategory,
     UpdateEventCategory,
     GetEventCategories,
     GetEventCategory,
     DeleteEventCategory
-} from "../controllers/eventCategories.controller.ts";
+} from "../controllers/eventCategories.controller.js";
 
 
 const router = express.Router();

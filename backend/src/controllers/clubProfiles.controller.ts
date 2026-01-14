@@ -6,7 +6,7 @@ import {
     createExtraEventDetails,
     updateExtraEventDetail,
     getExtraEventDetails
-} from "../services/clubProfiles.services.ts";
+} from "../services/clubProfiles.services.js";
 
 export async function CreateClubProfile(req: Request, res: Response) {
     try {
