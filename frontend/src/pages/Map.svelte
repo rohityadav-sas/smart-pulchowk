@@ -994,13 +994,47 @@
     staleTime: 1000 * 60 * 60 * 24,
   }))
 
+  // Rate limit cooldown state
+  let rateLimitCooldown = $state(0)
+  let cooldownInterval: ReturnType<typeof setInterval> | null = null
+
+  function startCooldown(seconds: number) {
+    rateLimitCooldown = seconds
+    if (cooldownInterval) clearInterval(cooldownInterval)
+    cooldownInterval = setInterval(() => {
+      rateLimitCooldown--
+      if (rateLimitCooldown <= 0) {
+        rateLimitCooldown = 0
+        if (cooldownInterval) {
+          clearInterval(cooldownInterval)
+          cooldownInterval = null
+        }
+      }
+    }, 1000)
+  }
+
   $effect(() => {
     if (chatQuery.isError && queryToExecute) {
+      // Get error message from the query error
+      const errorMessage = (chatQuery.error as any)?.message || ''
+      const isQuotaError =
+        errorMessage.includes('quota') ||
+        errorMessage.includes('limit') ||
+        errorMessage.includes('429')
+
+      // Start cooldown if quota error
+      if (isQuotaError) {
+        startCooldown(30) // 30 second cooldown
+      }
+
       messages = [
         ...messages,
         {
           role: 'error',
-          content: 'Something went wrong',
+          content: isQuotaError
+            ? `⏱️ API limit reached. Please wait ${rateLimitCooldown || 30} seconds.`
+            : 'Something went wrong. Please try again.',
+          isQuotaError,
         },
       ]
       queryToExecute = ''
@@ -1239,23 +1273,54 @@
 
       <!-- Chat Input -->
       <div class="p-4 bg-white border-t border-gray-100">
+        {#if rateLimitCooldown > 0}
+          <div
+            class="text-center text-sm text-amber-600 mb-2 flex items-center justify-center gap-2"
+          >
+            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span
+              >Rate limited. Retry in <strong>{rateLimitCooldown}s</strong
+              ></span
+            >
+          </div>
+        {/if}
         <form onsubmit={handleSubmit} class="flex items-center gap-2">
           <input
             type="text"
             bind:value={currentQuery}
-            placeholder="Type your message..."
+            placeholder={rateLimitCooldown > 0
+              ? `Wait ${rateLimitCooldown}s...`
+              : 'Type your message...'}
             class="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            disabled={chatQuery.isFetching}
+            disabled={chatQuery.isFetching || rateLimitCooldown > 0}
           />
           <button
             type="submit"
-            disabled={chatQuery.isFetching || !currentQuery.trim()}
+            disabled={chatQuery.isFetching ||
+              !currentQuery.trim() ||
+              rateLimitCooldown > 0}
             class="w-11 h-11 bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-90 shadow-lg shadow-blue-600/20"
           >
             {#if chatQuery.isFetching}
               <div
                 class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
               ></div>
+            {:else if rateLimitCooldown > 0}
+              <span class="text-xs font-bold">{rateLimitCooldown}</span>
             {:else}
               <svg
                 class="w-5 h-5 rotate-90"

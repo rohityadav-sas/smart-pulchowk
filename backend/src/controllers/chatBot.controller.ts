@@ -94,11 +94,22 @@ Respond ONLY with JSON.`
       success: true,
       data: response,
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('error in AI: ', error)
+
+    // Detect quota exceeded errors
+    const errorMessage = error.message || 'Internal server error'
+    const isQuotaError =
+      errorMessage.includes('429') ||
+      errorMessage.includes('quota') ||
+      errorMessage.includes('Too Many Requests')
+
     return res.json({
       success: false,
-      message: error.message || 'Internal server error',
+      message: isQuotaError
+        ? 'API limit reached. Please try again in a minute.'
+        : errorMessage,
+      errorType: isQuotaError ? 'quota_exceeded' : 'general_error',
     })
   }
 }
