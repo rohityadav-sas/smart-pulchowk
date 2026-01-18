@@ -17,7 +17,7 @@
   let logoUrl = $state("");
 
   $effect(() => {
-    if (!$session.isPending && !$session.data?.user) {
+    if (!$session.isPending && !$session.error && !$session.data?.user) {
       goto("/register?message=login_required");
     } else if (
       $session.data?.user &&

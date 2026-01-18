@@ -53,12 +53,12 @@
   let loadingCategories = $state(true);
 
   const isClubOwner = $derived(
-    $session.data?.user && club && club.authClubId === $session.data.user.id
+    $session.data?.user && club && club.authClubId === $session.data.user.id,
   );
 
   const isTempAdmin = $derived(
     $session.data?.user &&
-      admins.some((admin) => admin.id === $session.data?.user?.id)
+      admins.some((admin) => admin.id === $session.data?.user?.id),
   );
 
   const userId = $derived($session.data?.user?.id);
@@ -72,7 +72,7 @@
   });
 
   $effect(() => {
-    if (!$session.isPending && !$session.data?.user) {
+    if (!$session.isPending && !$session.error && !$session.data?.user) {
       goto("/register?message=login_required");
     }
   });
@@ -157,7 +157,7 @@
 
       if (dataToSave.establishedYear) {
         dataToSave.establishedYear = parseInt(
-          dataToSave.establishedYear.toString()
+          dataToSave.establishedYear.toString(),
         );
       }
 
@@ -240,7 +240,7 @@
       const result = await addClubAdmin(
         parseInt(clubId),
         newAdminEmail,
-        club.authClubId
+        club.authClubId,
       );
       if (result.success) {
         newAdminEmail = "";
@@ -267,7 +267,7 @@
       const result = await removeClubAdmin(
         parseInt(clubId),
         userId,
-        club.authClubId
+        club.authClubId,
       );
       if (result.success) {
         await loadAdmins();

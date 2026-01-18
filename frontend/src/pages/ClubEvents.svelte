@@ -51,24 +51,24 @@
   }));
 
   const isClubOwner = $derived(
-    userId && clubQuery.data && clubQuery.data.authClubId === userId
+    userId && clubQuery.data && clubQuery.data.authClubId === userId,
   );
 
   const isTempAdmin = $derived(
     userId &&
       adminsQuery.data &&
-      adminsQuery.data.some((admin: any) => admin.id === userId)
+      adminsQuery.data.some((admin: any) => admin.id === userId),
   );
 
   const canCreateEvent = $derived(isClubOwner || isTempAdmin);
 
   const loading = $derived(clubQuery.isLoading || eventsQuery.isLoading);
   const error = $derived(
-    clubQuery.error?.message || eventsQuery.error?.message
+    clubQuery.error?.message || eventsQuery.error?.message,
   );
 
   $effect(() => {
-    if (!$session.isPending && !$session.data?.user) {
+    if (!$session.isPending && !$session.error && !$session.data?.user) {
       goto("/register?message=login_required");
       return;
     }
@@ -121,7 +121,7 @@
       const sorted: ClubEvent[] = [...eventsQuery.data].sort(
         (a, b) =>
           new Date(b.eventStartTime).getTime() -
-          new Date(a.eventStartTime).getTime()
+          new Date(a.eventStartTime).getTime(),
       );
 
       return {
@@ -150,7 +150,7 @@
           );
         }),
       };
-    }
+    },
   );
 </script>
 

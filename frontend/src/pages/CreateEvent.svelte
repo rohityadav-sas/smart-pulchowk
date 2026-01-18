@@ -41,19 +41,19 @@
   const eventStartTime = $derived(
     startDate && startTime
       ? `${startDate.toISOString().split("T")[0]}T${startTime}`
-      : ""
+      : "",
   );
 
   const eventEndTime = $derived(
     endDate && endTime
       ? `${endDate.toISOString().split("T")[0]}T${endTime}`
-      : ""
+      : "",
   );
 
   const registrationDeadline = $derived(
     regDate && regTime
       ? `${regDate.toISOString().split("T")[0]}T${regTime}`
-      : ""
+      : "",
   );
 
   const eventTypes = [
@@ -81,7 +81,7 @@
   });
 
   $effect(() => {
-    if (!$session.isPending && !$session.data?.user) {
+    if (!$session.isPending && !$session.error && !$session.data?.user) {
       error = "You must be logged in to create events";
       isAuthorized = false;
     }
@@ -119,7 +119,7 @@
         const adminRes = await getClubAdmins(parseInt(clubId));
         if (adminRes.success && adminRes.admins) {
           isAuthorized = adminRes.admins.some(
-            (admin: any) => admin.id === userId
+            (admin: any) => admin.id === userId,
           );
         } else {
           isAuthorized = false;
@@ -177,7 +177,7 @@
           eventStartTime: eventStartTime,
           eventEndTime: eventEndTime,
           bannerUrl: bannerUrl || undefined,
-        }
+        },
       );
 
       if (result.success) {

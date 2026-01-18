@@ -9,7 +9,11 @@
   const toastError = query("message");
   let showError = $state(toastError === "login_required");
 
-  if (toastError) goto("/register");
+  $effect(() => {
+    if (toastError === "login_required") {
+      showError = true;
+    }
+  });
 
   const handleGoogleSignIn = async () => {
     signingIn = true;

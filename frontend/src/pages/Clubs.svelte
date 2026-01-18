@@ -20,8 +20,8 @@
   }));
 
   $effect(() => {
-    if (!$session.isPending && !$session.data?.user) {
-      goto("/register?error=login_required");
+    if (!$session.isPending && !$session.error && !$session.data?.user) {
+      goto("/register?message=login_required");
     }
   });
 
@@ -166,7 +166,7 @@
               {:else}
                 <div
                   class="w-full h-full bg-linear-to-br {getGradient(
-                    i
+                    i,
                   )} flex items-center justify-center relative overflow-hidden"
                 >
                   <!-- Abstract pattern/overlay -->

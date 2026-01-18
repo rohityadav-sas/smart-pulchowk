@@ -9,379 +9,379 @@
     Popup,
     LineLayer,
     CircleLayer,
-  } from 'svelte-maplibre-gl'
-  import type { FeatureCollection, Feature } from 'geojson'
-  import pulchowk from './pulchowk.json'
-  import { fade, fly, slide } from 'svelte/transition'
-  import { quintOut } from 'svelte/easing'
-  import LoadingSpinner from '../components/LoadingSpinner.svelte'
-  import { createQuery } from '@tanstack/svelte-query'
-  import { chatBot } from '../lib/api'
+  } from "svelte-maplibre-gl";
+  import type { FeatureCollection, Feature } from "geojson";
+  import pulchowk from "./pulchowk.json";
+  import { fade, fly, slide } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
+  import LoadingSpinner from "../components/LoadingSpinner.svelte";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { chatBot } from "../lib/api";
 
   const SATELLITE_STYLE: any = {
     version: 8,
     sources: {
-      'arcgis-world-imagery': {
-        type: 'raster',
+      "arcgis-world-imagery": {
+        type: "raster",
         tiles: [
-          'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         ],
         tileSize: 256,
         attribution:
-          'Source: Esri, Maxar, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
+          "Source: Esri, Maxar, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community",
       },
     },
     layers: [
       {
-        id: 'arcgis-world-imagery',
-        type: 'raster',
-        source: 'arcgis-world-imagery',
+        id: "arcgis-world-imagery",
+        type: "raster",
+        source: "arcgis-world-imagery",
         minzoom: 0,
         maxzoom: 22,
       },
     ],
-  }
+  };
 
   const PULCHOWK_BOUNDS = [
     [85.31217093201366, 27.678215308346253],
     [85.329947502668, 27.686583278518555],
-  ]
+  ];
 
-  const pulchowkData = pulchowk as FeatureCollection
+  const pulchowkData = pulchowk as FeatureCollection;
 
   // Assign icons based on description
   pulchowkData.features.forEach((feature) => {
-    if (!feature.properties) feature.properties = {}
+    if (!feature.properties) feature.properties = {};
 
     // Skip features without a description (like the boundary mask)
-    if (!feature.properties.description) return
+    if (!feature.properties.description) return;
 
-    const desc = feature.properties.description.toLowerCase()
+    const desc = feature.properties.description.toLowerCase();
 
-    if (desc.includes('bank') || desc.includes('atm')) {
-      feature.properties.icon = 'bank-icon'
+    if (desc.includes("bank") || desc.includes("atm")) {
+      feature.properties.icon = "bank-icon";
     } else if (
-      desc.includes('mess') ||
-      desc.includes('canteen') ||
-      desc.includes('food')
+      desc.includes("mess") ||
+      desc.includes("canteen") ||
+      desc.includes("food")
     ) {
-      feature.properties.icon = 'food-icon'
-    } else if (desc.includes('library')) {
-      feature.properties.icon = 'library-icon'
-    } else if (desc.includes('department')) {
-      feature.properties.icon = 'dept-icon'
-    } else if (desc.includes('mandir')) {
-      feature.properties.icon = 'temple-icon'
-    } else if (desc.includes('gym') || desc.includes('sport')) {
-      feature.properties.icon = 'gym-icon'
-    } else if (desc.includes('football')) {
-      feature.properties.icon = 'football-icon'
-    } else if (desc.includes('cricket')) {
-      feature.properties.icon = 'cricket-icon'
-    } else if (desc.includes('basketball') || desc.includes('volleyball')) {
-      feature.properties.icon = 'volleyball-icon'
-    } else if (desc.includes('hostel')) {
-      feature.properties.icon = 'hostel-icon'
-    } else if (desc.includes('lab')) {
-      feature.properties.icon = 'lab-icon'
-    } else if (desc.includes('helicopter')) {
-      feature.properties.icon = 'helipad-icon'
-    } else if (desc.includes('parking')) {
-      feature.properties.icon = 'parking-icon'
-    } else if (desc.includes('electrical club')) {
-      feature.properties.icon = 'electrical-icon'
-    } else if (desc.includes('music club')) {
-      feature.properties.icon = 'music-icon'
-    } else if (desc.includes('center for energy studies')) {
-      feature.properties.icon = 'energy-icon'
-    } else if (desc.includes('the helm of ioe pulchowk')) {
-      feature.properties.icon = 'helm-icon'
+      feature.properties.icon = "food-icon";
+    } else if (desc.includes("library")) {
+      feature.properties.icon = "library-icon";
+    } else if (desc.includes("department")) {
+      feature.properties.icon = "dept-icon";
+    } else if (desc.includes("mandir")) {
+      feature.properties.icon = "temple-icon";
+    } else if (desc.includes("gym") || desc.includes("sport")) {
+      feature.properties.icon = "gym-icon";
+    } else if (desc.includes("football")) {
+      feature.properties.icon = "football-icon";
+    } else if (desc.includes("cricket")) {
+      feature.properties.icon = "cricket-icon";
+    } else if (desc.includes("basketball") || desc.includes("volleyball")) {
+      feature.properties.icon = "volleyball-icon";
+    } else if (desc.includes("hostel")) {
+      feature.properties.icon = "hostel-icon";
+    } else if (desc.includes("lab")) {
+      feature.properties.icon = "lab-icon";
+    } else if (desc.includes("helicopter")) {
+      feature.properties.icon = "helipad-icon";
+    } else if (desc.includes("parking")) {
+      feature.properties.icon = "parking-icon";
+    } else if (desc.includes("electrical club")) {
+      feature.properties.icon = "electrical-icon";
+    } else if (desc.includes("music club")) {
+      feature.properties.icon = "music-icon";
+    } else if (desc.includes("center for energy studies")) {
+      feature.properties.icon = "energy-icon";
+    } else if (desc.includes("the helm of ioe pulchowk")) {
+      feature.properties.icon = "helm-icon";
     } else if (
-      desc.includes('pi chautari') ||
-      desc.includes('park') ||
-      desc.includes('garden')
+      desc.includes("pi chautari") ||
+      desc.includes("park") ||
+      desc.includes("garden")
     ) {
-      feature.properties.icon = 'garden-icon'
-    } else if (desc.includes('store') || desc.includes('bookshop')) {
-      feature.properties.icon = 'store-icon'
-    } else if (desc.includes('quarter')) {
-      feature.properties.icon = 'quarter-icon'
-    } else if (desc.includes('robotics club')) {
-      feature.properties.icon = 'robotics-icon'
-    } else if (desc.includes('clinic') || desc.includes('health')) {
-      feature.properties.icon = 'clinic-icon'
-    } else if (desc.includes('badminton')) {
-      feature.properties.icon = 'badminton-icon'
-    } else if (desc.includes('entrance')) {
-      feature.properties.icon = 'entrance-icon'
+      feature.properties.icon = "garden-icon";
+    } else if (desc.includes("store") || desc.includes("bookshop")) {
+      feature.properties.icon = "store-icon";
+    } else if (desc.includes("quarter")) {
+      feature.properties.icon = "quarter-icon";
+    } else if (desc.includes("robotics club")) {
+      feature.properties.icon = "robotics-icon";
+    } else if (desc.includes("clinic") || desc.includes("health")) {
+      feature.properties.icon = "clinic-icon";
+    } else if (desc.includes("badminton")) {
+      feature.properties.icon = "badminton-icon";
+    } else if (desc.includes("entrance")) {
+      feature.properties.icon = "entrance-icon";
     } else if (
-      desc.includes('office') ||
-      desc.includes('ntbns') ||
-      desc.includes('seds') ||
-      desc.includes('cids')
+      desc.includes("office") ||
+      desc.includes("ntbns") ||
+      desc.includes("seds") ||
+      desc.includes("cids")
     ) {
-      feature.properties.icon = 'office-icon'
-    } else if (desc.includes('building')) {
-      feature.properties.icon = 'building-icon'
-    } else if (desc.includes('block') || desc.includes('embark')) {
-      feature.properties.icon = 'block-icon'
-    } else if (desc.includes('cave')) {
-      feature.properties.icon = 'cave-icon'
-    } else if (desc.includes('fountain')) {
-      feature.properties.icon = 'fountain-icon'
+      feature.properties.icon = "office-icon";
+    } else if (desc.includes("building")) {
+      feature.properties.icon = "building-icon";
+    } else if (desc.includes("block") || desc.includes("embark")) {
+      feature.properties.icon = "block-icon";
+    } else if (desc.includes("cave")) {
+      feature.properties.icon = "cave-icon";
+    } else if (desc.includes("fountain")) {
+      feature.properties.icon = "fountain-icon";
     } else if (
-      desc.includes('water vending machine') ||
-      desc.includes('water')
+      desc.includes("water vending machine") ||
+      desc.includes("water")
     ) {
-      feature.properties.icon = 'water-vending-machine-icon'
-    } else if (desc.includes('workshop')) {
-      feature.properties.icon = 'workshop-icon'
-    } else if (desc.includes('toilet') || desc.includes('washroom')) {
-      feature.properties.icon = 'toilet-icon'
-    } else if (desc.includes('bridge')) {
-      feature.properties.icon = 'bridge-icon'
+      feature.properties.icon = "water-vending-machine-icon";
+    } else if (desc.includes("workshop")) {
+      feature.properties.icon = "workshop-icon";
+    } else if (desc.includes("toilet") || desc.includes("washroom")) {
+      feature.properties.icon = "toilet-icon";
+    } else if (desc.includes("bridge")) {
+      feature.properties.icon = "bridge-icon";
     } else {
-      feature.properties.icon = 'custom-marker'
+      feature.properties.icon = "custom-marker";
     }
-  })
+  });
 
-  const labels = pulchowkData.features.slice(1)
+  const labels = pulchowkData.features.slice(1);
 
-  let search = $state('')
-  let showSuggestions = $state(false)
-  let selectedIndex = $state(-1)
-  let isSatellite = $state(false)
+  let search = $state("");
+  let showSuggestions = $state(false);
+  let selectedIndex = $state(-1);
+  let isSatellite = $state(false);
   let mapCenter = $state<[number, number]>([
     85.32121137093469, 27.68222689200303,
-  ])
-  let map: any = $state()
+  ]);
+  let map: any = $state();
 
-  let isLoaded = $state(false)
-  let popupOpen = $state(false)
+  let isLoaded = $state(false);
+  let popupOpen = $state(false);
   let popupLngLat = $state<[number, number] | { lng: number; lat: number }>({
     lng: 0,
     lat: 0,
-  })
+  });
   let popupData = $state<{
-    title: string
-    description: string
-    image?: string | string[]
-  }>({ title: '', description: '' })
-  let imagesLoaded = $state<Record<number, boolean>>({})
-  let imageProgress = $state<Record<number, number | undefined>>({})
-  let progressFailedUrls = new Set<string>()
-  const fullyLoadedUrls = new Set<string>()
+    title: string;
+    description: string;
+    image?: string | string[];
+  }>({ title: "", description: "" });
+  let imagesLoaded = $state<Record<number, boolean>>({});
+  let imageProgress = $state<Record<number, number | undefined>>({});
+  let progressFailedUrls = new Set<string>();
+  const fullyLoadedUrls = new Set<string>();
 
   async function loadWithProgress(url: string, index: number) {
     // Skip if we know this URL fails to provide progress (CORS/No-Content-Length)
     if (!url || progressFailedUrls.has(url)) {
-      imageProgress[index] = undefined
-      return
+      imageProgress[index] = undefined;
+      return;
     }
 
     // Check if we've already fully loaded this image previously in the session
     if (fullyLoadedUrls.has(url)) {
-      console.log('Skipping progress fetch for known url:', url)
+      console.log("Skipping progress fetch for known url:", url);
       if (!imagesLoaded[index]) {
-        console.log('Forcing image show for known url')
-        imagesLoaded[index] = true
-        imageProgress[index] = 100
+        console.log("Forcing image show for known url");
+        imagesLoaded[index] = true;
+        imageProgress[index] = 100;
       }
-      return
+      return;
     }
 
     // If the image is already loaded (from cache/onload firing first), don't reset
     if (imagesLoaded[index]) {
-      imageProgress[index] = 100
-      fullyLoadedUrls.add(url)
-      return
+      imageProgress[index] = 100;
+      fullyLoadedUrls.add(url);
+      return;
     }
 
-    imageProgress[index] = 0
-    imagesLoaded[index] = false
+    imageProgress[index] = 0;
+    imagesLoaded[index] = false;
 
     try {
-      const response = await fetch(url)
+      const response = await fetch(url);
 
-      if (!response.ok) throw new Error('Network response was not ok')
+      if (!response.ok) throw new Error("Network response was not ok");
 
       // If served from cache, it might pass quickly, but we mark it as loaded at the end.
-      const contentLength = response.headers.get('content-length')
+      const contentLength = response.headers.get("content-length");
       if (!contentLength) {
-        throw new Error('Content-Length missing')
+        throw new Error("Content-Length missing");
       }
 
-      const total = parseInt(contentLength, 10)
-      let loaded = 0
+      const total = parseInt(contentLength, 10);
+      let loaded = 0;
 
-      const reader = response.body?.getReader()
-      if (!reader) throw new Error('ReadableStream not supported')
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("ReadableStream not supported");
 
       while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
+        const { done, value } = await reader.read();
+        if (done) break;
 
-        loaded += value.length
-        imageProgress[index] = Math.round((loaded / total) * 100)
+        loaded += value.length;
+        imageProgress[index] = Math.round((loaded / total) * 100);
       }
 
-      imageProgress[index] = 100
-      imagesLoaded[index] = true
-      fullyLoadedUrls.add(url)
+      imageProgress[index] = 100;
+      imagesLoaded[index] = true;
+      fullyLoadedUrls.add(url);
     } catch (error) {
-      console.log('Fetch progress failed, falling back', url)
-      progressFailedUrls.add(url)
-      imageProgress[index] = undefined
+      console.log("Fetch progress failed, falling back", url);
+      progressFailedUrls.add(url);
+      imageProgress[index] = undefined;
     }
   }
 
-  const prefetchedUrls = new Set<string>()
+  const prefetchedUrls = new Set<string>();
 
   function prefetchImage(url: string) {
-    if (!url || prefetchedUrls.has(url)) return
-    const img = new Image()
-    img.src = url
-    prefetchedUrls.add(url)
+    if (!url || prefetchedUrls.has(url)) return;
+    const img = new Image();
+    img.src = url;
+    prefetchedUrls.add(url);
   }
 
   $effect(() => {
     if (popupOpen && popupData.image) {
       const currentUrl = Array.isArray(popupData.image)
         ? popupData.image[currentImageIndex]
-        : popupData.image
+        : popupData.image;
 
       if (currentUrl) {
-        const index = Array.isArray(popupData.image) ? currentImageIndex : 0
-        loadWithProgress(currentUrl, index)
+        const index = Array.isArray(popupData.image) ? currentImageIndex : 0;
+        loadWithProgress(currentUrl, index);
       }
 
       if (Array.isArray(popupData.image)) {
         // Prefetch next image
-        const nextIndex = (currentImageIndex + 1) % popupData.image.length
-        prefetchImage(popupData.image[nextIndex])
+        const nextIndex = (currentImageIndex + 1) % popupData.image.length;
+        prefetchImage(popupData.image[nextIndex]);
 
         // Prefetch previous image (for smoother backward navigation)
         const prevIndex =
           (currentImageIndex - 1 + popupData.image.length) %
-          popupData.image.length
-        prefetchImage(popupData.image[prevIndex])
+          popupData.image.length;
+        prefetchImage(popupData.image[prevIndex]);
       }
     }
-  })
+  });
 
-  let currentImageIndex = $state(0)
-  let showOutsideMessage = $state(false)
-  let geolocateControl: any = $state()
-  let userLocation = $state<[number, number] | null>(null)
-  let showFullScreenImage = $state(false)
+  let currentImageIndex = $state(0);
+  let showOutsideMessage = $state(false);
+  let geolocateControl: any = $state();
+  let userLocation = $state<[number, number] | null>(null);
+  let showFullScreenImage = $state(false);
 
   // Navigation State
-  let isNavigating = $state(false)
-  let isCalculatingRoute = $state(false)
+  let isNavigating = $state(false);
+  let isCalculatingRoute = $state(false);
   let startPoint = $state<{
-    coords: [number, number]
-    name: string
-    feature?: any
-  } | null>(null)
+    coords: [number, number];
+    name: string;
+    feature?: any;
+  } | null>(null);
   let endPoint = $state<{
-    coords: [number, number]
-    name: string
-    feature?: any
-  } | null>(null)
-  let routeGeoJSON = $state<any>(null)
-  let routeDistance = $state<string>('')
-  let routeDuration = $state<string>('')
-  let isDirectFallback = $state(false)
+    coords: [number, number];
+    name: string;
+    feature?: any;
+  } | null>(null);
+  let routeGeoJSON = $state<any>(null);
+  let routeDistance = $state<string>("");
+  let routeDuration = $state<string>("");
+  let isDirectFallback = $state(false);
 
-  let isNavMinimized = $state(false)
+  let isNavMinimized = $state(false);
   // Navigation Search State
-  let navStartSearch = $state('')
-  let navEndSearch = $state('')
-  let showNavStartSuggestions = $state(false)
-  let showNavEndSuggestions = $state(false)
-  let waitingForLocation = $state(false)
-  let focusedInput = $state<'start' | 'end'>('end')
+  let navStartSearch = $state("");
+  let navEndSearch = $state("");
+  let showNavStartSuggestions = $state(false);
+  let showNavEndSuggestions = $state(false);
+  let waitingForLocation = $state(false);
+  let focusedInput = $state<"start" | "end">("end");
 
   function handleGeolocate(e: any) {
-    console.log('Geolocate event:', e)
-    if (!e?.coords) return
+    console.log("Geolocate event:", e);
+    if (!e?.coords) return;
 
-    const { coords } = e
-    const { longitude, latitude } = coords
-    userLocation = [longitude, latitude]
+    const { coords } = e;
+    const { longitude, latitude } = coords;
+    userLocation = [longitude, latitude];
 
     if (waitingForLocation) {
-      useUserLocation()
-      waitingForLocation = false
+      useUserLocation();
+      waitingForLocation = false;
     }
   }
 
   function getCentroid(feature: any): [number, number] {
-    if (feature.geometry.type === 'Point') {
-      return feature.geometry.coordinates as [number, number]
-    } else if (feature.geometry.type === 'Polygon') {
-      const coordinates = feature.geometry.coordinates[0]
+    if (feature.geometry.type === "Point") {
+      return feature.geometry.coordinates as [number, number];
+    } else if (feature.geometry.type === "Polygon") {
+      const coordinates = feature.geometry.coordinates[0];
       const centroid = coordinates.reduce(
         (acc: any, coord: any) => {
-          acc[0] += coord[0]
-          acc[1] += coord[1]
-          return acc
+          acc[0] += coord[0];
+          acc[1] += coord[1];
+          return acc;
         },
-        [0, 0]
-      )
-      centroid[0] /= coordinates.length
-      centroid[1] /= coordinates.length
-      return centroid as [number, number]
+        [0, 0],
+      );
+      centroid[0] /= coordinates.length;
+      centroid[1] /= coordinates.length;
+      return centroid as [number, number];
     }
-    return [0, 0]
+    return [0, 0];
   }
 
   function getHaversineDistance(
     coord1: [number, number],
-    coord2: [number, number]
+    coord2: [number, number],
   ) {
-    const R = 6371e3 // metres
-    const φ1 = (coord1[1] * Math.PI) / 180 // φ, λ in radians
-    const φ2 = (coord2[1] * Math.PI) / 180
-    const Δφ = ((coord2[1] - coord1[1]) * Math.PI) / 180
-    const Δλ = ((coord2[0] - coord1[0]) * Math.PI) / 180
+    const R = 6371e3; // metres
+    const φ1 = (coord1[1] * Math.PI) / 180; // φ, λ in radians
+    const φ2 = (coord2[1] * Math.PI) / 180;
+    const Δφ = ((coord2[1] - coord1[1]) * Math.PI) / 180;
+    const Δλ = ((coord2[0] - coord1[0]) * Math.PI) / 180;
 
     const a =
       Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c
+    return R * c;
   }
 
   function createStraightLineRoute(
     start: [number, number],
     end: [number, number],
-    distance: number
+    distance: number,
   ) {
-    isDirectFallback = true
+    isDirectFallback = true;
     routeGeoJSON = {
-      type: 'Feature',
+      type: "Feature",
       geometry: {
-        type: 'LineString',
+        type: "LineString",
         coordinates: [start, end],
       },
-    }
+    };
 
-    const walkingSpeed = 1.2 // m/s
-    const totalSeconds = distance / walkingSpeed
+    const walkingSpeed = 1.2; // m/s
+    const totalSeconds = distance / walkingSpeed;
 
     if (totalSeconds < 60) {
-      routeDuration = `${Math.round(totalSeconds)} sec`
+      routeDuration = `${Math.round(totalSeconds)} sec`;
     } else {
-      routeDuration = `${Math.round(totalSeconds / 60)} min`
+      routeDuration = `${Math.round(totalSeconds / 60)} min`;
     }
     routeDistance =
       distance < 1000
         ? `${Math.round(distance)} m`
-        : `${(distance / 1000).toFixed(1)} km`
+        : `${(distance / 1000).toFixed(1)} km`;
 
-    fitBoundsToRoute([start, end])
+    fitBoundsToRoute([start, end]);
   }
 
   function fitBoundsToRoute(coords: number[][]) {
@@ -389,12 +389,12 @@
       let minLng = coords[0][0],
         minLat = coords[0][1],
         maxLng = coords[0][0],
-        maxLat = coords[0][1]
+        maxLat = coords[0][1];
       for (const c of coords) {
-        if (c[0] < minLng) minLng = c[0]
-        if (c[0] > maxLng) maxLng = c[0]
-        if (c[1] < minLat) minLat = c[1]
-        if (c[1] > maxLat) maxLat = c[1]
+        if (c[0] < minLng) minLng = c[0];
+        if (c[0] > maxLng) maxLng = c[0];
+        if (c[1] < minLat) minLat = c[1];
+        if (c[1] > maxLat) maxLat = c[1];
       }
 
       map.fitBounds(
@@ -402,118 +402,119 @@
           [minLng, minLat],
           [maxLng, maxLat],
         ],
-        { padding: 100 }
-      )
+        { padding: 100 },
+      );
     }
   }
 
   function getNearestVertex(
     feature: any,
-    target: [number, number]
+    target: [number, number],
   ): [number, number] {
-    if (!feature || feature.geometry.type !== 'Polygon')
-      return feature?.geometry?.coordinates || target
+    if (!feature || feature.geometry.type !== "Polygon")
+      return feature?.geometry?.coordinates || target;
 
-    const coords = feature.geometry.coordinates[0]
-    let minDist = Infinity
-    let bestCoord = coords[0]
+    const coords = feature.geometry.coordinates[0];
+    let minDist = Infinity;
+    let bestCoord = coords[0];
 
     for (const coord of coords) {
       const dist =
-        Math.pow(coord[0] - target[0], 2) + Math.pow(coord[1] - target[1], 2)
+        Math.pow(coord[0] - target[0], 2) + Math.pow(coord[1] - target[1], 2);
       if (dist < minDist) {
-        minDist = dist
-        bestCoord = coord
+        minDist = dist;
+        bestCoord = coord;
       }
     }
-    return bestCoord as [number, number]
+    return bestCoord as [number, number];
   }
 
   function startNavigation(destinationFeature: any) {
-    isNavigating = true
-    popupOpen = false
+    isNavigating = true;
+    popupOpen = false;
 
     // Silent pre-fetch of user location to speed up "Your Location" selection later
     if (navigator.geolocation && !userLocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          userLocation = [position.coords.longitude, position.coords.latitude]
+          userLocation = [position.coords.longitude, position.coords.latitude];
         },
         (error) => {
           // Just ignore errors for silent pre-fetch
-          console.debug('Silent location pre-fetch failed:', error)
+          console.debug("Silent location pre-fetch failed:", error);
         },
         {
           enableHighAccuracy: true,
           maximumAge: 30000,
           timeout: 10000,
-        }
-      )
+        },
+      );
     }
 
-    const destName = destinationFeature.properties?.description || 'Destination'
-    const destCoords = getCentroid(destinationFeature)
+    const destName =
+      destinationFeature.properties?.description || "Destination";
+    const destCoords = getCentroid(destinationFeature);
 
     // Store feature to optimize routing point later
     endPoint = {
       coords: destCoords,
       name: destName,
       feature: destinationFeature,
-    }
-    navEndSearch = destName
+    };
+    navEndSearch = destName;
 
     // Clear start point to allow user to select it
-    startPoint = null
-    navStartSearch = ''
-    routeGeoJSON = null
-    routeDuration = ''
-    routeDistance = ''
-    focusedInput = 'start'
+    startPoint = null;
+    navStartSearch = "";
+    routeGeoJSON = null;
+    routeDuration = "";
+    routeDistance = "";
+    focusedInput = "start";
   }
 
   async function getDirections() {
-    if (!startPoint || !endPoint) return
+    if (!startPoint || !endPoint) return;
 
     // Optimize connection points by picking vertices closest to each other
     // This prevents "snapping" to roads outside the campus if the centroid is closer to the wall
     const startCoords = startPoint.feature
       ? getNearestVertex(startPoint.feature, endPoint.coords)
-      : startPoint.coords
+      : startPoint.coords;
     const endCoords = endPoint.feature
       ? getNearestVertex(endPoint.feature, startCoords)
-      : endPoint.coords
+      : endPoint.coords;
 
-    const straightDistance = getHaversineDistance(startCoords, endCoords)
+    const straightDistance = getHaversineDistance(startCoords, endCoords);
 
     // If significantly close, just show straight line to avoid routing overhead/errors
     if (straightDistance < 20) {
-      createStraightLineRoute(startCoords, endCoords, straightDistance)
-      return
+      createStraightLineRoute(startCoords, endCoords, straightDistance);
+      return;
     }
 
-    const query = `${startCoords[0]},${startCoords[1]};${endCoords[0]},${endCoords[1]}`
+    const query = `${startCoords[0]},${startCoords[1]};${endCoords[0]},${endCoords[1]}`;
     // Use radiuses=200 to allow snapping to roads that are slightly further away
-    const url = `https://router.project-osrm.org/route/v1/foot/${query}?overview=full&geometries=geojson&radiuses=200;200`
+    const url = `https://router.project-osrm.org/route/v1/foot/${query}?overview=full&geometries=geojson&radiuses=200;200`;
 
-    isCalculatingRoute = true
-    routeDuration = ''
+    isCalculatingRoute = true;
+    routeDuration = "";
 
     try {
-      const res = await fetch(url)
-      const data = await res.json()
+      const res = await fetch(url);
+      const data = await res.json();
 
       if (data.routes && data.routes.length > 0) {
-        const route = data.routes[0]
+        const route = data.routes[0];
 
         // Check if route goes significantly outside campus bounds
-        const bounds = PULCHOWK_BOUNDS
+        const bounds = PULCHOWK_BOUNDS;
         const isOutside = route.geometry.coordinates.some(
           (c: number[]) =>
             c[0] < bounds[0][0] - 0.001 || // Add slight buffer
             c[0] > bounds[1][0] + 0.001 ||
             c[1] < bounds[0][1] - 0.001 ||
-            c[1] > bounds[1][1] + 0.001
-        )
+            c[1] > bounds[1][1] + 0.001,
+        );
 
         // REVISED FALLBACK LOGIC:
         // 1. If route is extremely long (> 2km) inside a campus -> Fallback (likely wrong)
@@ -526,75 +527,75 @@
             route.distance > 500)
         ) {
           console.log(
-            'OSRM route rejected (Detour/Outside). Fallback to straight line.'
-          )
-          createStraightLineRoute(startCoords, endCoords, straightDistance)
-          isCalculatingRoute = false
-          return
+            "OSRM route rejected (Detour/Outside). Fallback to straight line.",
+          );
+          createStraightLineRoute(startCoords, endCoords, straightDistance);
+          isCalculatingRoute = false;
+          return;
         }
 
-        isDirectFallback = false
+        isDirectFallback = false;
 
         // Connect the actual start/end points to the route (fill the gap from snapping)
         const fullGeometry = {
           ...route.geometry,
           coordinates: [startCoords, ...route.geometry.coordinates, endCoords],
-        }
+        };
 
         routeGeoJSON = {
-          type: 'Feature',
+          type: "Feature",
           geometry: fullGeometry,
-        }
+        };
 
-        const totalSeconds = route.distance / 1.2
+        const totalSeconds = route.distance / 1.2;
 
         if (totalSeconds < 60) {
-          routeDuration = `${Math.round(totalSeconds)} sec`
+          routeDuration = `${Math.round(totalSeconds)} sec`;
         } else {
-          routeDuration = `${Math.round(totalSeconds / 60)} min`
+          routeDuration = `${Math.round(totalSeconds / 60)} min`;
         }
 
         const distance =
           route.distance < 1000
             ? `${Math.round(route.distance)} m`
-            : `${(route.distance / 1000).toFixed(1)} km`
-        routeDistance = distance
+            : `${(route.distance / 1000).toFixed(1)} km`;
+        routeDistance = distance;
 
-        fitBoundsToRoute(route.geometry.coordinates)
-        isCalculatingRoute = false
+        fitBoundsToRoute(route.geometry.coordinates);
+        isCalculatingRoute = false;
       } else {
         // No route found, fallback
-        createStraightLineRoute(startCoords, endCoords, straightDistance)
-        isCalculatingRoute = false
+        createStraightLineRoute(startCoords, endCoords, straightDistance);
+        isCalculatingRoute = false;
       }
     } catch (e) {
-      console.error('Error fetching directions:', e)
+      console.error("Error fetching directions:", e);
       // Fallback on error
-      createStraightLineRoute(startCoords, endCoords, straightDistance)
-      isCalculatingRoute = false
+      createStraightLineRoute(startCoords, endCoords, straightDistance);
+      isCalculatingRoute = false;
     }
   }
 
   function exitNavigation() {
-    isNavigating = false
-    routeGeoJSON = null
-    startPoint = null
-    endPoint = null
-    routeDuration = ''
-    routeDistance = ''
+    isNavigating = false;
+    routeGeoJSON = null;
+    startPoint = null;
+    endPoint = null;
+    routeDuration = "";
+    routeDistance = "";
   }
 
   const filteredNavStartSuggestions = $derived(
-    navStartSearch.trim() && navStartSearch !== 'Your Location'
+    navStartSearch.trim() && navStartSearch !== "Your Location"
       ? labels
           .filter((label) =>
             label.properties?.description
               ?.toLowerCase()
-              .includes(navStartSearch.toLowerCase())
+              .includes(navStartSearch.toLowerCase()),
           )
           .slice(0, 5)
-      : []
-  )
+      : [],
+  );
 
   const filteredNavEndSuggestions = $derived(
     navEndSearch.trim()
@@ -602,252 +603,252 @@
           .filter((label) =>
             label.properties?.description
               ?.toLowerCase()
-              .includes(navEndSearch.toLowerCase())
+              .includes(navEndSearch.toLowerCase()),
           )
           .slice(0, 5)
-      : []
-  )
+      : [],
+  );
 
   function selectNavStart(suggestion: any) {
-    const coords = getCentroid(suggestion)
+    const coords = getCentroid(suggestion);
     startPoint = {
       coords,
       name: suggestion.properties.description,
       feature: suggestion,
-    }
-    navStartSearch = suggestion.properties.description
-    showNavStartSuggestions = false
-    getDirections()
+    };
+    navStartSearch = suggestion.properties.description;
+    showNavStartSuggestions = false;
+    getDirections();
   }
 
   function selectNavEnd(suggestion: any) {
-    const coords = getCentroid(suggestion)
+    const coords = getCentroid(suggestion);
     endPoint = {
       coords,
       name: suggestion.properties.description,
       feature: suggestion,
-    }
-    navEndSearch = suggestion.properties.description
-    showNavEndSuggestions = false
-    getDirections()
+    };
+    navEndSearch = suggestion.properties.description;
+    showNavEndSuggestions = false;
+    getDirections();
   }
 
   function useUserLocation() {
     if (userLocation) {
-      const [sw, ne] = PULCHOWK_BOUNDS
+      const [sw, ne] = PULCHOWK_BOUNDS;
       const isInside =
         userLocation[0] >= sw[0] &&
         userLocation[0] <= ne[0] &&
         userLocation[1] >= sw[1] &&
-        userLocation[1] <= ne[1]
+        userLocation[1] <= ne[1];
 
       if (!isInside) {
-        showOutsideMessage = true
+        showOutsideMessage = true;
         setTimeout(() => {
-          showOutsideMessage = false
-        }, 4000)
-        return
+          showOutsideMessage = false;
+        }, 4000);
+        return;
       }
 
       startPoint = {
         coords: userLocation,
-        name: 'Your Location',
+        name: "Your Location",
         feature: null,
-      }
-      navStartSearch = 'Your Location'
-      showNavStartSuggestions = false
-      getDirections()
+      };
+      navStartSearch = "Your Location";
+      showNavStartSuggestions = false;
+      getDirections();
     } else {
-      waitingForLocation = true
+      waitingForLocation = true;
       if (geolocateControl) {
-        geolocateControl.trigger()
+        geolocateControl.trigger();
       } else {
-        alert('Geolocation control not ready')
-        waitingForLocation = false
+        alert("Geolocation control not ready");
+        waitingForLocation = false;
       }
     }
   }
 
   const icons = [
     {
-      name: 'custom-marker',
-      url: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+      name: "custom-marker",
+      url: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
       width: 15, // Resizing to 15px width results in ~25px height, matching others
     },
     {
-      name: 'bank-icon',
-      url: 'https://png.pngtree.com/png-clipart/20230805/original/pngtree-bank-location-icon-from-business-bicolor-set-money-business-company-vector-picture-image_9698988.png',
+      name: "bank-icon",
+      url: "https://png.pngtree.com/png-clipart/20230805/original/pngtree-bank-location-icon-from-business-bicolor-set-money-business-company-vector-picture-image_9698988.png",
       width: 15,
     },
     {
-      name: 'food-icon',
-      url: 'https://cdn-icons-png.freepik.com/512/11167/11167112.png',
+      name: "food-icon",
+      url: "https://cdn-icons-png.freepik.com/512/11167/11167112.png",
     },
     {
-      name: 'library-icon',
-      url: 'https://cdn-icons-png.freepik.com/512/7985/7985904.png',
+      name: "library-icon",
+      url: "https://cdn-icons-png.freepik.com/512/7985/7985904.png",
     },
     {
-      name: 'dept-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/7906/7906888.png',
+      name: "dept-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/7906/7906888.png",
     },
     {
-      name: 'temple-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/1183/1183391.png',
+      name: "temple-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/1183/1183391.png",
     },
     {
-      name: 'gym-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/11020/11020519.png',
+      name: "gym-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/11020/11020519.png",
     },
     {
-      name: 'football-icon',
-      url: 'https://cdn-icons-png.freepik.com/512/8893/8893610.png',
+      name: "football-icon",
+      url: "https://cdn-icons-png.freepik.com/512/8893/8893610.png",
     },
     {
-      name: 'cricket-icon',
-      url: 'https://i.postimg.cc/cLb6QFC1/download.png',
+      name: "cricket-icon",
+      url: "https://i.postimg.cc/cLb6QFC1/download.png",
       width: 15,
     },
     {
-      name: 'hostel-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/7804/7804352.png',
+      name: "hostel-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/7804/7804352.png",
     },
     {
-      name: 'volleyball-icon',
-      url: 'https://i.postimg.cc/mDW05pSw-/volleyball.png',
+      name: "volleyball-icon",
+      url: "https://i.postimg.cc/mDW05pSw-/volleyball.png",
       width: 25,
     },
     {
-      name: 'lab-icon',
-      url: 'https://cdn-icons-png.flaticon.com/256/12348/12348567.png',
+      name: "lab-icon",
+      url: "https://cdn-icons-png.flaticon.com/256/12348/12348567.png",
     },
     {
-      name: 'parking-icon',
-      url: 'https://cdn.iconscout.com/icon/premium/png-256-thumb/parking-place-icon-svg-download-png-897308.png',
+      name: "parking-icon",
+      url: "https://cdn.iconscout.com/icon/premium/png-256-thumb/parking-place-icon-svg-download-png-897308.png",
     },
     {
-      name: 'helipad-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/5695/5695654.png',
+      name: "helipad-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/5695/5695654.png",
     },
     {
-      name: 'electrical-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/9922/9922144.png',
+      name: "electrical-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/9922/9922144.png",
     },
     {
-      name: 'music-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/5905/5905923.png',
+      name: "music-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/5905/5905923.png",
     },
     {
-      name: 'energy-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/10053/10053795.png',
+      name: "energy-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/10053/10053795.png",
     },
     {
-      name: 'helm-icon',
-      url: 'https://png.pngtree.com/png-vector/20221130/ourmid/pngtree-airport-location-pin-in-light-blue-color-png-image_6485369.png',
+      name: "helm-icon",
+      url: "https://png.pngtree.com/png-vector/20221130/ourmid/pngtree-airport-location-pin-in-light-blue-color-png-image_6485369.png",
     },
     {
-      name: 'garden-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/15359/15359437.png',
+      name: "garden-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/15359/15359437.png",
     },
     {
-      name: 'store-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/3448/3448673.png',
+      name: "store-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/3448/3448673.png",
     },
     {
-      name: 'quarter-icon',
-      url: 'https://static.thenounproject.com/png/331579-200.png',
+      name: "quarter-icon",
+      url: "https://static.thenounproject.com/png/331579-200.png",
     },
     {
-      name: 'robotics-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/10681/10681183.png',
+      name: "robotics-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/10681/10681183.png",
     },
     {
-      name: 'clinic-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/10714/10714002.png',
+      name: "clinic-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/10714/10714002.png",
     },
     {
-      name: 'badminton-icon',
-      url: 'https://static.thenounproject.com/png/198230-200.png',
+      name: "badminton-icon",
+      url: "https://static.thenounproject.com/png/198230-200.png",
     },
     {
-      name: 'entrance-icon',
-      url: 'https://i.postimg.cc/jjLDcb6p/image-removebg-preview.png',
+      name: "entrance-icon",
+      url: "https://i.postimg.cc/jjLDcb6p/image-removebg-preview.png",
     },
     {
-      name: 'office-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/3846/3846807.png',
+      name: "office-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/3846/3846807.png",
     },
     {
-      name: 'building-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/5193/5193760.png',
+      name: "building-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/5193/5193760.png",
     },
     {
-      name: 'block-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/3311/3311565.png',
+      name: "block-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/3311/3311565.png",
     },
     {
-      name: 'cave-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/210/210567.png',
+      name: "cave-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/210/210567.png",
     },
     {
-      name: 'fountain-icon',
-      url: 'https://cdn.iconscout.com/icon/free/png-256/free-fountain-icon-svg-download-png-449881.png',
+      name: "fountain-icon",
+      url: "https://cdn.iconscout.com/icon/free/png-256/free-fountain-icon-svg-download-png-449881.png",
     },
     {
-      name: 'water-vending-machine-icon',
-      url: 'https://static.vecteezy.com/system/resources/thumbnails/044/570/540/small_2x/single-water-drop-on-transparent-background-free-png.png',
+      name: "water-vending-machine-icon",
+      url: "https://static.vecteezy.com/system/resources/thumbnails/044/570/540/small_2x/single-water-drop-on-transparent-background-free-png.png",
     },
     {
-      name: 'workshop-icon',
-      url: 'https://cdn-icons-png.flaticon.com/512/7258/7258548.png',
+      name: "workshop-icon",
+      url: "https://cdn-icons-png.flaticon.com/512/7258/7258548.png",
     },
     {
-      name: 'toilet-icon',
-      url: 'https://png.pngtree.com/png-clipart/20240426/ourmid/pngtree-yellow-male-sign-for-toilet-washroom-png-image_12330179.png',
+      name: "toilet-icon",
+      url: "https://png.pngtree.com/png-clipart/20240426/ourmid/pngtree-yellow-male-sign-for-toilet-washroom-png-image_12330179.png",
     },
     {
-      name: 'bridge-icon',
-      url: 'https://static.thenounproject.com/png/5954264-200.png',
+      name: "bridge-icon",
+      url: "https://static.thenounproject.com/png/5954264-200.png",
     },
-  ]
+  ];
 
   function getIconUrl(iconName: string) {
-    const icon = icons.find((i) => i.name === iconName)
-    return icon ? icon.url : icons[0].url
+    const icon = icons.find((i) => i.name === iconName);
+    return icon ? icon.url : icons[0].url;
   }
 
   const loadIcons = async () => {
-    if (!map) return
+    if (!map) return;
 
     await Promise.all(
       icons.map(async ({ name, url, width }) => {
-        const image = await map.loadImage(url)
+        const image = await map.loadImage(url);
         if (!map.hasImage(name))
           map.addImage(name, resizeImage(image.data, width), {
             pixelRatio: 1,
-          })
-      })
-    )
-    isLoaded = true
-  }
+          });
+      }),
+    );
+    isLoaded = true;
+  };
 
   function resizeImage(image: ImageBitmap | HTMLImageElement, width = 25) {
-    const targetWidth = width
-    const targetHeight = Math.round(targetWidth * (image.height / image.width))
+    const targetWidth = width;
+    const targetHeight = Math.round(targetWidth * (image.height / image.width));
 
-    const canvas = document.createElement('canvas')
-    canvas.width = targetWidth
-    canvas.height = targetHeight
+    const canvas = document.createElement("canvas");
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d");
     if (ctx) {
-      ctx.imageSmoothingEnabled = true
-      ctx.imageSmoothingQuality = 'high'
-      ctx.drawImage(image, 0, 0, targetWidth, targetHeight)
-      const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight)
-      return imageData
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+      const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
+      return imageData;
     }
-    return image
+    return image;
   }
 
   const filteredSuggestions = $derived(
@@ -856,33 +857,33 @@
           .filter((label) =>
             label.properties?.description
               ?.toLowerCase()
-              .includes(search.toLowerCase())
+              .includes(search.toLowerCase()),
           )
           .slice(0, 8)
-      : []
-  )
+      : [],
+  );
 
   function selectSuggestion(description: string) {
-    search = description
-    showSuggestions = false
-    selectedIndex = -1
+    search = description;
+    showSuggestions = false;
+    selectedIndex = -1;
 
     const selectedLocation = labels.find(
-      (label) => label.properties?.description === description
-    )
+      (label) => label.properties?.description === description,
+    );
 
-    if (selectedLocation?.geometry?.type === 'Polygon') {
-      const coordinates = selectedLocation.geometry.coordinates[0]
+    if (selectedLocation?.geometry?.type === "Polygon") {
+      const coordinates = selectedLocation.geometry.coordinates[0];
       const centroid = coordinates.reduce(
         (acc, coord) => {
-          acc[0] += coord[0]
-          acc[1] += coord[1]
-          return acc
+          acc[0] += coord[0];
+          acc[1] += coord[1];
+          return acc;
         },
-        [0, 0]
-      )
-      centroid[0] /= coordinates.length
-      centroid[1] /= coordinates.length
+        [0, 0],
+      );
+      centroid[0] /= coordinates.length;
+      centroid[1] /= coordinates.length;
       if (map) {
         map.flyTo({
           center: [centroid[0], centroid[1]],
@@ -890,10 +891,10 @@
           speed: 1.2,
           curve: 1.42,
           essential: true,
-        })
+        });
       }
-    } else if (selectedLocation?.geometry?.type === 'Point') {
-      const coords = selectedLocation.geometry.coordinates
+    } else if (selectedLocation?.geometry?.type === "Point") {
+      const coords = selectedLocation.geometry.coordinates;
       if (map) {
         map.flyTo({
           center: [coords[0], coords[1]],
@@ -901,171 +902,171 @@
           speed: 1.2,
           curve: 1.42,
           essential: true,
-        })
+        });
       }
     }
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (!filteredSuggestions.length) return
+    if (!filteredSuggestions.length) return;
 
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
       selectedIndex = Math.min(
         selectedIndex + 1,
-        filteredSuggestions.length - 1
-      )
-      scrollToSelected()
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      selectedIndex = Math.max(selectedIndex - 1, -1)
-      scrollToSelected()
-    } else if (e.key === 'Enter' && selectedIndex >= 0) {
-      e.preventDefault()
-      const selectedProperties = filteredSuggestions[selectedIndex].properties
+        filteredSuggestions.length - 1,
+      );
+      scrollToSelected();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      selectedIndex = Math.max(selectedIndex - 1, -1);
+      scrollToSelected();
+    } else if (e.key === "Enter" && selectedIndex >= 0) {
+      e.preventDefault();
+      const selectedProperties = filteredSuggestions[selectedIndex].properties;
       if (selectedProperties?.description)
-        selectSuggestion(selectedProperties.description)
-    } else if (e.key === 'Escape') {
-      showSuggestions = false
-      selectedIndex = -1
+        selectSuggestion(selectedProperties.description);
+    } else if (e.key === "Escape") {
+      showSuggestions = false;
+      selectedIndex = -1;
     }
   }
 
   function scrollToSelected() {
     setTimeout(() => {
       const selectedElement = document.querySelector(
-        `[data-suggestion-index="${selectedIndex}"]`
-      )
+        `[data-suggestion-index="${selectedIndex}"]`,
+      );
       if (selectedElement) {
         selectedElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-        })
+          behavior: "smooth",
+          block: "nearest",
+        });
       }
-    }, 0)
+    }, 0);
   }
 
-  let touchStartX = 0
-  let touchEndX = 0
+  let touchStartX = 0;
+  let touchEndX = 0;
 
   function handleTouchStart(e: TouchEvent) {
-    touchStartX = e.changedTouches[0].screenX
+    touchStartX = e.changedTouches[0].screenX;
   }
 
   function handleTouchEnd(e: TouchEvent) {
-    touchEndX = e.changedTouches[0].screenX
-    handleSwipe()
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
   }
 
   function handleSwipe() {
-    if (!Array.isArray(popupData.image) || popupData.image.length <= 1) return
+    if (!Array.isArray(popupData.image) || popupData.image.length <= 1) return;
 
-    const SWIPE_THRESHOLD = 50
+    const SWIPE_THRESHOLD = 50;
 
     if (touchEndX < touchStartX - SWIPE_THRESHOLD) {
       // Swipe Left -> Next Image
-      currentImageIndex = (currentImageIndex + 1) % popupData.image.length
+      currentImageIndex = (currentImageIndex + 1) % popupData.image.length;
     }
 
     if (touchEndX > touchStartX + SWIPE_THRESHOLD) {
       // Swipe Right -> Previous Image
       currentImageIndex =
         (currentImageIndex - 1 + popupData.image.length) %
-        popupData.image.length
+        popupData.image.length;
     }
   }
 
-  let currentQuery = $state('')
-  let queryToExecute = $state('')
-  let messages = $state<any[]>([])
+  let currentQuery = $state("");
+  let queryToExecute = $state("");
+  let messages = $state<any[]>([]);
 
   const chatQuery = createQuery(() => ({
-    queryKey: ['chatbot', queryToExecute],
+    queryKey: ["chatbot", queryToExecute],
     queryFn: async () => {
-      const res = await chatBot(queryToExecute)
+      const res = await chatBot(queryToExecute);
       if (!res.success) {
-        throw new Error(res.message || 'Request failed')
+        throw new Error(res.message || "Request failed");
       }
-      return res.data
+      return res.data;
     },
     enabled: queryToExecute.length > 0,
     retry: false,
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
-  }))
+  }));
 
   // Rate limit cooldown state
-  let rateLimitCooldown = $state(0)
-  let cooldownInterval: ReturnType<typeof setInterval> | null = null
+  let rateLimitCooldown = $state(0);
+  let cooldownInterval: ReturnType<typeof setInterval> | null = null;
 
   function startCooldown(seconds: number) {
-    rateLimitCooldown = seconds
-    if (cooldownInterval) clearInterval(cooldownInterval)
+    rateLimitCooldown = seconds;
+    if (cooldownInterval) clearInterval(cooldownInterval);
     cooldownInterval = setInterval(() => {
-      rateLimitCooldown--
+      rateLimitCooldown--;
       if (rateLimitCooldown <= 0) {
-        rateLimitCooldown = 0
+        rateLimitCooldown = 0;
         if (cooldownInterval) {
-          clearInterval(cooldownInterval)
-          cooldownInterval = null
+          clearInterval(cooldownInterval);
+          cooldownInterval = null;
         }
       }
-    }, 1000)
+    }, 1000);
   }
 
   $effect(() => {
     if (chatQuery.isError && queryToExecute) {
       // Get error message from the query error
-      const errorMessage = (chatQuery.error as any)?.message || ''
+      const errorMessage = (chatQuery.error as any)?.message || "";
       const isQuotaError =
-        errorMessage.includes('quota') ||
-        errorMessage.includes('limit') ||
-        errorMessage.includes('429')
+        errorMessage.includes("quota") ||
+        errorMessage.includes("limit") ||
+        errorMessage.includes("429");
 
       // Start cooldown if quota error
       if (isQuotaError) {
-        startCooldown(30) // 30 second cooldown
+        startCooldown(30); // 30 second cooldown
       }
 
       messages = [
         ...messages,
         {
-          role: 'error',
+          role: "error",
           content: isQuotaError
             ? `⏱️ API limit reached. Please wait ${rateLimitCooldown || 30} seconds.`
-            : 'Something went wrong. Please try again.',
+            : "Something went wrong. Please try again.",
           isQuotaError,
         },
-      ]
-      queryToExecute = ''
+      ];
+      queryToExecute = "";
     }
-  })
+  });
 
   $effect(() => {
     if (chatQuery.isSuccess && chatQuery.data && queryToExecute) {
       messages = [
         ...messages,
         {
-          role: 'assistant',
+          role: "assistant",
           content: chatQuery.data.message,
           locations: chatQuery.data.locations,
           action: chatQuery.data.action,
         },
-      ]
+      ];
 
       if (
         chatQuery.data.locations &&
         chatQuery.data.locations.length > 0 &&
         map
       ) {
-        const { action, locations } = chatQuery.data
+        const { action, locations } = chatQuery.data;
 
         // Handle route/directions request
-        if (action === 'show_route' && locations.length >= 2) {
+        if (action === "show_route" && locations.length >= 2) {
           const startLoc =
-            locations.find((l: any) => l.role === 'start') || locations[0]
+            locations.find((l: any) => l.role === "start") || locations[0];
           const endLoc =
-            locations.find((l: any) => l.role === 'end') || locations[1]
+            locations.find((l: any) => l.role === "end") || locations[1];
 
           // Set up navigation with start and end points
           startPoint = {
@@ -1075,8 +1076,8 @@
             ],
             name: startLoc.building_name,
             feature: null,
-          }
-          navStartSearch = startLoc.building_name
+          };
+          navStartSearch = startLoc.building_name;
 
           endPoint = {
             coords: [endLoc.coordinates.lng, endLoc.coordinates.lat] as [
@@ -1085,53 +1086,53 @@
             ],
             name: endLoc.building_name,
             feature: null,
-          }
-          navEndSearch = endLoc.building_name
+          };
+          navEndSearch = endLoc.building_name;
 
           // Activate navigation mode and get directions
-          isNavigating = true
-          chatOpen = false // Minimize chat to show the map
-          getDirections()
+          isNavigating = true;
+          chatOpen = false; // Minimize chat to show the map
+          getDirections();
         } else {
           // Just fly to the first location for show_location or show_multiple_locations
-          const location = locations[0]
-          const { lat, lng } = location.coordinates
+          const location = locations[0];
+          const { lat, lng } = location.coordinates;
 
           map.flyTo({
             center: [lng, lat],
             zoom: 20,
             duration: 2000,
             essential: true,
-          })
+          });
         }
       }
-      queryToExecute = ''
+      queryToExecute = "";
     }
-  })
+  });
 
-  let chatOpen = $state(false)
-  let messagesContainer: HTMLElement | null = $state(null)
+  let chatOpen = $state(false);
+  let messagesContainer: HTMLElement | null = $state(null);
 
   $effect(() => {
     if (messages.length > 0 && messagesContainer) {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-  })
+  });
 
   function handleSubmit(e: Event) {
-    e.preventDefault()
-    if (!currentQuery.trim()) return
+    e.preventDefault();
+    if (!currentQuery.trim()) return;
 
     messages = [
       ...messages,
       {
-        role: 'user',
+        role: "user",
         content: currentQuery,
       },
-    ]
+    ];
 
-    queryToExecute = currentQuery
-    currentQuery = ''
+    queryToExecute = currentQuery;
+    currentQuery = "";
   }
 </script>
 
@@ -1304,7 +1305,7 @@
             bind:value={currentQuery}
             placeholder={rateLimitCooldown > 0
               ? `Wait ${rateLimitCooldown}s...`
-              : 'Type your message...'}
+              : "Type your message..."}
             class="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
             disabled={chatQuery.isFetching || rateLimitCooldown > 0}
           />
@@ -1426,9 +1427,9 @@
           <button
             aria-label="Clear search"
             onclick={() => {
-              search = ''
-              showSuggestions = false
-              selectedIndex = -1
+              search = "";
+              showSuggestions = false;
+              selectedIndex = -1;
             }}
             class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all"
           >
@@ -1600,7 +1601,7 @@
             <h2 class="font-semibold text-lg text-gray-800">Directions</h2>
           </div>
           <button
-            aria-label={isNavMinimized ? 'Expand' : 'Minimize'}
+            aria-label={isNavMinimized ? "Expand" : "Minimize"}
             class="p-2 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
             onclick={() => (isNavMinimized = !isNavMinimized)}
           >
@@ -1658,9 +1659,9 @@
                   placeholder="Choose starting point"
                   class="w-full h-11 pl-10 pr-10 bg-transparent border-none text-sm font-medium text-gray-700 placeholder:text-gray-400 rounded-t-lg"
                   onfocus={() => {
-                    showNavStartSuggestions = true
-                    showNavEndSuggestions = false
-                    focusedInput = 'start'
+                    showNavStartSuggestions = true;
+                    showNavEndSuggestions = false;
+                    focusedInput = "start";
                   }}
                   oninput={() => (showNavStartSuggestions = true)}
                 />
@@ -1668,10 +1669,10 @@
                   <button
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
                     onclick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      navStartSearch = ''
-                      showNavStartSuggestions = false
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navStartSearch = "";
+                      showNavStartSuggestions = false;
                     }}
                     aria-label="Clear start location"
                   >
@@ -1756,9 +1757,9 @@
                   placeholder="Choose destination"
                   class="w-full h-11 pl-10 pr-10 bg-transparent border-none text-sm font-semibold text-gray-900 placeholder:text-gray-400 rounded-b-lg"
                   onfocus={() => {
-                    showNavEndSuggestions = true
-                    showNavStartSuggestions = false
-                    focusedInput = 'end'
+                    showNavEndSuggestions = true;
+                    showNavStartSuggestions = false;
+                    focusedInput = "end";
                   }}
                   oninput={() => (showNavEndSuggestions = true)}
                 />
@@ -1766,10 +1767,10 @@
                   <button
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
                     onclick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      navEndSearch = ''
-                      showNavEndSuggestions = false
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navEndSearch = "";
+                      showNavEndSuggestions = false;
                     }}
                     aria-label="Clear destination"
                   >
@@ -1844,8 +1845,8 @@
                   </div>
                   <div class="text-xs text-gray-500 mt-0.5">
                     {isDirectFallback
-                      ? 'Straight line (Internal paths not mapped)'
-                      : 'Walking via campus paths'}
+                      ? "Straight line (Internal paths not mapped)"
+                      : "Walking via campus paths"}
                   </div>
                 </div>
                 <button
@@ -1954,11 +1955,11 @@
     class="w-full h-full"
     style={isSatellite
       ? SATELLITE_STYLE
-      : 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json?'}
+      : "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json?"}
     onclick={(e) => {
-      const latitude = e.lngLat.lat
-      const longitude = e.lngLat.lng
-      navigator.clipboard.writeText(`[${longitude}, ${latitude}]`)
+      const latitude = e.lngLat.lat;
+      const longitude = e.lngLat.lng;
+      navigator.clipboard.writeText(`[${longitude}, ${latitude}]`);
     }}
     onload={loadIcons}
     maxBounds={PULCHOWK_BOUNDS as any}
@@ -1966,141 +1967,141 @@
     <GeoJSONSource data={pulchowkData} maxzoom={22}>
       <FillLayer
         paint={{
-          'fill-color': '#fff',
-          'fill-opacity': 1,
-          'fill-outline-color': '#333',
+          "fill-color": "#fff",
+          "fill-opacity": 1,
+          "fill-outline-color": "#333",
         }}
       />
       {#if isLoaded}
         <SymbolLayer
           layout={{
-            'icon-image': ['get', 'icon'],
-            'icon-size': 1,
-            'text-field': '{description}',
-            'text-size': 10,
-            'text-anchor': 'top',
-            'text-offset': [0, 1.4],
-            'text-justify': 'center',
-            'text-max-width': 5,
+            "icon-image": ["get", "icon"],
+            "icon-size": 1,
+            "text-field": "{description}",
+            "text-size": 10,
+            "text-anchor": "top",
+            "text-offset": [0, 1.4],
+            "text-justify": "center",
+            "text-max-width": 5,
           }}
           paint={{
-            'text-color': isSatellite ? '#ffffff' : 'green',
+            "text-color": isSatellite ? "#ffffff" : "green",
           }}
-          filter={['has', 'description']}
+          filter={["has", "description"]}
           onclick={(e: any) => {
-            console.log('Symbol clicked', e)
+            console.log("Symbol clicked", e);
             if (e.features && e.features[0]) {
-              const feature = e.features[0]
-              const props = feature.properties || {}
+              const feature = e.features[0];
+              const props = feature.properties || {};
 
               // Calculate center based on geometry type to snap popup to the icon/feature location
-              let centerLngLat = e.lngLat
+              let centerLngLat = e.lngLat;
 
-              if (feature.geometry.type === 'Point') {
-                const coords = feature.geometry.coordinates
+              if (feature.geometry.type === "Point") {
+                const coords = feature.geometry.coordinates;
                 centerLngLat = {
                   lng: coords[0],
                   lat: coords[1],
-                }
-              } else if (feature.geometry.type === 'Polygon') {
-                const coordinates = feature.geometry.coordinates[0]
+                };
+              } else if (feature.geometry.type === "Polygon") {
+                const coordinates = feature.geometry.coordinates[0];
                 const centroid = coordinates.reduce(
                   (acc: any, coord: any) => {
-                    acc[0] += coord[0]
-                    acc[1] += coord[1]
-                    return acc
+                    acc[0] += coord[0];
+                    acc[1] += coord[1];
+                    return acc;
                   },
-                  [0, 0]
-                )
-                centroid[0] /= coordinates.length
-                centroid[1] /= coordinates.length
+                  [0, 0],
+                );
+                centroid[0] /= coordinates.length;
+                centroid[1] /= coordinates.length;
                 centerLngLat = {
                   lng: centroid[0],
                   lat: centroid[1],
-                }
+                };
               }
 
               if (isNavigating) {
-                const name = props.description || 'Location'
+                const name = props.description || "Location";
                 const point = {
                   coords: [centerLngLat.lng, centerLngLat.lat],
                   name: name,
                   feature: feature,
-                }
+                };
 
-                if (focusedInput === 'start') {
-                  startPoint = point as any
-                  navStartSearch = name
-                  showNavStartSuggestions = false
+                if (focusedInput === "start") {
+                  startPoint = point as any;
+                  navStartSearch = name;
+                  showNavStartSuggestions = false;
                 } else {
-                  endPoint = point as any
-                  navEndSearch = name
-                  showNavEndSuggestions = false
+                  endPoint = point as any;
+                  navEndSearch = name;
+                  showNavEndSuggestions = false;
                 }
 
                 // Unfocus input to hide keyboard on mobile / remove cursor
                 if (document.activeElement instanceof HTMLElement) {
-                  document.activeElement.blur()
+                  document.activeElement.blur();
                 }
 
-                getDirections()
-                return
+                getDirections();
+                return;
               }
 
-              popupLngLat = centerLngLat
+              popupLngLat = centerLngLat;
 
-              let image = props.image
+              let image = props.image;
               if (
-                typeof image === 'string' &&
-                image.startsWith('[') &&
-                image.endsWith(']')
+                typeof image === "string" &&
+                image.startsWith("[") &&
+                image.endsWith("]")
               ) {
                 try {
-                  image = JSON.parse(image)
+                  image = JSON.parse(image);
                 } catch (e) {
-                  console.error('Failed to parse image array', e)
+                  console.error("Failed to parse image array", e);
                 }
               }
 
               popupData = {
-                title: props.title || props.description || 'Unknown Location',
-                description: props.about || '',
+                title: props.title || props.description || "Unknown Location",
+                description: props.about || "",
                 image: image || undefined,
-              }
-              currentImageIndex = 0
-              imagesLoaded = {}
-              imageProgress = {}
-              popupOpen = true
+              };
+              currentImageIndex = 0;
+              imagesLoaded = {};
+              imageProgress = {};
+              popupOpen = true;
             }
           }}
           onmouseenter={(e: any) => {
-            map.getCanvas().style.cursor = 'pointer'
+            map.getCanvas().style.cursor = "pointer";
 
             // Prefetch image on hover
             if (e.features && e.features[0]) {
-              const props = e.features[0].properties || {}
-              let image = props.image
+              const props = e.features[0].properties || {};
+              let image = props.image;
 
               if (
-                typeof image === 'string' &&
-                image.startsWith('[') &&
-                image.endsWith(']')
+                typeof image === "string" &&
+                image.startsWith("[") &&
+                image.endsWith("]")
               ) {
                 try {
-                  image = JSON.parse(image)
+                  image = JSON.parse(image);
                 } catch (e) {
                   // ignore parse error
                 }
               }
 
               if (Array.isArray(image) && image.length > 0) {
-                prefetchImage(image[0])
-              } else if (typeof image === 'string' && image) {
-                prefetchImage(image)
+                prefetchImage(image[0]);
+              } else if (typeof image === "string" && image) {
+                prefetchImage(image);
               }
             }
           }}
-          onmouseleave={() => (map.getCanvas().style.cursor = '')}
+          onmouseleave={() => (map.getCanvas().style.cursor = "")}
         />
       {/if}
     </GeoJSONSource>
@@ -2109,47 +2110,47 @@
       <GeoJSONSource data={routeGeoJSON} maxzoom={24}>
         <LineLayer
           layout={{
-            'line-join': 'round',
-            'line-cap': 'round',
+            "line-join": "round",
+            "line-cap": "round",
           }}
           paint={{
-            'line-color': '#2563eb',
-            'line-width': 6,
-            'line-opacity': 0.8,
+            "line-color": "#2563eb",
+            "line-width": 6,
+            "line-opacity": 0.8,
           }}
         />
         <LineLayer
           paint={{
-            'line-color': '#ffffff',
-            'line-width': 2,
-            'line-opacity': 0.5,
-            'line-dasharray': [2, 1],
+            "line-color": "#ffffff",
+            "line-width": 2,
+            "line-opacity": 0.5,
+            "line-dasharray": [2, 1],
           }}
         />
       </GeoJSONSource>
 
       <GeoJSONSource
         data={{
-          type: 'FeatureCollection',
+          type: "FeatureCollection",
           features: [
             startPoint
               ? {
-                  type: 'Feature',
+                  type: "Feature",
                   geometry: {
-                    type: 'Point',
+                    type: "Point",
                     coordinates: startPoint.coords,
                   },
-                  properties: { icon: 'start-marker' },
+                  properties: { icon: "start-marker" },
                 }
               : null,
             endPoint
               ? {
-                  type: 'Feature',
+                  type: "Feature",
                   geometry: {
-                    type: 'Point',
+                    type: "Point",
                     coordinates: endPoint.coords,
                   },
-                  properties: { icon: 'end-marker' },
+                  properties: { icon: "end-marker" },
                 }
               : null,
           ].filter((f) => f !== null) as Feature[],
@@ -2158,18 +2159,18 @@
       >
         <CircleLayer
           paint={{
-            'circle-radius': 8,
-            'circle-color': [
-              'match',
-              ['get', 'icon'],
-              'start-marker',
-              '#3b82f6',
-              'end-marker',
-              '#ef4444',
-              '#000',
+            "circle-radius": 8,
+            "circle-color": [
+              "match",
+              ["get", "icon"],
+              "start-marker",
+              "#3b82f6",
+              "end-marker",
+              "#ef4444",
+              "#000",
             ],
-            'circle-stroke-width': 3,
-            'circle-stroke-color': '#fff',
+            "circle-stroke-width": 3,
+            "circle-stroke-color": "#fff",
           }}
         />
       </GeoJSONSource>
@@ -2222,8 +2223,8 @@
                     src={img}
                     alt={popupData.title}
                     onload={() => {
-                      imagesLoaded[i] = true
-                      fullyLoadedUrls.add(img)
+                      imagesLoaded[i] = true;
+                      fullyLoadedUrls.add(img);
                     }}
                     class="high-quality-img absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-in-out {imagesLoaded[
                       i
@@ -2240,11 +2241,11 @@
                     aria-label="Previous Image"
                     class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                     onclick={(e) => {
-                      e.stopPropagation()
+                      e.stopPropagation();
                       if (Array.isArray(popupData.image)) {
                         currentImageIndex =
                           (currentImageIndex - 1 + popupData.image.length) %
-                          popupData.image.length
+                          popupData.image.length;
                       }
                     }}
                   >
@@ -2268,10 +2269,10 @@
                     aria-label="Next Image"
                     class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                     onclick={(e) => {
-                      e.stopPropagation()
+                      e.stopPropagation();
                       if (Array.isArray(popupData.image)) {
                         currentImageIndex =
-                          (currentImageIndex + 1) % popupData.image.length
+                          (currentImageIndex + 1) % popupData.image.length;
                       }
                     }}
                   >
@@ -2334,8 +2335,8 @@
                   src={popupData.image}
                   alt={popupData.title}
                   onload={() => {
-                    imagesLoaded[0] = true
-                    fullyLoadedUrls.add(popupData.image as string)
+                    imagesLoaded[0] = true;
+                    fullyLoadedUrls.add(popupData.image as string);
                   }}
                   class="high-quality-img w-full h-32 object-cover transition-transform duration-700 group-hover:scale-110 {imagesLoaded[0]
                     ? 'opacity-100'
@@ -2349,8 +2350,8 @@
               <button
                 class="absolute top-2 right-2 p-1.5 bg-black/40 hover:bg-black/60 rounded-full text-white/90 transition-all opacity-0 group-hover:opacity-100 backdrop-blur-[2px] z-20"
                 onclick={(e) => {
-                  e.stopPropagation()
-                  showFullScreenImage = true
+                  e.stopPropagation();
+                  showFullScreenImage = true;
                 }}
                 aria-label="View Fullscreen"
                 ontouchstart={(e) => e.stopPropagation()}
@@ -2387,7 +2388,7 @@
                     description: popupData.title,
                   },
                   geometry: {
-                    type: 'Point',
+                    type: "Point",
                     coordinates: Array.isArray(popupLngLat)
                       ? popupLngLat
                       : [popupLngLat.lng, popupLngLat.lat],
@@ -2429,7 +2430,7 @@
       fitBoundsOptions={{ zoom: 18 }}
       ongeolocate={handleGeolocate}
       onoutofmaxbounds={handleGeolocate}
-      onerror={(e) => console.error('Geolocate error:', e)}
+      onerror={(e) => console.error("Geolocate error:", e)}
     />
 
     <FullScreenControl position="top-right" />
@@ -2441,7 +2442,7 @@
     class="fixed inset-0 z-100 bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm"
     transition:fade={{ duration: 200 }}
     onclick={() => (showFullScreenImage = false)}
-    onkeydown={(e) => e.key === 'Escape' && (showFullScreenImage = false)}
+    onkeydown={(e) => e.key === "Escape" && (showFullScreenImage = false)}
     role="dialog"
     aria-modal="true"
     tabindex="-1"
@@ -2494,11 +2495,11 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 rounded-full p-3 transition-all hover:scale-105 active:scale-95"
             aria-label="Previous image"
             onclick={(e) => {
-              e.stopPropagation()
+              e.stopPropagation();
               if (Array.isArray(popupData.image)) {
                 currentImageIndex =
                   (currentImageIndex - 1 + popupData.image.length) %
-                  popupData.image.length
+                  popupData.image.length;
               }
             }}
           >
@@ -2521,10 +2522,10 @@
             class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 rounded-full p-3 transition-all hover:scale-105 active:scale-95"
             aria-label="Next image"
             onclick={(e) => {
-              e.stopPropagation()
+              e.stopPropagation();
               if (Array.isArray(popupData.image)) {
                 currentImageIndex =
-                  (currentImageIndex + 1) % popupData.image.length
+                  (currentImageIndex + 1) % popupData.image.length;
               }
             }}
           >

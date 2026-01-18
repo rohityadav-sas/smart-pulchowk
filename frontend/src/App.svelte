@@ -23,23 +23,39 @@
   import EventCategoryDetails from "./pages/EventCategoryDetails.svelte";
   import CreateEvent from "./pages/CreateEvent.svelte";
   import CreateClub from "./pages/CreateClub.svelte";
-  import { onMount } from "svelte";
+  import MapPlaceholder from "./pages/MapPlaceholder.svelte";
+  import { onMount, type Component } from "svelte";
+
+  let MapComponent: Component | any = $state(null);
 
   onMount(() => {
-    if (document.readyState === "complete") import("./pages/Map.svelte");
+    const loadMap = () => {
+      import("./pages/Map.svelte").then((module) => {
+        MapComponent = module.default;
+      });
+    };
+
+    if (document.readyState === "complete") loadMap();
     else
-      window.addEventListener("load", () => import("./pages/Map.svelte"), {
+      window.addEventListener("load", loadMap, {
         once: true,
       });
   });
 
   let instance: RouterInstance = $state()!;
 
+  const isMapRoute = $derived(instance?.current?.route?.path === "/map");
+
   const session = authClient.useSession();
 
   const error = query("message");
   let showError = $state(error === "unauthorized_domain");
-  if (error) goto("/");
+
+  $effect(() => {
+    if (error === "unauthorized_domain") {
+      goto("/");
+    }
+  });
 
   const routes: RouteConfig[] = [
     {
@@ -59,7 +75,7 @@
     },
     {
       path: "map",
-      component: async () => await import("./pages/Map.svelte"),
+      component: MapPlaceholder,
     },
     {
       path: /^\/events\/?$/,
@@ -167,7 +183,16 @@
     email address to sign in.
   </ErrorToast>
 
-  <main class="min-h-[calc(100vh-4rem)] bg-gray-50">
+  <main class="min-h-[calc(100vh-4rem)] bg-gray-50 relative">
+    {#if MapComponent}
+      <div
+        class="absolute inset-0 z-0 transition-opacity duration-300 {isMapRoute
+          ? 'opacity-100 visible'
+          : 'opacity-0 invisible pointer-events-none'}"
+      >
+        <MapComponent />
+      </div>
+    {/if}
     {#if instance?.navigating}
       <div
         class="fixed inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"
@@ -175,7 +200,9 @@
         <LoadingSpinner size="lg" text="Loading..." />
       </div>
     {/if}
-    <Router bind:instance {routes} />
+    <div class={isMapRoute ? "hidden" : "contents"}>
+      <Router bind:instance {routes} />
+    </div>
   </main>
 
   {#if instance?.current?.route?.path !== "/map"}

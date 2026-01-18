@@ -21,7 +21,7 @@
   }));
 
   $effect(() => {
-    if (!$session.isPending && !$session.data?.user) {
+    if (!$session.isPending && !$session.error && !$session.data?.user) {
       goto("/register?message=login_required");
     }
   });
@@ -39,7 +39,7 @@
       const sorted: ClubEvent[] = [...query.data].sort(
         (a, b) =>
           new Date(b.eventStartTime).getTime() -
-          new Date(a.eventStartTime).getTime()
+          new Date(a.eventStartTime).getTime(),
       );
 
       return {
@@ -68,7 +68,7 @@
           );
         }),
       };
-    }
+    },
   );
 </script>
 

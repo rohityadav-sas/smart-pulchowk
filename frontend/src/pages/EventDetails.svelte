@@ -8,7 +8,7 @@
     cancelRegistration,
     getRegisteredStudents,
     getEnrollments,
-     getExtraEventDetails,
+    getExtraEventDetails,
     createExtraEventDetails,
     updateExtraEventDetails,
     type ClubEvent,
@@ -120,9 +120,15 @@
     try {
       let result;
       if (extraDetails) {
-        result = await updateExtraEventDetails(parseInt(eventId), editedDetails);
+        result = await updateExtraEventDetails(
+          parseInt(eventId),
+          editedDetails,
+        );
       } else {
-        result = await createExtraEventDetails(parseInt(eventId), editedDetails);
+        result = await createExtraEventDetails(
+          parseInt(eventId),
+          editedDetails,
+        );
       }
 
       if (result.success && result.details) {
@@ -467,9 +473,7 @@
             class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8"
           >
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-bold text-gray-900">
-                About this Event
-              </h2>
+              <h2 class="text-xl font-bold text-gray-900">About this Event</h2>
               {#if isClubOwner && !isEditingDetails}
                 <button
                   onclick={startEditing}
@@ -479,7 +483,7 @@
                 </button>
               {/if}
             </div>
-            
+
             <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">
               {event.description || "No description provided."}
             </p>
@@ -488,28 +492,82 @@
               <div class="mt-8 space-y-6 border-t pt-8" in:slide>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label for="fullDescription" class="block text-sm font-bold text-gray-700 mb-2">Full Description</label>
-                    <textarea id="fullDescription" bind:value={editedDetails.fullDescription} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                    <label
+                      for="fullDescription"
+                      class="block text-sm font-bold text-gray-700 mb-2"
+                      >Full Description</label
+                    >
+                    <textarea
+                      id="fullDescription"
+                      bind:value={editedDetails.fullDescription}
+                      class="w-full px-4 py-3 rounded-xl border-gray-200"
+                      rows="4"
+                    ></textarea>
                   </div>
                   <div>
-                    <label for="objectives" class="block text-sm font-bold text-gray-700 mb-2">Objectives</label>
-                    <textarea id="objectives" bind:value={editedDetails.objectives} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                    <label
+                      for="objectives"
+                      class="block text-sm font-bold text-gray-700 mb-2"
+                      >Objectives</label
+                    >
+                    <textarea
+                      id="objectives"
+                      bind:value={editedDetails.objectives}
+                      class="w-full px-4 py-3 rounded-xl border-gray-200"
+                      rows="4"
+                    ></textarea>
                   </div>
                   <div>
-                    <label for="rules" class="block text-sm font-bold text-gray-700 mb-2">Rules</label>
-                    <textarea id="rules" bind:value={editedDetails.rules} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                    <label
+                      for="rules"
+                      class="block text-sm font-bold text-gray-700 mb-2"
+                      >Rules</label
+                    >
+                    <textarea
+                      id="rules"
+                      bind:value={editedDetails.rules}
+                      class="w-full px-4 py-3 rounded-xl border-gray-200"
+                      rows="4"
+                    ></textarea>
                   </div>
                   <div>
-                    <label for="judgingCriteria" class="block text-sm font-bold text-gray-700 mb-2">Judging Criteria</label>
-                    <textarea id="judgingCriteria" bind:value={editedDetails.judgingCriteria} class="w-full px-4 py-3 rounded-xl border-gray-200" rows="4"></textarea>
+                    <label
+                      for="judgingCriteria"
+                      class="block text-sm font-bold text-gray-700 mb-2"
+                      >Judging Criteria</label
+                    >
+                    <textarea
+                      id="judgingCriteria"
+                      bind:value={editedDetails.judgingCriteria}
+                      class="w-full px-4 py-3 rounded-xl border-gray-200"
+                      rows="4"
+                    ></textarea>
                   </div>
                   <div>
-                    <label for="targetAudience" class="block text-sm font-bold text-gray-700 mb-2">Target Audience</label>
-                    <input id="targetAudience" type="text" bind:value={editedDetails.targetAudience} class="w-full px-4 py-3 rounded-xl border-gray-200" />
+                    <label
+                      for="targetAudience"
+                      class="block text-sm font-bold text-gray-700 mb-2"
+                      >Target Audience</label
+                    >
+                    <input
+                      id="targetAudience"
+                      type="text"
+                      bind:value={editedDetails.targetAudience}
+                      class="w-full px-4 py-3 rounded-xl border-gray-200"
+                    />
                   </div>
                   <div>
-                    <label for="prerequisites" class="block text-sm font-bold text-gray-700 mb-2">Prerequisites</label>
-                    <input id="prerequisites" type="text" bind:value={editedDetails.prerequisites} class="w-full px-4 py-3 rounded-xl border-gray-200" />
+                    <label
+                      for="prerequisites"
+                      class="block text-sm font-bold text-gray-700 mb-2"
+                      >Prerequisites</label
+                    >
+                    <input
+                      id="prerequisites"
+                      type="text"
+                      bind:value={editedDetails.prerequisites}
+                      class="w-full px-4 py-3 rounded-xl border-gray-200"
+                    />
                   </div>
                 </div>
                 <div class="flex gap-4">
@@ -532,59 +590,129 @@
               <div class="mt-8 space-y-8 border-t pt-8" in:fade>
                 {#if extraDetails.fullDescription}
                   <div>
-                    <h3 class="text-lg font-bold text-gray-900 mb-3">Detailed Information</h3>
-                    <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">{extraDetails.fullDescription}</p>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">
+                      Detailed Information
+                    </h3>
+                    <p
+                      class="text-gray-600 leading-relaxed whitespace-pre-wrap"
+                    >
+                      {extraDetails.fullDescription}
+                    </p>
                   </div>
                 {/if}
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {#if extraDetails.objectives}
-                    <div class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
-                      <h3 class="text-md font-bold text-blue-900 mb-3">Objectives</h3>
-                      <p class="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap">{extraDetails.objectives}</p>
+                    <div
+                      class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100"
+                    >
+                      <h3 class="text-md font-bold text-blue-900 mb-3">
+                        Objectives
+                      </h3>
+                      <p
+                        class="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap"
+                      >
+                        {extraDetails.objectives}
+                      </p>
                     </div>
                   {/if}
-                  
+
                   {#if extraDetails.rules}
-                    <div class="p-6 bg-amber-50/50 rounded-2xl border border-amber-100">
-                      <h3 class="text-md font-bold text-amber-900 mb-3">Rules & Regulations</h3>
-                      <p class="text-sm text-amber-800 leading-relaxed whitespace-pre-wrap">{extraDetails.rules}</p>
+                    <div
+                      class="p-6 bg-amber-50/50 rounded-2xl border border-amber-100"
+                    >
+                      <h3 class="text-md font-bold text-amber-900 mb-3">
+                        Rules & Regulations
+                      </h3>
+                      <p
+                        class="text-sm text-amber-800 leading-relaxed whitespace-pre-wrap"
+                      >
+                        {extraDetails.rules}
+                      </p>
                     </div>
                   {/if}
                 </div>
 
                 {#if extraDetails.judgingCriteria}
-                   <div class="p-6 bg-purple-50/50 rounded-2xl border border-purple-100">
-                      <h3 class="text-md font-bold text-purple-900 mb-3">Judging Criteria</h3>
-                      <p class="text-sm text-purple-800 leading-relaxed whitespace-pre-wrap">{extraDetails.judgingCriteria}</p>
-                    </div>
+                  <div
+                    class="p-6 bg-purple-50/50 rounded-2xl border border-purple-100"
+                  >
+                    <h3 class="text-md font-bold text-purple-900 mb-3">
+                      Judging Criteria
+                    </h3>
+                    <p
+                      class="text-sm text-purple-800 leading-relaxed whitespace-pre-wrap"
+                    >
+                      {extraDetails.judgingCriteria}
+                    </p>
+                  </div>
                 {/if}
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                   {#if extraDetails.targetAudience}
-                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                      <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-400 shadow-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  {#if extraDetails.targetAudience}
+                    <div
+                      class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl"
+                    >
+                      <div
+                        class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-400 shadow-sm"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
                         </svg>
                       </div>
                       <div>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Target Audience</p>
-                        <p class="text-sm font-semibold text-gray-700">{extraDetails.targetAudience}</p>
+                        <p
+                          class="text-[10px] font-bold text-gray-400 uppercase tracking-widest"
+                        >
+                          Target Audience
+                        </p>
+                        <p class="text-sm font-semibold text-gray-700">
+                          {extraDetails.targetAudience}
+                        </p>
                       </div>
                     </div>
                   {/if}
 
-                   {#if extraDetails.prerequisites}
-                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                      <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-400 shadow-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  {#if extraDetails.prerequisites}
+                    <div
+                      class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl"
+                    >
+                      <div
+                        class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-400 shadow-sm"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                       </div>
                       <div>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Prerequisites</p>
-                        <p class="text-sm font-semibold text-gray-700">{extraDetails.prerequisites}</p>
+                        <p
+                          class="text-[10px] font-bold text-gray-400 uppercase tracking-widest"
+                        >
+                          Prerequisites
+                        </p>
+                        <p class="text-sm font-semibold text-gray-700">
+                          {extraDetails.prerequisites}
+                        </p>
                       </div>
                     </div>
                   {/if}
