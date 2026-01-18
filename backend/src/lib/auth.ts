@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { expo } from '@better-auth/expo'
 import { db } from './db.js'
 import * as schema from '../models/auth-schema.js'
 import ENV from '../config/ENV.js'
@@ -10,6 +11,9 @@ export const auth = betterAuth({
 		provider: 'pg',
 		schema
 	}),
+	plugins: [
+		expo()
+	],
 	emailAndPassword: {
 		enabled: true
 	},
@@ -30,7 +34,17 @@ export const auth = betterAuth({
 			scope: ['email']
 		}
 	},
-	trustedOrigins: ['http://localhost:5173', 'http://localhost:3000', 'https://pulchowk-x.vercel.app'],
+	trustedOrigins: [
+		'http://localhost:5173',
+		'http://localhost:3000',
+		'https://pulchowk-x.vercel.app',
+		"pulchowkx://",
+		// Expo development URLs
+		"exp://",
+		"exp://**",
+		"exp://192.168.*.*:*/**",
+		"exp://10.*.*.*:*/**",
+	],
 	experimental: {
 		joins: true
 	},
@@ -38,15 +52,12 @@ export const auth = betterAuth({
 		after: createAuthMiddleware(async (ctx) => {
 			if (ctx.path !== "/callback/:id") return;
 			const session = ctx.context.newSession;
-			// if (!session?.user?.email?.endsWith("@pcampus.edu.np")) {
-			// 	// // Delete the session first
-			await ctx.context.internalAdapter.deleteSession(session.session.token);
-
-			// 	// Delete the user account
-			// 	// await ctx.context.internalAdapter.deleteUser(session.user.id);
-
-			// 	// Redirect to frontend with error
-			throw ctx.redirect("/?message=unauthorized_domain");
+			if (!session?.user?.email?.endsWith("@pcampus.edu.np")) {
+				// Delete the session
+				await ctx.context.internalAdapter.deleteSession(session.session.token);
+				// Redirect to frontend with error
+				throw ctx.redirect("/?message=unauthorized_domain");
+			}
 		})
 	}
 })
