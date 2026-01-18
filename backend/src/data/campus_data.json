@@ -1,48 +1,1245 @@
 {
   "buildings": [
     {
-    "id": "ictc-building",
-    "name": "ICTC Building",
-    "coordinates": { "lat": 27.68224422611749, "lng": 85.31914514155119 },
-    "description": "ICTC Building",
-    "services": [
-      {
-        "name": "ICTC Building",
-        "purpose": "Entrance Exam",
-        "location": "Main Building"
-      }
-    ]
-  },
-  {
-    "id": "campus-mess",
-    "name": "Campus Mess",
-    "coordinates": { "lat": 27.68100688137129, "lng": 85.31953172446174 },
-    "description": "Campus Mess",
-    "services": [
-      {
-        "name": "Dining Hall",
-        "purpose": "Student meals and food services",
-        "location": "Main Building"
-      }
-    ]
-  },
-  {
-    "id": "dean-office",
-    "name": "Dean Office",
-    "coordinates": { "lat": 27.681033526909417, "lng": 85.31860772765805 },
-    "description": "Dean Office",
-    "services": [
-      {
-        "name": "Dean's Office",
-        "purpose": "Administrative services, academic matters",
-        "location": "Main Office"
-      },
-      {
-        "name": "Dean's Office",
-        "purpose": "Id card",
-        "location": "Ground floor"
-      }
-    ]
+      "id": "main-entrance",
+      "name": "Main Entrance",
+      "coordinates": { "lat": 27.681366883564905, "lng": 85.3177517448579 },
+      "description": "Main entrance gate of Pulchowk Campus",
+      "services": [
+        {
+          "name": "Security Check",
+          "purpose": "Entry and exit verification, visitor registration",
+          "location": "Gate"
+        }
+      ]
+    },
+    {
+      "id": "dean-office",
+      "name": "Dean Office",
+      "coordinates": { "lat": 27.681033526909417, "lng": 85.31860772765805 },
+      "description": "Administrative headquarters of Pulchowk Campus",
+      "services": [
+        {
+          "name": "Dean's Office",
+          "purpose": "Administrative services, academic matters, official letters",
+          "location": "Main Office"
+        },
+        {
+          "name": "ID Card Office",
+          "purpose": "New ID card issuance, lost ID card replacement, ID card renewal",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Academic Administration",
+          "purpose": "Enrollment verification, transcripts, certificates",
+          "location": "First Floor"
+        }
+      ]
+    },
+    {
+      "id": "ictc-building",
+      "name": "ICTC Building",
+      "coordinates": { "lat": 27.68224422611749, "lng": 85.31914514155119 },
+      "description": "Information and Communication Technology Center - main exam and computer facility",
+      "services": [
+        {
+          "name": "Computer Labs",
+          "purpose": "Computer practicals, programming labs, internet access",
+          "location": "All floors"
+        },
+        {
+          "name": "Entrance Exam Hall",
+          "purpose": "IOE entrance examination venue",
+          "location": "Main Hall"
+        },
+        {
+          "name": "IT Support",
+          "purpose": "Technical support, network issues, computer assistance",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "ict-building",
+      "name": "ICT Building",
+      "coordinates": { "lat": 27.68172332246239, "lng": 85.31910927158208 },
+      "description": "ICT Building for classes and labs",
+      "services": [
+        {
+          "name": "Classrooms",
+          "purpose": "Regular classes, tutorials",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "dept-electrical-electronics-computer",
+      "name": "Department of Electrical, Electronics and Computer Engineering",
+      "coordinates": { "lat": 27.68181692613163, "lng": 85.31871288839 },
+      "description": "Department for Electrical, Electronics and Computer Engineering programs",
+      "services": [
+        {
+          "name": "Department Office",
+          "purpose": "Course registration, faculty consultation, academic queries",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Electronics Lab",
+          "purpose": "Electronics practicals, circuit design",
+          "location": "First Floor"
+        },
+        {
+          "name": "Computer Lab",
+          "purpose": "Programming, networking practicals",
+          "location": "Second Floor"
+        },
+        {
+          "name": "Toilet",
+          "purpose": "Restroom facility",
+          "location": "Third Floor"
+        }
+      ]
+    },
+    {
+      "id": "dept-civil",
+      "name": "Department of Civil Engineering",
+      "coordinates": { "lat": 27.682968475303554, "lng": 85.31936398409704 },
+      "description": "Department for Civil Engineering programs - F Block",
+      "services": [
+        {
+          "name": "Department Office",
+          "purpose": "Course registration, faculty consultation, academic queries",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Structure Lab",
+          "purpose": "Structural engineering experiments",
+          "location": "First Floor"
+        },
+        {
+          "name": "Geotechnical Lab",
+          "purpose": "Soil testing, geotechnical experiments",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "dept-mechanical-aerospace",
+      "name": "Department of Mechanical and Aerospace Engineering",
+      "coordinates": { "lat": 27.682462244093173, "lng": 85.31986930605723 },
+      "description": "Department for Mechanical and Aerospace Engineering programs - D Block",
+      "services": [
+        {
+          "name": "Department Office",
+          "purpose": "Course registration, faculty consultation, academic queries",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Thermodynamics Lab",
+          "purpose": "Heat and thermodynamics experiments",
+          "location": "First Floor"
+        },
+        {
+          "name": "Manufacturing Lab",
+          "purpose": "Manufacturing process practicals",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "dept-architecture",
+      "name": "Department of Architecture",
+      "coordinates": { "lat": 27.68044934237453, "lng": 85.31831152476735 },
+      "description": "Department for Architecture programs",
+      "services": [
+        {
+          "name": "Department Office",
+          "purpose": "Course registration, faculty consultation, academic queries",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Design Studio",
+          "purpose": "Architectural design and drafting",
+          "location": "First Floor"
+        },
+        {
+          "name": "Building Science Lab",
+          "purpose": "Building materials testing",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "dept-applied-sciences",
+      "name": "Department of Applied Sciences and Chemical Engineering",
+      "coordinates": { "lat": 27.683220527000756, "lng": 85.3200449911119 },
+      "description": "Department for Applied Sciences and Chemical Engineering",
+      "services": [
+        {
+          "name": "Department Office",
+          "purpose": "Course registration, faculty consultation",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Chemistry Lab",
+          "purpose": "Chemistry practicals and experiments",
+          "location": "First Floor"
+        },
+        {
+          "name": "Physics Lab",
+          "purpose": "Physics practicals and experiments",
+          "location": "Second Floor"
+        }
+      ]
+    },
+    {
+      "id": "dept-science-humanities",
+      "name": "Department of Science and Humanities",
+      "coordinates": { "lat": 27.683041212054775, "lng": 85.32054395296416 },
+      "description": "Department for Science and Humanities subjects",
+      "services": [
+        {
+          "name": "Department Office",
+          "purpose": "Course registration, faculty consultation",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "pulchowk-library",
+      "name": "Pulchowk Library",
+      "coordinates": { "lat": 27.681579366803874, "lng": 85.3194349446735 },
+      "description": "Central library with 60,000+ books, journals, and study resources",
+      "services": [
+        {
+          "name": "Lending Section",
+          "purpose": "Borrow textbooks and reference books",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Reference Section",
+          "purpose": "Reference books, journals, magazines (in-library use only)",
+          "location": "First Floor"
+        },
+        {
+          "name": "Thesis Section",
+          "purpose": "Past theses and project reports",
+          "location": "First Floor"
+        },
+        {
+          "name": "Reading Room",
+          "purpose": "Quiet study area",
+          "location": "All floors"
+        },
+        {
+          "name": "Toilet",
+          "purpose": "Restroom facility",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "campus-mess",
+      "name": "Campus Mess",
+      "coordinates": { "lat": 27.68100688137129, "lng": 85.31953172446174 },
+      "description": "Main dining hall for hostel students",
+      "services": [
+        {
+          "name": "Dining Hall",
+          "purpose": "Breakfast, lunch and dinner for hostel students",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "campus-canteen",
+      "name": "Campus Canteen",
+      "coordinates": { "lat": 27.68125093458133, "lng": 85.32354899843239 },
+      "description": "Canteen near the sports grounds",
+      "services": [
+        {
+          "name": "Food Court",
+          "purpose": "Snacks, beverages, light meals",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "block-a-hostel",
+      "name": "Block A Pulchowk Boys Hostel",
+      "coordinates": { "lat": 27.682188311416212, "lng": 85.3239283186274 },
+      "description": "Boys hostel Block A with Wi-Fi and security",
+      "services": [
+        {
+          "name": "Hostel Room",
+          "purpose": "Student accommodation",
+          "location": "All floors"
+        },
+        {
+          "name": "Common Room",
+          "purpose": "Recreation and socializing",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "block-b-hostel",
+      "name": "Block B Pulchowk Boys Hostel",
+      "coordinates": { "lat": 27.68184284511355, "lng": 85.32390377692212 },
+      "description": "Boys hostel Block B with Wi-Fi and security",
+      "services": [
+        {
+          "name": "Hostel Room",
+          "purpose": "Student accommodation",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "block-c-hostel",
+      "name": "Block C Pulchowk Boys Hostel",
+      "coordinates": { "lat": 27.681485585500837, "lng": 85.32390894588298 },
+      "description": "Boys hostel Block C with Wi-Fi and security",
+      "services": [
+        {
+          "name": "Hostel Room",
+          "purpose": "Student accommodation",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "girls-hostel",
+      "name": "Pulchowk Girls Hostel",
+      "coordinates": { "lat": 27.68307449361768, "lng": 85.32406172989181 },
+      "description": "Girls hostel with dedicated facilities",
+      "services": [
+        {
+          "name": "Hostel Room",
+          "purpose": "Student accommodation",
+          "location": "All floors"
+        },
+        {
+          "name": "Canteen",
+          "purpose": "Food and snacks for girls hostel",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "msc-hostel",
+      "name": "MSC Hostel",
+      "coordinates": { "lat": 27.680091477233432, "lng": 85.319017191439 },
+      "description": "Hostel for Masters students",
+      "services": [
+        {
+          "name": "Hostel Room",
+          "purpose": "Masters student accommodation",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "exam-control-office",
+      "name": "Exam Control Office, IOE",
+      "coordinates": { "lat": 27.681071855710286, "lng": 85.32103017170311 },
+      "description": "Central exam control and administration office",
+      "services": [
+        {
+          "name": "Exam Registration",
+          "purpose": "Register for exams, exam form submission",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Result Queries",
+          "purpose": "Result verification, transcript collection",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Exam Schedule",
+          "purpose": "Get exam schedules and admit cards",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "continuing-education",
+      "name": "Continuing Education Center",
+      "coordinates": { "lat": 27.681494777843028, "lng": 85.31895314397525 },
+      "description": "Center for continuing education and professional development",
+      "services": [
+        {
+          "name": "Registration",
+          "purpose": "Enroll in short courses and professional programs",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "fsu-office",
+      "name": "FSU Office",
+      "coordinates": { "lat": 27.682847709268373, "lng": 85.32075560082757 },
+      "description": "Free Students Union office - student government",
+      "services": [
+        {
+          "name": "Student Affairs",
+          "purpose": "Student complaints, suggestions, union activities",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "fsu-clinic",
+      "name": "FSU Clinic",
+      "coordinates": { "lat": 27.681596676189187, "lng": 85.3192558536719 },
+      "description": "Student health clinic run by FSU",
+      "services": [
+        {
+          "name": "First Aid",
+          "purpose": "Basic medical treatment, first aid",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Health Consultation",
+          "purpose": "Minor health issues, medicine",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "nabil-bank-atm",
+      "name": "Nabil Bank ATM",
+      "coordinates": { "lat": 27.682829607001196, "lng": 85.31853678585821 },
+      "description": "Nabil Bank ATM for cash withdrawal",
+      "services": [
+        {
+          "name": "ATM",
+          "purpose": "Cash withdrawal, balance inquiry",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "siddhartha-bank-atm",
+      "name": "Siddhartha Bank ATM",
+      "coordinates": { "lat": 27.68210633185008, "lng": 85.31945726206425 },
+      "description": "Siddhartha Bank ATM for cash withdrawal",
+      "services": [
+        {
+          "name": "ATM",
+          "purpose": "Cash withdrawal, balance inquiry",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "om-stationery",
+      "name": "Om Stationery Store",
+      "coordinates": { "lat": 27.681843392083223, "lng": 85.31984862292666 },
+      "description": "Stationery shop for printing and supplies",
+      "services": [
+        {
+          "name": "Printing",
+          "purpose": "Document printing, photocopying, binding",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Stationery",
+          "purpose": "Notebooks, pens, engineering supplies",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "niraula-stores",
+      "name": "Niraula Stores",
+      "coordinates": { "lat": 27.681833530683008, "lng": 85.32321651934609 },
+      "description": "General store for daily essentials",
+      "services": [
+        {
+          "name": "General Store",
+          "purpose": "Snacks, beverages, daily essentials",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "locus-office",
+      "name": "Locus Office",
+      "coordinates": { "lat": 27.68139565322535, "lng": 85.3185504866151 },
+      "description": "LOCUS - annual tech fest office",
+      "services": [
+        {
+          "name": "LOCUS Club",
+          "purpose": "Tech fest registration, event queries",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "robotics-club",
+      "name": "Robotics Club",
+      "coordinates": { "lat": 27.681470604000538, "lng": 85.3190521926656 },
+      "description": "Robotics club for robotics enthusiasts",
+      "services": [
+        {
+          "name": "Robotics Lab",
+          "purpose": "Robotics projects, workshops, competitions",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "electrical-club",
+      "name": "Electrical Club",
+      "coordinates": { "lat": 27.682291135732115, "lng": 85.3182927681815 },
+      "description": "Electrical club for electrical engineering students",
+      "services": [
+        {
+          "name": "Club Activities",
+          "purpose": "Electrical engineering projects, workshops",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "music-club",
+      "name": "Pulchowk Music Club",
+      "coordinates": { "lat": 27.6816237436294, "lng": 85.32322012669403 },
+      "description": "Music club for musical activities",
+      "services": [
+        {
+          "name": "Music Room",
+          "purpose": "Music practice, band rehearsals, events",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "seds-pulchowk",
+      "name": "SEDS Pulchowk",
+      "coordinates": { "lat": 27.683617545231883, "lng": 85.32041220727473 },
+      "description": "Students for the Exploration and Development of Space",
+      "services": [
+        {
+          "name": "Space Club",
+          "purpose": "Space exploration projects, astronomy events",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "center-energy-studies",
+      "name": "Center for Energy Studies",
+      "coordinates": { "lat": 27.68321662681744, "lng": 85.3208610299663 },
+      "description": "Research center for energy studies",
+      "services": [
+        {
+          "name": "Research Center",
+          "purpose": "Energy research, renewable energy projects",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "cids",
+      "name": "CIDS",
+      "coordinates": { "lat": 27.683010663794747, "lng": 85.31990266456802 },
+      "description": "Center for Infrastructure Development Studies",
+      "services": [
+        {
+          "name": "Research Center",
+          "purpose": "Infrastructure development research",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "heavy-lab",
+      "name": "Heavy Lab",
+      "coordinates": { "lat": 27.682214022253916, "lng": 85.32050399856865 },
+      "description": "Heavy equipment laboratory for civil engineering",
+      "services": [
+        {
+          "name": "Heavy Equipment Lab",
+          "purpose": "Civil engineering heavy equipment testing",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "heavy-lab-block",
+      "name": "Heavy Lab Block",
+      "coordinates": { "lat": 27.68209387245163, "lng": 85.32044738817302 },
+      "description": "Building housing heavy laboratories",
+      "services": []
+    },
+    {
+      "id": "hydraulic-lab",
+      "name": "Hydraulic Lab",
+      "coordinates": { "lat": 27.68216722059954, "lng": 85.3203413798231 },
+      "description": "Hydraulic engineering laboratory",
+      "services": [
+        {
+          "name": "Hydraulics Lab",
+          "purpose": "Fluid mechanics experiments, hydraulic testing",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "hydro-lab",
+      "name": "Hydro Lab",
+      "coordinates": { "lat": 27.68018924241545, "lng": 85.31942804361722 },
+      "description": "Hydrology and water resources laboratory",
+      "services": [
+        {
+          "name": "Hydrology Lab",
+          "purpose": "Water resources experiments",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "hydropower-testing-lab",
+      "name": "Hydropower Testing Lab",
+      "coordinates": { "lat": 27.68346942813116, "lng": 85.32052846482077 },
+      "description": "Laboratory for hydropower testing",
+      "services": [
+        {
+          "name": "Turbine Testing",
+          "purpose": "Hydropower equipment testing",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "high-voltage-lab",
+      "name": "High Voltage Lab",
+      "coordinates": { "lat": 27.6809369819715, "lng": 85.31934978609263 },
+      "description": "High voltage electrical engineering laboratory",
+      "services": [
+        {
+          "name": "High Voltage Testing",
+          "purpose": "Electrical insulation testing, HV experiments",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "cmtl",
+      "name": "Central Material Testing Laboratory",
+      "coordinates": { "lat": 27.682452614638663, "lng": 85.31862939361366 },
+      "description": "Central laboratory for material testing",
+      "services": [
+        {
+          "name": "Material Testing",
+          "purpose": "Construction material testing, quality assurance",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "chemical-engineering-lab",
+      "name": "Chemical Engineering Lab",
+      "coordinates": { "lat": 27.681784531262693, "lng": 85.32328685569604 },
+      "description": "Laboratory for chemical engineering",
+      "services": [
+        {
+          "name": "Chemical Lab",
+          "purpose": "Chemical engineering experiments",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "machine-workshop",
+      "name": "Machine Workshop",
+      "coordinates": { "lat": 27.681269249391733, "lng": 85.31906537040504 },
+      "description": "Workshop for machine tools and manufacturing",
+      "services": [
+        {
+          "name": "Workshop",
+          "purpose": "Machine tools training, manufacturing practicals",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "workshop-area",
+      "name": "Workshop Area",
+      "coordinates": { "lat": 27.68124302750384, "lng": 85.31950279900741 },
+      "description": "General workshop area for practicals",
+      "services": [
+        {
+          "name": "Workshop",
+          "purpose": "Hands-on engineering practicals",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "football-ground",
+      "name": "Pulchowk Football Ground",
+      "coordinates": { "lat": 27.682630231202694, "lng": 85.322933342042 },
+      "description": "Main football ground for sports activities",
+      "services": [
+        {
+          "name": "Football Field",
+          "purpose": "Football matches, sports events",
+          "location": "Ground"
+        }
+      ]
+    },
+    {
+      "id": "cricket-ground",
+      "name": "Pulchowk Cricket Ground",
+      "coordinates": { "lat": 27.683328511076553, "lng": 85.32215173345384 },
+      "description": "Cricket ground for sports activities",
+      "services": [
+        {
+          "name": "Cricket Field",
+          "purpose": "Cricket matches, sports events",
+          "location": "Ground"
+        }
+      ]
+    },
+    {
+      "id": "cricket-practice-pitch",
+      "name": "Cricket Practice Pitch",
+      "coordinates": { "lat": 27.682835875995877, "lng": 85.32345024929077 },
+      "description": "Practice pitch for cricket",
+      "services": [
+        {
+          "name": "Practice Nets",
+          "purpose": "Cricket practice",
+          "location": "Ground"
+        }
+      ]
+    },
+    {
+      "id": "basketball-court",
+      "name": "Basketball Court",
+      "coordinates": { "lat": 27.681816863769555, "lng": 85.32258776220266 },
+      "description": "Basketball court for sports activities",
+      "services": [
+        {
+          "name": "Basketball Court",
+          "purpose": "Basketball games",
+          "location": "Ground"
+        }
+      ]
+    },
+    {
+      "id": "volleyball-court",
+      "name": "Pulchowk Volleyball Court",
+      "coordinates": { "lat": 27.682254992538773, "lng": 85.3232165987614 },
+      "description": "Volleyball court for sports activities",
+      "services": [
+        {
+          "name": "Volleyball Court",
+          "purpose": "Volleyball games",
+          "location": "Ground"
+        }
+      ]
+    },
+    {
+      "id": "badminton-court-1",
+      "name": "Badminton Court",
+      "coordinates": { "lat": 27.68195320004999, "lng": 85.31850453478063 },
+      "description": "Indoor badminton court near electrical block",
+      "services": [
+        {
+          "name": "Badminton Court",
+          "purpose": "Badminton games",
+          "location": "Indoor"
+        }
+      ]
+    },
+    {
+      "id": "badminton-court-2",
+      "name": "Badminton Court",
+      "coordinates": { "lat": 27.68049264560473, "lng": 85.3187278522779 },
+      "description": "Badminton court near architecture block",
+      "services": [
+        {
+          "name": "Badminton Court",
+          "purpose": "Badminton games",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "badminton-court-3",
+      "name": "Badminton Court",
+      "coordinates": { "lat": 27.68178302016902, "lng": 85.32354890743278 },
+      "description": "Badminton court near hostel area",
+      "services": [
+        {
+          "name": "Badminton Court",
+          "purpose": "Badminton games",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "gym-hall",
+      "name": "Pulchowk Gym Hall",
+      "coordinates": { "lat": 27.681514289414693, "lng": 85.32348793354589 },
+      "description": "Indoor gym for students - Open 9 AM to 6 PM",
+      "services": [
+        {
+          "name": "Gym",
+          "purpose": "Weight training, fitness equipment",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "outdoor-gym",
+      "name": "Calisthenics Park, Outdoor Gym",
+      "coordinates": { "lat": 27.68190370401871, "lng": 85.32277525891658 },
+      "description": "Outdoor gym and calisthenics park",
+      "services": [
+        {
+          "name": "Outdoor Gym",
+          "purpose": "Calisthenics, outdoor workout equipment",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "toilet-1",
+      "name": "Toilet",
+      "coordinates": { "lat": 27.681596180356692, "lng": 85.31981281262972 },
+      "description": "Public toilet near library and first entrance",
+      "services": [
+        {
+          "name": "Restroom",
+          "purpose": "Public toilet facility",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "changing-room-toilet",
+      "name": "Changing Room and Toilet",
+      "coordinates": { "lat": 27.682637979662985, "lng": 85.32170295101872 },
+      "description": "Changing room and toilet near sports grounds",
+      "services": [
+        {
+          "name": "Changing Room",
+          "purpose": "Sports changing room",
+          "location": "Ground Floor"
+        },
+        {
+          "name": "Restroom",
+          "purpose": "Public toilet facility",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "water-vending-machine",
+      "name": "Water Vending Machine",
+      "coordinates": { "lat": 27.681725654706653, "lng": 85.31950605845594 },
+      "description": "Purified water vending machine",
+      "services": [
+        {
+          "name": "Water Dispenser",
+          "purpose": "Clean drinking water (Rs. 1 per liter)",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "water-tap",
+      "name": "Water Tap",
+      "coordinates": { "lat": 27.68185543970918, "lng": 85.31962706669509 },
+      "description": "Public water tap",
+      "services": [
+        {
+          "name": "Water Tap",
+          "purpose": "Drinking water",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "parking-1",
+      "name": "Main Parking",
+      "coordinates": { "lat": 27.68214769544541, "lng": 85.31992845601593 },
+      "description": "Main vehicle parking area",
+      "services": [
+        {
+          "name": "Parking",
+          "purpose": "Two-wheeler and four-wheeler parking",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "parking-2",
+      "name": "Parking",
+      "coordinates": { "lat": 27.68219940335537, "lng": 85.31866212805386 },
+      "description": "Parking near electrical block",
+      "services": [
+        {
+          "name": "Parking",
+          "purpose": "Vehicle parking",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "parking-3",
+      "name": "Parking",
+      "coordinates": { "lat": 27.681456757347078, "lng": 85.31945116821976 },
+      "description": "Parking near workshop area",
+      "services": [
+        {
+          "name": "Parking",
+          "purpose": "Vehicle parking",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "parking-4",
+      "name": "Parking",
+      "coordinates": { "lat": 27.68277752595847, "lng": 85.32092042329674 },
+      "description": "Parking near sports ground",
+      "services": [
+        {
+          "name": "Parking",
+          "purpose": "Vehicle parking",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "helicopter-parking",
+      "name": "Helicopter Parking",
+      "coordinates": { "lat": 27.68228789473575, "lng": 85.31969443930882 },
+      "description": "Iconic helicopter display - campus landmark",
+      "services": [
+        {
+          "name": "Landmark",
+          "purpose": "Historic helicopter display, selfie spot",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "pi-chautari",
+      "name": "PI Chautari",
+      "coordinates": { "lat": 27.68267661712244, "lng": 85.31987844126758 },
+      "description": "Pi Chautari - student hangout spot",
+      "services": [
+        {
+          "name": "Rest Area",
+          "purpose": "Sitting area, student hangout",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "saraswati-mandir",
+      "name": "Saraswati Mandir",
+      "coordinates": { "lat": 27.68256455316562, "lng": 85.31939527713587 },
+      "description": "Temple dedicated to goddess Saraswati",
+      "services": [
+        {
+          "name": "Temple",
+          "purpose": "Worship, prayer",
+          "location": "Ground Level"
+        }
+      ]
+    },
+    {
+      "id": "saheed-shukra-park",
+      "name": "Saheed Shukra Park",
+      "coordinates": { "lat": 27.683175191488672, "lng": 85.31886558617163 },
+      "description": "Park named after Saheed Shukra Raj Shastri",
+      "services": [
+        {
+          "name": "Park",
+          "purpose": "Relaxation, sitting area",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "fountain",
+      "name": "Fountain",
+      "coordinates": { "lat": 27.68235589280647, "lng": 85.31887941661347 },
+      "description": "Decorative fountain in campus",
+      "services": []
+    },
+    {
+      "id": "garden-area",
+      "name": "Garden Area",
+      "coordinates": { "lat": 27.681687524653015, "lng": 85.32366555744233 },
+      "description": "Garden area near hostel",
+      "services": [
+        {
+          "name": "Garden",
+          "purpose": "Relaxation, greenery",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "suspension-bridge",
+      "name": "Suspension Bridge",
+      "coordinates": { "lat": 27.682608301646283, "lng": 85.32131159196621 },
+      "description": "Engineering demonstration - suspension bridge model",
+      "services": []
+    },
+    {
+      "id": "paraphet",
+      "name": "Paraphet",
+      "coordinates": { "lat": 27.682909787818645, "lng": 85.32149154665098 },
+      "description": "Student gathering area",
+      "services": [
+        {
+          "name": "Sitting Area",
+          "purpose": "Student hangout, events",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "helm-of-ioe",
+      "name": "The Helm of IOE Pulchowk",
+      "coordinates": { "lat": 27.682629953546424, "lng": 85.32083316993328 },
+      "description": "Iconic ship helm structure - campus landmark",
+      "services": [
+        {
+          "name": "Landmark",
+          "purpose": "Campus landmark, selfie spot",
+          "location": "Outdoor"
+        }
+      ]
+    },
+    {
+      "id": "cave",
+      "name": "Cave",
+      "coordinates": { "lat": 27.680847307223573, "lng": 85.31794947683699 },
+      "description": "Hidden cave structure - campus secret spot",
+      "services": [
+        {
+          "name": "Exploration",
+          "purpose": "Hidden campus spot",
+          "location": "Underground"
+        }
+      ]
+    },
+    {
+      "id": "f-block",
+      "name": "F Block",
+      "coordinates": { "lat": 27.682788668714352, "lng": 85.3196061234986 },
+      "description": "F Block - Civil Engineering Department building",
+      "services": [
+        {
+          "name": "Civil Department",
+          "purpose": "Civil engineering classes and labs",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "d-block",
+      "name": "D Block",
+      "coordinates": { "lat": 27.682486205309274, "lng": 85.31998717938649 },
+      "description": "D Block - Mechanical Engineering Department building",
+      "services": [
+        {
+          "name": "Mechanical Department",
+          "purpose": "Mechanical engineering classes and labs",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "e-block",
+      "name": "E Block",
+      "coordinates": { "lat": 27.680604750704575, "lng": 85.31839835594832 },
+      "description": "E Block - Academic building near architecture",
+      "services": [
+        {
+          "name": "Classrooms",
+          "purpose": "Classes and lectures",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "g-block",
+      "name": "G Block",
+      "coordinates": { "lat": 27.68310430877834, "lng": 85.32018128025857 },
+      "description": "G Block - Academic building",
+      "services": [
+        {
+          "name": "Classrooms",
+          "purpose": "Classes and lectures",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "block-c",
+      "name": "Block C",
+      "coordinates": { "lat": 27.682140047755496, "lng": 85.31833975128347 },
+      "description": "Block C - Academic building near electrical department",
+      "services": [
+        {
+          "name": "Classrooms",
+          "purpose": "Classes and lectures",
+          "location": "All floors"
+        }
+      ]
+    },
+    {
+      "id": "embark-college",
+      "name": "Embark College",
+      "coordinates": { "lat": 27.682712891619232, "lng": 85.31888939994957 },
+      "description": "Embark College building within campus premises",
+      "services": []
+    },
+    {
+      "id": "ntbns",
+      "name": "NTBNS",
+      "coordinates": { "lat": 27.68301615325798, "lng": 85.32070194666937 },
+      "description": "NTBNS office",
+      "services": []
+    },
+    {
+      "id": "pulchowk-girls",
+      "name": "Pulchowk Girls",
+      "coordinates": { "lat": 27.682918543955225, "lng": 85.3206748356111 },
+      "description": "Pulchowk Girls club/organization",
+      "services": []
+    },
+    {
+      "id": "asa-office",
+      "name": "ASA Office",
+      "coordinates": { "lat": 27.680433693360456, "lng": 85.31840952112645 },
+      "description": "Architecture Students Association office",
+      "services": [
+        {
+          "name": "ASA",
+          "purpose": "Architecture student activities and events",
+          "location": "Ground Floor"
+        }
+      ]
+    },
+    {
+      "id": "dept-roads",
+      "name": "Department of Roads",
+      "coordinates": { "lat": 27.680752787168743, "lng": 85.31987423799086 },
+      "description": "Government Department of Roads office in campus",
+      "services": []
+    },
+    {
+      "id": "teachers-quarter",
+      "name": "Pulchowk Teacher's Quarter",
+      "coordinates": { "lat": 27.683030311890363, "lng": 85.324714775784 },
+      "description": "Residential quarters for teachers",
+      "services": []
+    },
+    {
+      "id": "staff-quarter",
+      "name": "Staff Quarter",
+      "coordinates": { "lat": 27.68249831633632, "lng": 85.32411254835387 },
+      "description": "Residential quarters for staff",
+      "services": []
+    },
+    {
+      "id": "first-entrance",
+      "name": "First Entrance",
+      "coordinates": { "lat": 27.68207456812752, "lng": 85.3194594635064 },
+      "description": "First entrance to the main academic block",
+      "services": []
+    },
+    {
+      "id": "second-entrance",
+      "name": "Second Entrance",
+      "coordinates": { "lat": 27.682147085370673, "lng": 85.31959562985224 },
+      "description": "Second entrance - access to D, F and G Blocks",
+      "services": []
+    }
+  ],
+  "frequently_asked_questions": {
+    "lost_id_card": {
+      "question": "Where do I go if I lost my ID card?",
+      "answer": "Go to the Dean Office on the Ground Floor for ID card replacement. You will need to fill out a form and pay a replacement fee.",
+      "location_id": "dean-office"
+    },
+    "toilets": {
+      "question": "Where are the toilets?",
+      "answer": "The main public toilets are: 1) Ground floor of Pulchowk Library, 2) Third floor of Department of Electrical, Electronics and Computer Engineering, 3) Near the first entrance (standalone toilet), 4) Changing room and toilet near sports grounds.",
+      "location_ids": ["pulchowk-library", "dept-electrical-electronics-computer", "toilet-1", "changing-room-toilet"]
+    },
+    "drinking_water": {
+      "question": "Where can I get drinking water?",
+      "answer": "There is a Water Vending Machine near the library (Rs. 1 per liter for purified water), and public water taps near the second entrance.",
+      "location_ids": ["water-vending-machine", "water-tap"]
+    },
+    "atm": {
+      "question": "Where is the ATM?",
+      "answer": "There are two ATMs on campus: Nabil Bank ATM (near Saheed Shukra Park) and Siddhartha Bank ATM (near the first entrance).",
+      "location_ids": ["nabil-bank-atm", "siddhartha-bank-atm"]
+    },
+    "printing": {
+      "question": "Where can I print documents?",
+      "answer": "Om Stationery Store near the second entrance offers printing, photocopying, and binding services.",
+      "location_id": "om-stationery"
+    },
+    "food": {
+      "question": "Where can I eat on campus?",
+      "answer": "Campus Mess (for hostel students), Campus Canteen near the sports grounds, and Niraula Stores for snacks.",
+      "location_ids": ["campus-mess", "campus-canteen", "niraula-stores"]
+    },
+    "library_hours": {
+      "question": "What are the library hours?",
+      "answer": "The library is open from 9:30 AM to 5:30 PM during summer hours. All students, faculty, and staff are eligible for membership.",
+      "location_id": "pulchowk-library"
+    },
+    "gym": {
+      "question": "Where is the gym?",
+      "answer": "Pulchowk Gym Hall is located near the hostel area and is open from 9 AM to 6 PM. There is also an outdoor calisthenics park.",
+      "location_ids": ["gym-hall", "outdoor-gym"]
+    },
+    "hostel": {
+      "question": "Where are the hostels?",
+      "answer": "Boys hostels are in Block A, B, and C near the sports grounds. Girls hostel is located further north with its own canteen. MSC Hostel is for Masters students.",
+      "location_ids": ["block-a-hostel", "block-b-hostel", "block-c-hostel", "girls-hostel", "msc-hostel"]
+    },
+    "exam_queries": {
+      "question": "Where do I go for exam-related queries?",
+      "answer": "The Exam Control Office handles exam registration, result queries, admit cards, and transcript collection.",
+      "location_id": "exam-control-office"
+    },
+    "health": {
+      "question": "Where can I get medical help?",
+      "answer": "FSU Clinic near the library provides first aid and basic medical consultation.",
+      "location_id": "fsu-clinic"
+    },
+    "student_complaints": {
+      "question": "Where do I file student complaints?",
+      "answer": "The FSU (Free Students Union) Office handles student complaints, suggestions, and union activities.",
+      "location_id": "fsu-office"
+    },
+    "parking": {
+      "question": "Where can I park my vehicle?",
+      "answer": "There are multiple parking areas: Main parking near the helicopter, parking near electrical block, parking near workshop area, and parking near sports ground.",
+      "location_ids": ["parking-1", "parking-2", "parking-3", "parking-4"]
+    },
+    "landmarks": {
+      "question": "What are the famous landmarks on campus?",
+      "answer": "The iconic landmarks include: Helicopter Parking (historic helicopter display), The Helm of IOE, PI Chautari, Saraswati Mandir, and the Suspension Bridge.",
+      "location_ids": ["helicopter-parking", "helm-of-ioe", "pi-chautari", "saraswati-mandir", "suspension-bridge"]
+    }
   }
-  ]
 }
