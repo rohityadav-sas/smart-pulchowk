@@ -144,6 +144,7 @@ export const clubProfiles = pgTable('club_profiles',
 
     contactPhone: varchar('contact_phone', { length: 50 }),
     websiteUrl: varchar('website_url', { length: 500 }),
+    address: varchar('address', { length: 500 }),
 
     socialLinks: jsonb('social_links').$type<{
       facebook?: string;

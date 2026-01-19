@@ -1,0 +1,1 @@
+ALTER TABLE "club_profiles" ADD COLUMN "address" varchar(500);

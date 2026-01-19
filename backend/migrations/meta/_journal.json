@@ -71,6 +71,13 @@
       "when": 1768398236373,
       "tag": "0009_lucky_marvel_apes",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1768806821599,
+      "tag": "0010_aberrant_mantis",
+      "breakpoints": true
     }
   ]
 }

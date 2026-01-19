@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { expo } from '@better-auth/expo'
 import { db } from './db.js'
 import * as schema from '../models/auth-schema.js'
 import ENV from '../config/ENV.js'
@@ -10,6 +11,9 @@ export const auth = betterAuth({
 		provider: 'pg',
 		schema
 	}),
+	plugins: [
+		expo()
+	],
 	emailAndPassword: {
 		enabled: true
 	},
@@ -30,7 +34,17 @@ export const auth = betterAuth({
 			scope: ['email']
 		}
 	},
-	trustedOrigins: ['http://localhost:5173', 'http://localhost:3000', 'https://pulchowk-x.vercel.app'],
+	trustedOrigins: [
+		'http://localhost:5173',
+		'http://localhost:3000',
+		'https://pulchowk-x.vercel.app',
+		"pulchowkx://",
+		// Expo development URLs
+		"exp://",
+		"exp://**",
+		"exp://192.168.*.*:*/**",
+		"exp://10.*.*.*:*/**",
+	],
 	experimental: {
 		joins: true
 	},

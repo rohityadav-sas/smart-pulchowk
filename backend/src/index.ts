@@ -6,6 +6,7 @@ import ENV from './config/ENV.js'
 import eventRoutes from './routes/events.route.js'
 import clubProfileRoutes from './routes/clubProfile.route.js'
 import chatBotRoutes from './routes/chatBot.route.js'
+import userRoutes from './routes/user.route.js'
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use("/api/event", eventRoutes)
 app.use("/api/event", clubProfileRoutes)
 app.use("/api", chatBotRoutes);
+app.use("/api", userRoutes);
 
 app.use(express.static(path.join(__dirname, '../../frontend/dist')))
 
