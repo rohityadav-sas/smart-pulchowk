@@ -141,6 +141,43 @@ export async function getClubs() {
     }
 }
 
+export async function updateClubInfo(clubId: number, clubData: createClubInput){
+    try{
+        const club = await db.query.clubs.findFirst({
+            where: eq(clubs.id, clubId),
+        });
+
+        if(!club){
+            return {
+                success: false,
+                message: "No clubs found!!"
+            }
+        }
+
+        const updatedClub = await db
+            .update(clubs)
+            .set({
+                ...clubData, 
+                updatedAt: new Date(),
+            })
+            .where(eq(clubs.id, clubId))
+            .returning();
+        
+        return {
+            success: true,
+            message: "club Updated successfully",
+            data: updatedClub
+        };
+        
+    }catch(error){
+        console.error(error.messsage);
+        return {
+            success: false, 
+            message: error.message || "Failed to update the club Info"
+        }
+    }
+}
+
 export async function getClubById(clubId: number) {
     try {
         const [clubData] = await db

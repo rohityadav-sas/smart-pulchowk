@@ -8,6 +8,7 @@
     removeClubAdmin,
     getClubProfile,
     updateClubProfile,
+    updateClubInfo,
     createClubProfile,
     type ClubProfile,
     getEventCategories,
@@ -51,6 +52,11 @@
   let saveCategoryLoading = $state(false);
   let showCategoryModal = $state(false);
   let loadingCategories = $state(true);
+
+  // Club info editing state
+  let isEditingClubInfo = $state(false);
+  let editedClubInfo = $state<Partial<Club>>({});
+  let saveClubLoading = $state(false);
 
   const isClubOwner = $derived(
     $session.data?.user && club && club.authClubId === $session.data.user.id,
@@ -363,6 +369,36 @@
       alert(err.message || "An error occurred");
     }
   }
+
+  function startEditingClubInfo() {
+    if (club) {
+      editedClubInfo = {
+        name: club.name,
+        description: club.description,
+        logoUrl: club.logoUrl,
+      };
+      isEditingClubInfo = true;
+    }
+  }
+
+  async function handleUpdateClubInfo() {
+    if (!club) return;
+    saveClubLoading = true;
+    try {
+      const result = await updateClubInfo(parseInt(clubId), editedClubInfo);
+
+      if (result.success) {
+        club = { ...club, ...editedClubInfo };
+        isEditingClubInfo = false;
+      } else {
+        alert(result.message || "Failed to update club info");
+      }
+    } catch (err: any) {
+      alert(err.message || "An error occurred");
+    } finally {
+      saveClubLoading = false;
+    }
+  }
 </script>
 
 <div class="min-h-[calc(100vh-4rem)] bg-gray-50/30 px-4 py-8 sm:px-6 lg:px-8">
@@ -430,64 +466,26 @@
         <!-- Left Column: Club Info -->
         <div class="lg:col-span-2 space-y-8">
           <div
-            class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 relative overflow-hidden"
+            class="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sm:p-8 relative overflow-hidden"
             in:fly={{ y: 20, duration: 600 }}
           >
             <div
               class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-60"
             ></div>
 
-            <div class="relative flex flex-col md:flex-row gap-8 items-start">
-              <div class="shrink-0">
-                <div
-                  class="w-32 h-32 md:w-48 md:h-48 bg-linear-to-br from-blue-500 to-indigo-600 rounded-3xl shadow-xl flex items-center justify-center overflow-hidden transform rotate-3"
-                >
-                  {#if club.logoUrl}
-                    <img
-                      src={club.logoUrl}
-                      alt={club.name}
-                      class="w-full h-full object-cover"
-                    />
-                  {:else}
-                    <span class="text-6xl font-bold text-white"
-                      >{club.name.charAt(0)}</span
-                    >
-                  {/if}
-                </div>
-              </div>
-
-              <div class="flex-1">
-                <h1
-                  class="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight"
-                >
-                  {club.name}
-                </h1>
-                <div class="flex flex-wrap gap-3 mb-6">
-                  <span
-                    class="px-4 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wider border border-blue-100"
-                    >Official Club</span
+            {#if isEditingClubInfo}
+              <div class="relative space-y-6" in:slide>
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="text-2xl font-black text-gray-900 tracking-tight">
+                    Edit Club Information
+                  </h2>
+                  <button
+                  aria-label="cross"
+                    onclick={() => (isEditingClubInfo = false)}
+                    class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
                   >
-                  {#if club.isActive}
-                    <span
-                      class="px-4 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider border border-emerald-100"
-                      >Active</span
-                    >
-                  {/if}
-                </div>
-                <p class="text-lg text-gray-600 leading-relaxed mb-8">
-                  {club.description ||
-                    "No description available for this club yet."}
-                </p>
-
-                <div class="flex gap-4">
-                  <a
-                    href="/clubs/{club.id}/events"
-                    use:routeAction
-                    class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/20 hover:-translate-y-1 active:scale-95"
-                  >
-                    View Events
                     <svg
-                      class="w-5 h-5"
+                      class="w-6 h-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -496,17 +494,171 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
-                  </a>
-                  {#if canCreateEvent}
-                    <a
-                      href="/clubs/{club.id}/events/create"
-                      use:routeAction
-                      class="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-2xl transition-all shadow-lg shadow-gray-900/20 hover:-translate-y-1 active:scale-95"
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="md:col-span-2">
+                    <label
+                      for="edit-club-name"
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Club Name</label
                     >
-                      Create Event
+                    <input
+                      id="edit-club-name"
+                      type="text"
+                      bind:value={editedClubInfo.name}
+                      class="w-full px-5 py-4 rounded-2xl border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-700 bg-gray-50/50"
+                      placeholder="Enter club name"
+                    />
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <label
+                      for="edit-club-logo"
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Logo URL</label
+                    >
+                    <input
+                      id="edit-club-logo"
+                      type="text"
+                      bind:value={editedClubInfo.logoUrl}
+                      class="w-full px-5 py-4 rounded-2xl border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-700 bg-gray-50/50"
+                      placeholder="https://example.com/logo.png"
+                    />
+                  </div>
+
+                  <div class="md:col-span-2">
+                    
+                    <label
+                      for="edit-club-desc"
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Department</label
+                    >
+                    <textarea
+                      id="edit-club-desc"
+                      bind:value={editedClubInfo.description}
+                      class="w-full px-5 py-4 rounded-2xl border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-700 bg-gray-50/50"
+                      placeholder="Enter club description"
+                      rows="4"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div
+                  class="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-gray-100"
+                >
+                  <button
+                    onclick={handleUpdateClubInfo}
+                    disabled={saveClubLoading}
+                    class="w-full sm:flex-1 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {#if saveClubLoading}
+                      <LoadingSpinner size="sm" />
+                      Saving...
+                    {:else}
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2.5"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      Save Club Info
+                    {/if}
+                  </button>
+                  <button
+                    onclick={() => (isEditingClubInfo = false)}
+                    class="w-full sm:w-auto px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            {:else}
+              <div class="relative flex flex-col md:flex-row gap-8 items-start">
+                <div class="shrink-0">
+                  <div
+                    class="w-32 h-32 md:w-48 md:h-48 bg-linear-to-br from-blue-500 to-indigo-600 rounded-3xl shadow-xl flex items-center justify-center overflow-hidden transform rotate-3"
+                  >
+                    {#if club.logoUrl}
+                      <img
+                        src={club.logoUrl}
+                        alt={club.name}
+                        class="w-full h-full object-cover"
+                      />
+                    {:else}
+                      <span class="text-6xl font-bold text-white"
+                        >{club.name.charAt(0)}</span
+                      >
+                    {/if}
+                  </div>
+                </div>
+
+                <div class="flex-1">
+                  <div
+                    class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4"
+                  >
+                    <h1
+                      class="text-4xl md:text-5xl font-black text-gray-900 tracking-tight"
+                    >
+                      {club.name}
+                    </h1>
+                    {#if isClubOwner}
+                      <button
+                        onclick={startEditingClubInfo}
+                        class="flex items-center justify-center w-full md:w-48 gap-2 px-5 py-2.5 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm"
+                      >
+                        <svg
+                          class="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2.5"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                          />
+                        </svg>
+                        Edit Club Info
+                      </button>
+                    {/if}
+                  </div>
+                  <div class="flex flex-wrap gap-3 mb-6">
+                    <span
+                      class="px-4 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wider border border-blue-100"
+                      >Official Club</span
+                    >
+                    {#if club.isActive}
+                      <span
+                        class="px-4 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider border border-emerald-100"
+                        >Active</span
+                      >
+                    {/if}
+                  </div>
+                  <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                    {club.description ||
+                      "No description available for this club yet."}
+                  </p>
+
+                  <div class="flex gap-4">
+                    <a
+                      href="/clubs/{club.id}/events"
+                      use:routeAction
+                      class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/20 hover:-translate-y-1 active:scale-95"
+                    >
+                      View Events
                       <svg
                         class="w-5 h-5"
                         fill="none"
@@ -517,14 +669,36 @@
                           stroke-linecap="round"
                           stroke-linejoin="round"
                           stroke-width="2"
-                          d="M12 4v16m8-8H4"
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
                         />
                       </svg>
                     </a>
-                  {/if}
+                    {#if canCreateEvent}
+                      <a
+                        href="/clubs/{club.id}/events/create"
+                        use:routeAction
+                        class="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-2xl transition-all shadow-lg shadow-gray-900/20 hover:-translate-y-1 active:scale-95"
+                      >
+                        Create Event
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                      </a>
+                    {/if}
+                  </div>
                 </div>
               </div>
-            </div>
+            {/if}
           </div>
 
           <!-- Club Profile Section -->

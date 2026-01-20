@@ -8,7 +8,8 @@ import {
     getAllEvents,
     addClubAdmin,
     removeClubAdmin,
-    getClubAdmins
+    getClubAdmins,
+    updateClubInfo
 } from "../services/clubEvents.service.js";
 import { createEvent } from "../services/createEvent.service.js";
 import {
@@ -90,6 +91,34 @@ export async function existingClub(req: Request, res: Response) {
         return res.json({ message: error.message });
     }
 
+}
+
+export async function UpdateClubInfo(req: Request, res: Response) {
+    try{
+        const clubId = parseInt(req.params.clubId);
+        const clubData = req.body;
+
+        if(!clubId){
+            return res.json({message: "clubId must be included"});
+        }
+
+        const result = await updateClubInfo(clubId, clubData);
+
+        if (!result.success) {
+            return res.status(404).json({
+                success: false,
+                message: result.message
+            });
+        }
+
+        return res.json({
+            success: true,
+            message: result.message
+        })
+
+    }catch(error){
+        return res.json({message: error.message});
+    }
 }
 
 export async function clubEvents(req: Request, res: Response) {

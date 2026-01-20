@@ -371,6 +371,20 @@ export async function updateClubProfile(clubId: number, profileData: Partial<Clu
     }
 }
 
+export async function updateClubInfo(clubId: number, clubData: Partial<Club>): Promise<{ success: boolean; message?: string }> {
+    try {
+        const res = await fetch(`${API_EVENTS}/clubs/${clubId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(clubData),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
 export async function createExtraEventDetails(eventId: number, detailsData: Partial<ExtraEventDetail>): Promise<{ success: boolean; details?: ExtraEventDetail; message?: string }> {
     try {
         const res = await fetch(`${API_CLUBS}/event-details/create-event-details`, {
