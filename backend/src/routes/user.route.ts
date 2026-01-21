@@ -44,7 +44,7 @@ router.post("/sync-user", async (req, res) => {
                 data: {
                     success: true,
                     message: "User already exists, info updated",
-                    user: { id: authStudentId, email, name },
+                    user: { id: authStudentId, email, name, role: existingUserById.role },
                 },
             });
             return;
@@ -74,7 +74,8 @@ router.post("/sync-user", async (req, res) => {
                     user: {
                         id: existingUserByEmail.id,  // Return web user's ID!
                         email,
-                        name
+                        name,
+                        role: existingUserByEmail.role
                     },
                     linkedFrom: "firebase",
                     firebaseUid: authStudentId
@@ -100,7 +101,7 @@ router.post("/sync-user", async (req, res) => {
             data: {
                 success: true,
                 message: "User created successfully",
-                user: { id: newUser.id, email: newUser.email, name: newUser.name },
+                user: { id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role },
             },
         });
     } catch (error) {
