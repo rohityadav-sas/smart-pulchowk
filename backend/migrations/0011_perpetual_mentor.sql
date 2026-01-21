@@ -1,0 +1,1 @@
+ALTER TABLE "clubs" ADD COLUMN "logo_public_id" varchar(255);

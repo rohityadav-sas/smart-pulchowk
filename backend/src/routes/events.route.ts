@@ -13,11 +13,15 @@ import {
     addAdmin,
     removeAdmin,
     getAdmins,
-    UpdateClubInfo
+    UpdateClubInfo,
+    UploadClubLogo,
+    DeleteClubLogo
 } from "../controllers/event.controller.js";
 import { requireAuth, requireAdmin } from "../middleware/auth.middleware.js";
+import multer from "multer";
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/create-club", requireAuth, requireAdmin, CreateClub);
 router.post("/club/add-admin", requireAuth, addAdmin);
@@ -25,7 +29,9 @@ router.post("/club/remove-admin", requireAuth, removeAdmin);
 router.get("/club/admins/:clubId", requireAuth, getAdmins);
 router.get("/clubs", existingClub);
 router.get("/clubs/:clubId", existingClub);
-router.put('/clubs/:clubId', UpdateClubInfo);
+router.put('/clubs/:clubId', requireAuth, UpdateClubInfo);
+router.post("/clubs/:clubId/upload-logo", requireAuth, upload.single('logo'), UploadClubLogo);
+router.delete("/clubs/:clubId/upload-logo", requireAuth, DeleteClubLogo);
 
 router.get("/events/:clubId", clubEvents);
 router.post("/create-event", CreateEvent)

@@ -16,6 +16,8 @@
     updateEventCategory,
     deleteEventCategory,
     type EventCategory,
+    uploadClubLogo,
+    deleteClubLogo,
   } from "../lib/api";
   import LoadingSpinner from "../components/LoadingSpinner.svelte";
   import { fade, fly, slide } from "svelte/transition";
@@ -57,6 +59,14 @@
   let isEditingClubInfo = $state(false);
   let editedClubInfo = $state<Partial<Club>>({});
   let saveClubLoading = $state(false);
+
+  // Logo editing state
+  let isEditingLogo = $state(false);
+  let logoUploadMode = $state<"url" | "file">("file");
+  let logoUrlLink = $state("");
+  let selectedLogoFile = $state<File | null>(null);
+  let logoPreviewUrl = $state<string | null>(null);
+  let logoUploadLoading = $state(false);
 
   const isClubOwner = $derived(
     $session.data?.user && club && club.authClubId === $session.data.user.id,
@@ -375,7 +385,6 @@
       editedClubInfo = {
         name: club.name,
         description: club.description,
-        logoUrl: club.logoUrl,
       };
       isEditingClubInfo = true;
     }
@@ -388,7 +397,10 @@
       const result = await updateClubInfo(parseInt(clubId), editedClubInfo);
 
       if (result.success) {
-        club = { ...club, ...editedClubInfo };
+        if (club) {
+          club.name = editedClubInfo.name || club.name;
+          club.description = editedClubInfo.description || club.description;
+        }
         isEditingClubInfo = false;
       } else {
         alert(result.message || "Failed to update club info");
@@ -397,6 +409,111 @@
       alert(err.message || "An error occurred");
     } finally {
       saveClubLoading = false;
+    }
+  }
+
+  function handleFileSelection(event: Event) {
+
+    const target = event.target as HTMLInputElement;
+
+    if (target.files && target.files[0]) {
+
+      selectedLogoFile = target.files[0];
+
+      if (logoPreviewUrl) {
+
+        URL.revokeObjectURL(logoPreviewUrl);
+
+      }
+
+      logoPreviewUrl = URL.createObjectURL(selectedLogoFile);
+    }
+  }
+
+  async function handleLogoUpload() {
+    if (!clubId) return;
+
+    logoUploadLoading = true;
+
+    try {
+
+      let result;
+
+      if (logoUploadMode === "file") {
+
+        if (!selectedLogoFile) {
+
+          alert("Please select a file first");
+          return;
+        }
+
+        result = await uploadClubLogo(parseInt(clubId), selectedLogoFile);
+      } else {
+        if (!logoUrlLink) {
+
+          alert("Please enter a URL first");
+          return;
+        }
+
+        result = await uploadClubLogo(parseInt(clubId), logoUrlLink);
+      }
+
+      if (result.success && result.data) {
+
+        if (club) {
+
+          club.logoUrl = result.data.url;
+        }
+
+        isEditingLogo = false;
+        resetLogoState();
+
+      } else {
+        alert(result.message || "Failed to upload logo");
+      }
+    } catch (err: any) {
+      alert(err.message || "An error occurred");
+    } finally {
+      logoUploadLoading = false;
+    }
+  }
+
+  async function handleDeleteLogo() {
+    if (!clubId) return;
+    if (!confirm("Are you sure you want to delete the club logo?")) return;
+
+    logoUploadLoading = true;
+
+    try {
+
+      const result = await deleteClubLogo(parseInt(clubId));
+
+      if (result.success) {
+
+        if (club) {
+          club.logoUrl = null;
+        }
+
+        isEditingLogo = false;
+        resetLogoState();
+
+      } else {
+        alert(result.message || "Failed to delete logo");
+      }
+    } catch (err: any) {
+      alert(err.message || "An error occurred");
+    } finally {
+      logoUploadLoading = false;
+    }
+  }
+
+  function resetLogoState() {
+    selectedLogoFile = null;
+    logoUrlLink = "";
+    
+    if (logoPreviewUrl) {
+      URL.revokeObjectURL(logoPreviewUrl);
+      logoPreviewUrl = null;
     }
   }
 </script>
@@ -480,7 +597,7 @@
                     Edit Club Information
                   </h2>
                   <button
-                  aria-label="cross"
+                    aria-label="cross"
                     onclick={() => (isEditingClubInfo = false)}
                     class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
                   >
@@ -518,21 +635,112 @@
 
                   <div class="md:col-span-2">
                     <label
-                      for="edit-club-logo"
+                    for="club-logo"
                       class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
-                      >Logo URL</label
+                      >Club Logo</label
                     >
-                    <input
-                      id="edit-club-logo"
-                      type="text"
-                      bind:value={editedClubInfo.logoUrl}
-                      class="w-full px-5 py-4 rounded-2xl border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-gray-700 bg-gray-50/50"
-                      placeholder="https://example.com/logo.png"
-                    />
+                    <div class="bg-gray-50 border border-gray-100 rounded-3xl p-6">
+                      <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <!-- Logo Preview -->
+                        <div class="relative shrink-0">
+                          <div class="w-32 h-32 bg-blue-100 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center border-2 border-dashed border-blue-200">
+                            {#if logoPreviewUrl || (club && club.logoUrl)}
+                              <img
+                                src={logoPreviewUrl || (club && club.logoUrl)}
+                                alt="Logo preview"
+                                class="w-full h-full object-cover"
+                              />
+                            {:else}
+                              <svg class="w-12 h-12 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            {/if}
+                          </div>
+                          {#if (logoPreviewUrl || (club && club.logoUrl)) && !logoUploadLoading}
+                            <button
+                              type="button"
+                              onclick={handleDeleteLogo}
+                              class="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full shadow-lg hover:bg-red-600 transition-colors"
+                              title="Delete Logo"
+                            >
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          {/if}
+                        </div>
+
+                        <!-- Upload Controls -->
+                        <div class="flex-1 space-y-4">
+                          <div class="flex gap-2 p-1 bg-white border border-gray-100 rounded-xl w-fit">
+                            <button
+                              type="button"
+                              onclick={() => { logoUploadMode = 'file'; resetLogoState(); }}
+                              class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all {logoUploadMode === 'file' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'}"
+                            >
+                              Upload File
+                            </button>
+                            <button
+                              type="button"
+                              onclick={() => { logoUploadMode = 'url'; resetLogoState(); }}
+                              class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all {logoUploadMode === 'url' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'}"
+                            >
+                              Image URL
+                            </button>
+                          </div>
+
+                          {#if logoUploadMode === 'file'}
+                            <div class="flex items-center gap-4">
+                              <label class="cursor-pointer">
+                                <span class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors inline-block">
+                                  Select Image
+                                </span>
+                                <input
+                                  type="file"
+                                  class="hidden"
+                                  accept="image/*"
+                                  onchange={handleFileSelection}
+                                />
+                              </label>
+                              <span class="text-xs text-gray-400">
+                                {selectedLogoFile ? selectedLogoFile.name : 'No file chosen (Max 5MB)'}
+                              </span>
+                            </div>
+                          {:else}
+                            <input
+                              type="text"
+                              bind:value={logoUrlLink}
+                              class="w-full px-4 py-2.5 rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all text-sm text-gray-700 bg-white"
+                              placeholder="https://example.com/logo.png"
+                            />
+                          {/if}
+
+                          {#if (selectedLogoFile || logoUrlLink) && !logoUploadLoading}
+                            <button
+                              type="button"
+                              onclick={handleLogoUpload}
+                              class="px-6 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-600/10 flex items-center gap-2"
+                            >
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                              </svg>
+                              Upload Logo
+                            </button>
+                          {:else if logoUploadLoading}
+                            <div class="flex items-center gap-2 text-blue-600">
+                              <LoadingSpinner size="sm" />
+                              <span class="text-sm font-bold">Uploading...</span>
+                            </div>
+                          {/if}
+                        </div>
+                      </div>
+                    </div>
+                    <p class="mt-2 text-[10px] text-gray-400 font-medium">
+                      Recommended: Square image (800x800px), PNG or WebP preferred.
+                    </p>
                   </div>
 
                   <div class="md:col-span-2">
-                    
                     <label
                       for="edit-club-desc"
                       class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"

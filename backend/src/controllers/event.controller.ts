@@ -9,7 +9,8 @@ import {
     addClubAdmin,
     removeClubAdmin,
     getClubAdmins,
-    updateClubInfo
+    updateClubInfo,
+    deleteClubLogo
 } from "../services/clubEvents.service.js";
 import { createEvent } from "../services/createEvent.service.js";
 import {
@@ -21,6 +22,10 @@ import {
 import { db } from "../lib/db.js";
 import { user } from "../models/auth-schema.js";
 import { eq } from "drizzle-orm";
+import {
+    handleClubLogoUrlUpload,
+    handleCLubLogoFileUpload
+} from "../services/clubEvents.service.js";
 
 export async function getAdmins(req: Request, res: Response) {
     const { clubId } = req.params;
@@ -94,12 +99,12 @@ export async function existingClub(req: Request, res: Response) {
 }
 
 export async function UpdateClubInfo(req: Request, res: Response) {
-    try{
+    try {
         const clubId = parseInt(req.params.clubId);
         const clubData = req.body;
 
-        if(!clubId){
-            return res.json({message: "clubId must be included"});
+        if (!clubId) {
+            return res.json({ message: "clubId must be included" });
         }
 
         const result = await updateClubInfo(clubId, clubData);
@@ -116,8 +121,86 @@ export async function UpdateClubInfo(req: Request, res: Response) {
             message: result.message
         })
 
-    }catch(error){
-        return res.json({message: error.message});
+    } catch (error) {
+        return res.json({ message: error.message });
+    }
+}
+
+export async function UploadClubLogo(req: Request, res: Response) {
+    try {
+        const { clubId } = req.params;
+
+        if (!clubId) {
+            return res.json({
+                success: false,
+                message: "Club Id is required"
+            });
+        }
+
+
+        if (req.file) {
+            const result = await handleCLubLogoFileUpload(
+                parseInt(clubId),
+                req.file
+            );
+
+            if (!result.success) {
+                return res.json(result);
+            }
+
+            return res.json(result);
+        } else if (req.body.imageUrl) {
+
+            const result = await handleClubLogoUrlUpload(
+                parseInt(clubId),
+                req.body.imageUrl
+            );
+
+            if (!result.success) {
+                return res.json(result);
+            }
+
+            return res.json(result);
+        } else {
+            return res.json({
+                success: false,
+                message: "No file or URL provided"
+            });
+        }
+    } catch (error) {
+        console.error("Upload club logo error:", error);
+
+        return res.json({
+            success: false,
+            message: error.message || "Upload failed"
+        });
+    }
+}
+
+export async function DeleteClubLogo(req: Request, res: Response) {
+    try {
+        const { clubId } = req.params;
+
+        if (!clubId) {
+            return res.json({
+                success: false,
+                message: "Club Id is required"
+            });
+        }
+
+        const result = await deleteClubLogo(parseInt(clubId));
+
+        if (!result.success) {
+            return res.json(result);
+        }
+
+        return res.json(result);
+    } catch (error) {
+        console.error('Delete club logo error: ', error);
+        return res.json({
+            success: false,
+            message: error.message || 'Deleted failed'
+        });
     }
 }
 

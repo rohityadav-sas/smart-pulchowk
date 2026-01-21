@@ -21,6 +21,7 @@ export interface createClubInput {
     description?: string;
     email: string;
     logoUrl?: string;
+    logoPublicId?: string;
 }
 
 export interface CreateClubProfileInput {

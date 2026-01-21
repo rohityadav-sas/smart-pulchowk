@@ -38,6 +38,7 @@ export const clubs = pgTable(
     description: text("description"),
     email: varchar("email", { length: 255 }).notNull(),
     logoUrl: varchar("logo_url", { length: 500 }),
+    logoPublicId: varchar("logo_public_id",{length: 255}),
     isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),

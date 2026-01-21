@@ -1,8 +1,30 @@
 import { createClubInput } from "../types/events.js";
 import { db } from "../lib/db.js";
-import { clubs, events, clubAdmins } from "../models/event-schema.js"; // updated import
-import { desc, eq, sql, and, or, asc } from "drizzle-orm"; // updated imports
+import {
+    clubs,
+    events,
+    clubAdmins
+} from "../models/event-schema.js"; // updated import
+import {
+    desc,
+    eq,
+    sql,
+    and,
+    or,
+    asc
+} from "drizzle-orm"; // updated imports
 import { user } from "../models/auth-schema.js";
+import {
+    uploadClubLogoToCloudinary,
+    deleteImageFromCLoudinary
+} from "./cloudinary.service.js";
+import {
+    UPLOAD_CONSTANTS,
+    isValidImageUrl
+} from "../config/cloudinary.js";
+
+
+const { MAX_FILE_SIZE, ALLOWED_TYPES } = UPLOAD_CONSTANTS;
 
 export async function addClubAdmin(ownerId: string, clubId: number, newAdminEmail: string) {
     try {
@@ -98,7 +120,8 @@ export async function createClub(authClubId: string, clubData: createClubInput) 
             name: clubData.name,
             description: clubData.description,
             email: clubData.email,
-            logoUrl: clubData.logoUrl,
+            logoUrl: clubData.logoUrl || null,
+            logoPublicId: null,
             isActive: true,
         }).returning();
 
@@ -141,38 +164,59 @@ export async function getClubs() {
     }
 }
 
-export async function updateClubInfo(clubId: number, clubData: createClubInput){
-    try{
+export async function updateClubInfo(clubId: number, clubData: createClubInput) {
+    try {
         const club = await db.query.clubs.findFirst({
             where: eq(clubs.id, clubId),
         });
 
-        if(!club){
+        if (!club) {
             return {
                 success: false,
                 message: "No clubs found!!"
             }
         }
 
+        const { logoUrl, ...otherClubData } = clubData;
+
+        const updateClubData: any = {
+            ...otherClubData,
+            updatedAt: new Date(),
+        }
+
+        if (logoUrl !== undefined && logoUrl !== club.logoUrl) {
+
+            if (logoUrl === null || logoUrl === '') {
+
+                updateClubData.logoUrl = null;
+                updateClubData.logoPublicId = null;
+
+            } else if (typeof logoUrl === 'string') {
+
+                updateClubData.logoUrl = logoUrl;
+
+                if (!logoUrl.includes('cloudinary.com')) {
+                    updateClubData.logoPublicId = null;
+                }
+            }
+        }
+
         const updatedClub = await db
             .update(clubs)
-            .set({
-                ...clubData, 
-                updatedAt: new Date(),
-            })
+            .set(updateClubData)
             .where(eq(clubs.id, clubId))
             .returning();
-        
+
         return {
             success: true,
             message: "club Updated successfully",
             data: updatedClub
         };
-        
-    }catch(error){
+
+    } catch (error) {
         console.error(error.messsage);
         return {
-            success: false, 
+            success: false,
             message: error.message || "Failed to update the club Info"
         }
     }
@@ -229,6 +273,185 @@ export async function getClubById(clubId: number) {
     }
 }
 
+export async function upadateClubLogoToDb(
+    clubId: number,
+    logoUrl: string,
+    logoPublicId: string | null
+) {
+    await db
+        .update(clubs)
+        .set({
+            logoUrl,
+            logoPublicId,
+            updatedAt: new Date()
+        })
+        .where(eq(clubs.id, clubId));
+}
+
+async function getClubLogoinfo(clubId: number) {
+    const [club] = await db
+        .select({
+            logoUrl: clubs.logoUrl,
+            logoPublicId: clubs.logoPublicId
+        })
+        .from(clubs)
+        .where(eq(clubs.id, clubId))
+        .limit(1);
+
+    return club;
+}
+
+export async function handleClubLogoUrlUpload(
+    clubId: number,
+    imageUrl: string
+) {
+    try {
+        if (!imageUrl || typeof imageUrl !== 'string') {
+            return {
+                success: true,
+                message: "Image URL is required"
+            };
+        }
+
+        if (!isValidImageUrl(imageUrl)) {
+            return {
+                success: false,
+                message: "Invalid image URL format"
+            };
+        }
+
+        const currentLogo = await getClubLogoinfo(clubId);
+
+        if (currentLogo?.logoPublicId) {
+            await deleteImageFromCLoudinary(currentLogo.logoPublicId);
+        }
+
+        await upadateClubLogoToDb(clubId, imageUrl, null);
+
+        return {
+            success: true,
+            data: {
+                url: imageUrl,
+                publicId: null,
+                source: 'external'
+            }
+        };
+    } catch (error) {
+        console.error('URL upload error:', error);
+
+        return {
+            success: false,
+            message: error.message || 'Failed to save URL'
+        };
+    }
+}
+
+export async function handleCLubLogoFileUpload(
+    clubId: number,
+    file: Express.Multer.File
+) {
+    try {
+        if (!ALLOWED_TYPES.includes(file.mimetype as any)) {
+            return {
+                success: false,
+                message: 'Invalid file type. Only JPEG, PNG, and WebP are allowed'
+            }
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            return {
+                success: false,
+                message: 'File too large. Maximum size is 5MB'
+            }
+        }
+
+        const currentLogo = await getClubLogoinfo(clubId);
+
+
+        if (currentLogo?.logoPublicId) {
+            await deleteImageFromCLoudinary(currentLogo.logoPublicId);
+        }
+
+        const buffer = file.buffer;
+        const base64 = buffer.toString('base64');
+        const dataUri = `data:${file.mimetype};base64,${base64}`;
+
+        const uploadResult = await uploadClubLogoToCloudinary(clubId, dataUri);
+
+        if (!uploadResult.success || !uploadResult.url) {
+            return {
+                success: false,
+                message: uploadResult.message || 'Upload failed'
+            }
+        }
+
+        await upadateClubLogoToDb(clubId, uploadResult.url, uploadResult.publicId || null);
+
+        return {
+            success: true,
+            data: {
+                url: uploadResult.url,
+                publicId: uploadResult.publicId,
+                source: 'cloudinary'
+            }
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message || 'upload failed'
+        }
+    }
+}
+
+export async function deleteClubLogo(clubId: number) {
+    try {
+        const club = await db.query.clubs
+            .findFirst({
+                where: eq(clubs.id, clubId),
+                columns: {
+                    logoUrl: true,
+                    logoPublicId: true
+                }
+            });
+
+        if (!club) {
+            return {
+                success: false,
+                message: 'Club not found'
+            };
+        }
+
+        if (!club.logoUrl) {
+            return {
+                success: false,
+                message: 'No logo to delete'
+            };
+        }
+
+        if (club.logoPublicId) {
+            await deleteImageFromCLoudinary(club.logoPublicId);
+        }
+
+        await db
+            .update(clubs)
+            .set({
+                logoUrl: null,
+                logoPublicId: null,
+                updatedAt: new Date()
+            })
+            .where(eq(clubs.id, clubId));
+
+        return {
+            success: true,
+            message: 'Logo deleted successfully'
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message
+        };
+    }
+}
 
 export async function getClubEvents(clubId: number) {
 

@@ -78,6 +78,13 @@
       "when": 1768806821599,
       "tag": "0010_aberrant_mantis",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1768999172233,
+      "tag": "0011_perpetual_mentor",
+      "breakpoints": true
     }
   ]
 }

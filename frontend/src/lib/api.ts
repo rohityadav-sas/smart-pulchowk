@@ -385,6 +385,44 @@ export async function updateClubInfo(clubId: number, clubData: Partial<Club>): P
     }
 }
 
+export async function uploadClubLogo(clubId: number, logo: File | string): Promise<{ success: boolean; data?: { url: string; publicId: string | null; source: string }; message?: string }> {
+    try {
+        let body: FormData | string;
+        let headers: Record<string, string> = {};
+
+        if (logo instanceof File) {
+            const formData = new FormData();
+            formData.append('logo', logo);
+            body = formData;
+        } else {
+            headers['Content-Type'] = 'application/json';
+            body = JSON.stringify({ imageUrl: logo });
+        }
+
+        const res = await fetch(`${API_EVENTS}/clubs/${clubId}/upload-logo`, {
+            method: 'POST',
+            headers,
+            credentials: 'include',
+            body
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function deleteClubLogo(clubId: number): Promise<{ success: boolean; message?: string }> {
+    try {
+        const res = await fetch(`${API_EVENTS}/clubs/${clubId}/upload-logo`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
 export async function createExtraEventDetails(eventId: number, detailsData: Partial<ExtraEventDetail>): Promise<{ success: boolean; details?: ExtraEventDetail; message?: string }> {
     try {
         const res = await fetch(`${API_CLUBS}/event-details/create-event-details`, {
