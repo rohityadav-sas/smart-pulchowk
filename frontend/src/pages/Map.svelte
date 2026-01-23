@@ -1134,9 +1134,17 @@
     queryToExecute = currentQuery;
     currentQuery = "";
   }
+
+  let isEmbedded = $state(false);
+
+  $effect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    isEmbedded = urlParams.get("embed") === "true";
+  });
 </script>
 
 <!-- Chatbot UI -->
+{#if !isEmbedded}
 <div class="fixed bottom-10.5 right-6 z-100 flex flex-col items-end gap-4">
   {#if chatOpen}
     <div
@@ -1385,6 +1393,7 @@
     {/if}
   </button>
 </div>
+{/if}
 
 <div class="relative w-full h-[calc(100vh-4rem)] bg-gray-50">
   {#if !isNavigating}
