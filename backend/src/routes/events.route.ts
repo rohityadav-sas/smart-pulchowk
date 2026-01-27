@@ -15,7 +15,8 @@ import {
     getAdmins,
     UpdateClubInfo,
     UploadClubLogo,
-    DeleteClubLogo
+    DeleteClubLogo,
+    UploadEventBanner
 } from "../controllers/event.controller.js";
 import { requireAuth, requireAdmin } from "../middleware/auth.middleware.js";
 import multer from "multer";
@@ -30,8 +31,6 @@ router.get("/club/admins/:clubId", requireAuth, getAdmins);
 router.get("/clubs", existingClub);
 router.get("/clubs/:clubId", existingClub);
 router.put('/clubs/:clubId', requireAuth, UpdateClubInfo);
-router.post("/clubs/:clubId/upload-logo", requireAuth, upload.single('logo'), UploadClubLogo);
-router.delete("/clubs/:clubId/upload-logo", requireAuth, DeleteClubLogo);
 
 router.get("/events/:clubId", clubEvents);
 router.post("/create-event", CreateEvent)
@@ -40,7 +39,7 @@ router.get("/all-events", allEvents);
 router.post("/register-event", eventRegistration);
 router.post("/registered-student", registeredStudent);
 router.post("/cancel-registration", cancelRegistration);
-router.post("/events/upload-banner", requireAuth, upload.single('banner'), UploadClubLogo); // Reusing logic for now or add a new one
+router.post("/upload-banner", requireAuth, upload.single('banner'), UploadEventBanner); // Generic upload
 router.post("/enrollment", eventEnrollment);
 
 
