@@ -400,7 +400,7 @@ export async function uploadClubLogo(clubId: number, logo: File | string): Promi
             body = JSON.stringify({ imageUrl: logo });
         }
 
-        const res = await fetch(`${API_EVENTS}/clubs/${clubId}/upload-logo`, {
+        const res = await fetch(`${API_CLUBS}/${clubId}/upload-logo`, {
             method: 'POST',
             headers,
             credentials: 'include',
@@ -414,7 +414,7 @@ export async function uploadClubLogo(clubId: number, logo: File | string): Promi
 
 export async function deleteClubLogo(clubId: number): Promise<{ success: boolean; message?: string }> {
     try {
-        const res = await fetch(`${API_EVENTS}/clubs/${clubId}/upload-logo`, {
+        const res = await fetch(`${API_CLUBS}/${clubId}/upload-logo`, {
             method: 'DELETE',
             credentials: 'include'
         });

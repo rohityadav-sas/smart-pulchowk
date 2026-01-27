@@ -82,7 +82,7 @@ export async function createEvent(userId: string, clubId: number, eventInput: Cr
             eventStartTime: eventStartTime,
             eventEndTime: eventEndTime,
             bannerUrl: eventInput.bannerUrl || null,
-            status: 'draft' as const,
+            status: 'published' as const,
         };
 
         const [event] = await db.insert(events).values(insertData).returning();

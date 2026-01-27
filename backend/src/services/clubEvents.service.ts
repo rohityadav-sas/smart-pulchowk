@@ -140,17 +140,26 @@ export async function createClub(authClubId: string, clubData: createClubInput) 
 
 export async function getClubs() {
     try {
-        const existingClub = await db.query.clubs.findMany({
-            where: eq(clubs.isActive, true),
-            orderBy: [asc(clubs.name)],
-            columns: {
-                id: true,
-                authClubId: true,
-                name: true,
-                description: true,
-                logoUrl: true,
-            },
-        });
+        const existingClub = await db
+            .select({
+                id: clubs.id,
+                authClubId: clubs.authClubId,
+                name: clubs.name,
+                description: clubs.description,
+                logoUrl: clubs.logoUrl,
+                upcomingEvents: sql<number>`
+                    COUNT(DISTINCT CASE
+                    WHEN ${events.status} != 'cancelled' 
+                    AND (${events.eventStartTime} > NOW() OR (${events.eventStartTime} <= NOW() AND ${events.eventEndTime} >= NOW()))
+                    THEN ${events.id}
+                    END)`,
+                totalParticipants: sql<number>`COALESCE(SUM(${events.currentParticipants}), 0)`,
+            })
+            .from(clubs)
+            .leftJoin(events, eq(clubs.id, events.clubId))
+            .where(eq(clubs.isActive, true))
+            .groupBy(clubs.id)
+            .orderBy(asc(clubs.name));
 
         return {
             success: true,
@@ -236,19 +245,20 @@ export async function getClubById(clubId: number) {
                 createdAt: clubs.createdAt,
                 upcomingEvents: sql <number>`
                     COUNT(DISTINCT CASE
-                    WHEN ${events.status} = 'published' 
-                    AND ${events.eventStartTime} > NOW()
+                    WHEN ${events.status} != 'cancelled' 
+                    AND (${events.eventStartTime} > NOW() OR (${events.eventStartTime} <= NOW() AND ${events.eventEndTime} >= NOW()))
                     THEN ${events.id}
                     END)`,
                 completedEvents: sql<number>`
-        COUNT(DISTINCT CASE 
-          WHEN ${events.status} = 'completed' 
-          THEN ${events.id} 
-        END)
-      `,
+                    COUNT(DISTINCT CASE 
+                    WHEN ${events.status} != 'cancelled' 
+                    AND ${events.eventEndTime} < NOW()
+                    THEN ${events.id} 
+                    END)
+                `,
                 totalParticipants: sql<number>`
-        COALESCE(SUM(${events.currentParticipants}), 0)
-      `,
+                    COALESCE(SUM(${events.currentParticipants}), 0)
+                `,
             }).from(clubs)
             .leftJoin(events, eq(events.clubId, clubs.id))
             .where(and(
@@ -374,7 +384,7 @@ export async function handleCLubLogoFileUpload(
 
         const buffer = file.buffer;
         const base64 = buffer.toString('base64');
-        const dataUri = `data:${file.mimetype};base64,${base64}`;
+        const dataUri = `data: ${file.mimetype}; base64, ${base64} `;
 
         const uploadResult = await uploadClubLogoToCloudinary(clubId, dataUri);
 
@@ -500,7 +510,7 @@ export async function getUpcomingevents() {
         const upcomingEvents = await db.query.events.findMany({
             where: and(
                 eq(events.status, 'published'),
-                sql`${events.eventStartTime} > ${now}`,
+                sql`${events.eventStartTime} > ${now} `,
                 eq(events.isRegistrationOpen, true)
             ),
             with: {
