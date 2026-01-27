@@ -40,6 +40,7 @@ router.get("/all-events", allEvents);
 router.post("/register-event", eventRegistration);
 router.post("/registered-student", registeredStudent);
 router.post("/cancel-registration", cancelRegistration);
+router.post("/events/upload-banner", requireAuth, upload.single('banner'), UploadClubLogo); // Reusing logic for now or add a new one
 router.post("/enrollment", eventEnrollment);
 
 

@@ -56,6 +56,9 @@
     }
  
 
+  const embed = query("embed");
+  const isEmbedded = $derived(embed === "true");
+
   const routes: RouteConfig[] = [
     {
       component: Home,
@@ -108,9 +111,10 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
-  <nav
-    class="bg-white/80 border-b border-gray-200 sticky top-0 z-50 backdrop-blur-md"
-  >
+  {#if !isEmbedded}
+    <nav
+      class="bg-white/80 border-b border-gray-200 sticky top-0 z-50 backdrop-blur-md"
+    >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <a href="/" class="flex items-center gap-2.5 group">
@@ -172,7 +176,8 @@
         </div>
       </div>
     </div>
-  </nav>
+    </nav>
+  {/if}
 
   <!-- Error Toast -->
   <ErrorToast bind:show={showError} title="Access Denied">
@@ -182,7 +187,7 @@
     email address to sign in.
   </ErrorToast>
 
-  <main class="min-h-[calc(100vh-4rem)] bg-gray-50 relative">
+  <main class="{isEmbedded ? 'h-screen' : 'min-h-[calc(100vh-4rem)]'} bg-gray-50 relative">
     {#if MapComponent}
       <div
         class="absolute inset-0 z-0 transition-opacity duration-300 {isMapRoute
