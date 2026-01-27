@@ -8,6 +8,12 @@ import {
     UpdateEventDetail
 } from "../controllers/clubProfiles.controller.js";
 import {
+    UploadClubLogo,
+    DeleteClubLogo
+} from "../controllers/event.controller.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
+import multer from "multer";
+import {
     CreateEventCategory,
     UpdateEventCategory,
     GetEventCategories,
@@ -17,10 +23,14 @@ import {
 
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/club-profile", CreateClubProfile);
 router.get("/club-profile/:clubId", getProfile);
 router.put("/club-profile/:clubId", UpdateClubProfile);
+
+router.post("/:clubId/upload-logo", requireAuth, upload.single('logo'), UploadClubLogo);
+router.delete("/:clubId/upload-logo", requireAuth, DeleteClubLogo);
 
 router.post("/event-details/create-event-details", createEventDetail);
 router.put("/event-details/update-eventdetail", UpdateEventDetail);

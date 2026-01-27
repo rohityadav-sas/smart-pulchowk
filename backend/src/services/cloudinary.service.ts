@@ -129,6 +129,40 @@ export async function uploadEventBanner(
     }
 }
 
+export async function uploadEventBannerToCloudinary(
+    fileDataUri: string
+): Promise<{ success: boolean; url?: string; publicId?: string; message?: string }> {
+    try {
+        const publicId = `event_banner_${Date.now()}`;
+
+        const result = await uploadImageToCloudinary(
+            fileDataUri,
+            FOLDERS.EVENT_BANNERS,
+            publicId,
+            TRANSFORMATIONS.EVENT_BANNER
+        );
+
+        if (!result.success) {
+            return {
+                success: false,
+                message: result.message
+            };
+        }
+
+        return {
+            success: true,
+            url: result.data!.url,
+            publicId: result.data!.publicId,
+        };
+
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message || 'Failed to upload event banner'
+        };
+    }
+}
+
 
 export async function uploadImage(
     buffer: Buffer,

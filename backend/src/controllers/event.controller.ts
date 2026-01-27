@@ -26,6 +26,7 @@ import {
     handleClubLogoUrlUpload,
     handleCLubLogoFileUpload
 } from "../services/clubEvents.service.js";
+import { uploadEventBannerToCloudinary } from "../services/cloudinary.service.js";
 
 export async function getAdmins(req: Request, res: Response) {
     const { clubId } = req.params;
@@ -322,6 +323,41 @@ export async function eventEnrollment(req: Request, res: Response) {
         return res.json({ data: result });
     } catch (error) {
         return res.json({ message: error.message });
+    }
+}
+
+export async function UploadEventBanner(req: Request, res: Response) {
+    try {
+        if (!req.file) {
+            return res.json({
+                success: false,
+                message: "No file provided"
+            });
+        }
+
+        const buffer = req.file.buffer;
+        const base64 = buffer.toString('base64');
+        const dataUri = `data:${req.file.mimetype};base64,${base64}`;
+
+        const result = await uploadEventBannerToCloudinary(dataUri);
+
+        if (!result.success) {
+            return res.json(result);
+        }
+
+        return res.json({
+            success: true,
+            data: {
+                url: result.url,
+                publicId: result.publicId
+            }
+        });
+    } catch (error) {
+        console.error("Upload event banner error:", error);
+        return res.json({
+            success: false,
+            message: error.message || "Upload failed"
+        });
     }
 }
 
