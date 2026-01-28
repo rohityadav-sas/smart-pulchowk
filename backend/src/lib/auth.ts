@@ -48,15 +48,15 @@ export const auth = betterAuth({
 	experimental: {
 		joins: true
 	},
- hooks: {
-	after: createAuthMiddleware(async (ctx) => {
- 		if (ctx.path !== "/callback/:id") return;
-	 		const session = ctx.context.newSession;
-  		if (!session?.user?.email?.endsWith("@pcampus.edu.np")) {
-	 			await ctx.context.internalAdapter.deleteSession(session.session.token);
-	 			 await ctx.context.internalAdapter.deleteUser(session.user.id);
+	hooks: {
+		after: createAuthMiddleware(async (ctx) => {
+			if (ctx.path !== "/callback/:id") return;
+			const session = ctx.context.newSession;
+			if (!session?.user?.email?.endsWith("@pcampus.edu.np")) {
+				// await ctx.context.internalAdapter.deleteSession(session.session.token);
+				// await ctx.context.internalAdapter.deleteUser(session.user.id);
 				throw ctx.redirect("/?message=unauthorized_domain");
 			}
 		})
-	 }
+	}
 })

@@ -65,7 +65,17 @@ CREATE TABLE "saved_books" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "clubs" RENAME COLUMN "logo_public_Id" TO "logo_public_id";--> statement-breakpoint
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'clubs' AND column_name = 'logo_public_Id'
+    ) THEN
+        ALTER TABLE "clubs" RENAME COLUMN "logo_public_Id" TO "logo_public_id";
+    END IF;
+END
+$$;--> statement-breakpoint
 ALTER TABLE "book_categories" ADD CONSTRAINT "book_categories_parent_category_id_book_categories_id_fk" FOREIGN KEY ("parent_category_id") REFERENCES "public"."book_categories"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "book_images" ADD CONSTRAINT "book_images_listing_id_book_listings_id_fk" FOREIGN KEY ("listing_id") REFERENCES "public"."book_listings"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "book_listings" ADD CONSTRAINT "book_listings_seller_id_user_id_fk" FOREIGN KEY ("seller_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

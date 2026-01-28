@@ -28,8 +28,7 @@ export async function uploadImageToCloudinary(
                 url: uploadResult.secure_url,
                 publicId: uploadResult.public_id,
                 width: uploadResult.width,
-                height:
-                    uploadResult.height,
+                height: uploadResult.height,
             }
         };
     } catch (error) {
@@ -198,7 +197,72 @@ export async function uploadImage(
     }
 }
 
+export async function uploadAssignmentFileToCloudinary(
+    dataUri: string,
+    folder: string,
+    publicId: string
+): Promise<{
+    success: boolean;
+    data?: {
+        url: string;
+        publicId: string;
+        resourceType: string;
+        bytes: number;
+        originalFilename?: string;
+        format?: string;
+    };
+    message?: string;
+}> {
+    try {
+        const uploadResult = await cloudinary.uploader.upload(dataUri, {
+            folder,
+            public_id: publicId,
+            overwrite: false,
+            resource_type: 'auto',
+        });
+
+        return {
+            success: true,
+            data: {
+                url: uploadResult.secure_url,
+                publicId: uploadResult.public_id,
+                resourceType: uploadResult.resource_type,
+                bytes: uploadResult.bytes,
+                originalFilename: uploadResult.original_filename,
+                format: uploadResult.format,
+            },
+        };
+    } catch (error) {
+        console.error('cloudinary assignment upload error:', error);
+        return {
+            success: false,
+            message: error.message || 'Failed to upload assignment file',
+        };
+    }
+}
 
 export async function deleteImage(publicId: string): Promise<{ success: boolean; message?: string }> {
     return deleteImageFromCLoudinary(publicId);
+}
+
+export async function deleteFileFromCloudinary(
+    publicId: string,
+    resourceType: string | null | undefined
+): Promise<{ success: boolean; message?: string }> {
+    try {
+        await cloudinary.uploader.destroy(publicId, {
+            resource_type: resourceType || 'image',
+        });
+
+        return {
+            success: true,
+            message: 'File deleted from cloudinary',
+        };
+    } catch (error) {
+        console.error('Cloudinary delete error:', error);
+        return {
+            success: false,
+            message: error.message || 'Failed to delete file',
+        };
+    }
 }

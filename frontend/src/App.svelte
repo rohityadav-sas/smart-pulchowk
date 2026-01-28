@@ -15,6 +15,7 @@
   import Home from "./pages/Home.svelte";
   import Register from "./pages/Register.svelte";
   import Dashboard from "./pages/Dashboard.svelte";
+  import Classroom from "./pages/Classroom.svelte";
   import Clubs from "./pages/Clubs.svelte";
   import ClubDetails from "./pages/ClubDetails.svelte";
   import ClubEvents from "./pages/ClubEvents.svelte";
@@ -73,6 +74,10 @@
     {
       path: "dashboard",
       component: Dashboard,
+    },
+    {
+      path: "classroom",
+      component: Classroom,
     },
     {
       path: "create-club",
@@ -191,6 +196,12 @@
               href="/dashboard"
               class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
               >Dashboard</a
+            >
+            <a
+              use:route
+              href="/classroom"
+              class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+              >Classroom</a
             >
           {:else}
             <a

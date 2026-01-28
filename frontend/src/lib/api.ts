@@ -1,6 +1,7 @@
 const API_EVENTS = '/api/events';
 const API_CLUBS = '/api/clubs';
 const API_BOOKS = '/api/books';
+const API_CLASSROOM = '/api/classroom';
 
 export interface Club {
     id: number;
@@ -90,6 +91,66 @@ export interface EventCategory {
         name: string;
         logoUrl: string | null;
     };
+}
+
+export interface Faculty {
+    id: number;
+    name: string;
+    slug: string;
+    code?: string | null;
+    semestersCount: number;
+    semesterDurationMonths: number;
+}
+
+export interface Subject {
+    id: number;
+    facultyId: number;
+    semesterNumber: number;
+    code?: string | null;
+    title: string;
+    isElective: boolean;
+    electiveGroup?: string | null;
+}
+
+export interface StudentProfile {
+    userId: string;
+    facultyId: number;
+    currentSemester: number;
+    semesterStartDate: string;
+    semesterEndDate: string | null;
+    autoAdvance: boolean;
+    faculty?: Faculty | null;
+}
+
+export interface AssignmentSubmission {
+    id: number;
+    assignmentId: number;
+    studentId: string;
+    comment?: string | null;
+    fileUrl: string;
+    fileName?: string | null;
+    fileMimeType?: string | null;
+    submittedAt: string;
+    updatedAt: string;
+    student?: {
+        id: string;
+        name: string;
+        email: string;
+        image?: string | null;
+    };
+}
+
+export interface Assignment {
+    id: number;
+    subjectId: number;
+    teacherId: string;
+    title: string;
+    description?: string | null;
+    type: "classwork" | "homework";
+    dueAt?: string | null;
+    createdAt: string;
+    updatedAt: string;
+    submission?: AssignmentSubmission | null;
 }
 
 export async function getClubs(): Promise<{ success: boolean; existingClub?: Club[]; message?: string }> {
@@ -526,6 +587,163 @@ export async function deleteEventCategory(categoryId: number): Promise<{ success
     }
 }
 
+export async function getFaculties(): Promise<{ success: boolean; faculties: Faculty[]; message?: string }> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/faculties`, {
+            credentials: 'include',
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, faculties: [], message: error.message };
+    }
+}
+
+export async function getSubjects(
+    facultyId: number,
+    semester?: number
+): Promise<{ success: boolean; subjects: Subject[]; message?: string }> {
+    const params = new URLSearchParams({ facultyId: String(facultyId) });
+    if (semester) params.append('semester', String(semester));
+
+    try {
+        const res = await fetch(`${API_CLASSROOM}/subjects?${params.toString()}`, {
+            credentials: 'include',
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, subjects: [], message: error.message };
+    }
+}
+
+export async function getStudentProfile(): Promise<{ success: boolean; profile: StudentProfile | null; message?: string }> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/me`, {
+            credentials: 'include',
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, profile: null, message: error.message };
+    }
+}
+
+export async function upsertStudentProfile(data: {
+    facultyId: number;
+    currentSemester?: number;
+    semesterStartDate?: string;
+    autoAdvance?: boolean;
+}): Promise<{ success: boolean; profile?: StudentProfile; message?: string }> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/me`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(data),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getMySubjects(): Promise<{
+    success: boolean;
+    profile?: StudentProfile | null;
+    subjects?: (Subject & { assignments: Assignment[] })[];
+    message?: string;
+}> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/me/subjects`, {
+            credentials: 'include',
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getTeacherSubjects(): Promise<{
+    success: boolean;
+    subjects: (Subject & { assignments: Assignment[] })[];
+    message?: string;
+}> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/teacher/subjects`, {
+            credentials: 'include',
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, subjects: [], message: error.message };
+    }
+}
+
+export async function addTeacherSubject(subjectId: number, teacherId?: string): Promise<{ success: boolean; message?: string }> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/teacher/subjects`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ subjectId, teacherId }),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function createAssignment(data: {
+    subjectId: number;
+    title: string;
+    description?: string;
+    type?: "classwork" | "homework";
+    dueAt?: string;
+}): Promise<{ success: boolean; assignment?: Assignment; message?: string }> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/assignments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(data),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function submitAssignment(
+    assignmentId: number,
+    file: File,
+    comment?: string
+): Promise<{ success: boolean; submission?: AssignmentSubmission; message?: string }> {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        if (comment) formData.append('comment', comment);
+
+        const res = await fetch(`${API_CLASSROOM}/assignments/${assignmentId}/submissions`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getAssignmentSubmissions(
+    assignmentId: number
+): Promise<{ success: boolean; submissions: AssignmentSubmission[]; message?: string }> {
+    try {
+        const res = await fetch(`${API_CLASSROOM}/assignments/${assignmentId}/submissions`, {
+            credentials: 'include',
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, submissions: [], message: error.message };
+    }
+}
+
 export async function chatBot(query: string) {
     try {
         const res = await fetch(`/api/chatbot/chat`, {
@@ -542,7 +760,6 @@ export async function chatBot(query: string) {
         return { success: false, message: error.message };
     }
 }
-
 
 export interface BookListing {
     id: number;

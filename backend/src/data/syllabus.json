@@ -1,0 +1,5441 @@
+{
+  "faculties": [
+    {
+      "name": "Aerospace Engineering",
+      "slug": "aerospace-engineering",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 403",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "CT 401",
+          "title": "C Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 452",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AE",
+          "title": "Applied Thermodynamics and Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AE",
+          "title": "Computer Aided Design and Manufacturing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathemathics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 502",
+          "title": "Engineering Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 554",
+          "title": "Fluid Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AE",
+          "title": "Fundamental of Aerospace Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AE",
+          "title": "Aerodynamics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AE",
+          "title": "Aerospace Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 602",
+          "title": "Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Probabillity and Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Strength of Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "ME 653",
+          "title": "Theory of Mechanism and Machine I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Aircraft Manufacturing Process",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Aircraft Propulsion",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Continuum Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Fault Monitoring and Diagnosis",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Numerical Methods",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Theory of Vibration",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE",
+          "title": "Aircraft Environment Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE",
+          "title": "Aircraft Maintenance Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Avionics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "ME 751",
+          "title": "Finite Element Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE",
+          "title": "Flight Dynamics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE",
+          "title": "Unmanned Air Vehicle Synthesis",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Air Traffic Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Aircraft Preliminary Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Aircraft Structures",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Computational Fluid Dynamics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Elective I -Unsteady Aerodynamics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Elective I-Advanced Vibration",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Elective I-Aviation Legislation",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Elective I-Digital Signal Processing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Embedded Systems in Avionics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE",
+          "title": "Project I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Aviation Professional Practices",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Elective II-Fatigue and Fracture Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Elective II-Human Reliability, Error and Factor in Aviation",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Elective II-Radar Communication",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Elective II-Rocket Propulsion",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Elective III-Advanced Space Propulsion",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Elective III-Design of UAV avionics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Elective III-Fleet Planning for Airlines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Elective III-Non-destructive Testing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Internship",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE",
+          "title": "Project II",
+          "isElective": false,
+          "electiveGroup": null
+        }
+      ]
+    },
+    {
+      "name": "Agriculture Engineering(BAG)",
+      "slug": "agriculture-engineering-bag",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 452",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EE 503",
+          "title": "Electric Systems and Machines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AE 502",
+          "title": "Elements of Soil Science",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AE 503",
+          "title": "Engineering Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AE 501",
+          "title": "Farm Power and Engine System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 505",
+          "title": "Fluid mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 506",
+          "title": "Refrigeration and Cold Storage",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AE 551",
+          "title": "Farm Machinery and Equipment",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 555",
+          "title": "Hydraulics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 553",
+          "title": "Numerical Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AE 552",
+          "title": "Principles of Crop Science and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 560",
+          "title": "Strength of Materials & Theory of Structures",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 559",
+          "title": "Surveying and Leveling",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 601",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AE 602",
+          "title": "Engineering Properties of Bio-Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AE 603",
+          "title": "Hydrology and Agricultural Meterology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 602",
+          "title": "Probability and Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 608",
+          "title": "Soil Mechanics and Foundation Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 609",
+          "title": "Survey Camp/Field Work",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "ME 603",
+          "title": "Theory and Design of Machine Elements",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AE 601",
+          "title": "Tractor Systems and Control",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 661",
+          "title": "Design of Structures",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE 656",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE 654",
+          "title": "Farm Structures and Building Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE 651",
+          "title": "Field Operation & Maintenance of Tractors & Farm Machines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE 655",
+          "title": "Irrigation and Drainage Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE 653",
+          "title": "Post Harvest Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AE 652",
+          "title": "Soil and water Conservation Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 707",
+          "title": "Agricultural Engineering Project (Part I)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Bio Energy Tech",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 702",
+          "title": "Dairy and Food Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 725",
+          "title": "Elective - I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 706",
+          "title": "Estimating and Costing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 725 03",
+          "title": "Farm Machinery Design",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 701",
+          "title": "Ground Water Development and Tubewell Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 701",
+          "title": "Project Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 703",
+          "title": "Renewable Energy and Energy Conservation Devices",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 725 01",
+          "title": "Surface Irrigation System",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AE 725 02",
+          "title": "WATERSHED MANAGEMENT AND PLANNING",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 755",
+          "title": "Agricultural Engineering Project (Part II)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 753",
+          "title": "Agricultural Extension Education & Rural Development",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 754",
+          "title": "Climate Change & Adaptation Measures",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 765 01",
+          "title": "DESIGN OF PRESSURIZED AND MICRO IRRIGATION SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 765 02",
+          "title": "DESIGN OF SOIL & WATER CONSERVATION STRUCTURES",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 752",
+          "title": "Field / Industrial Training",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 785 02",
+          "title": "REMOTE SENSING & GEOGRAPHIC INFORMATION SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 751",
+          "title": "Rural Engineering and Infrastructure",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 785 04",
+          "title": "SMALL AND MICRO‐HYDRO POWER SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 785 01",
+          "title": "SMALL DAMS & RESERVOIRS",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 765 04",
+          "title": "SOLAR PHOTO‐VOLTAIC SYSTEM AND APPLICATION",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 765 03",
+          "title": "TESTING & EVALUATION OF AGRICULTURAL MACHINERY & TRACTOR",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AE 785 03",
+          "title": "TILLAGE, TRACTION & LAND DEVELOPMENT MACHINERY",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        }
+      ]
+    },
+    {
+      "name": "Architecture Engineering(B.Arch)",
+      "slug": "architecture-engineering-barch",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 402",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "AR 401",
+          "title": "Basic Design I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "AR 403",
+          "title": "Building Materials I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "AR 404",
+          "title": "Drafting I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 404",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "AR 405",
+          "title": "Free Hand Sketching I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "AR 402",
+          "title": "Introduction to Architecture",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "AR 453",
+          "title": "Arts & Graphic",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "AR 452",
+          "title": "Basic Design II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "CE 452",
+          "title": "Basic Skill Workshop",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "AR 454",
+          "title": "Building Construction I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "AR 451",
+          "title": "Drafting II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 454",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "AR 455",
+          "title": "Free Hand Sketching II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AR 504",
+          "title": "Building Construction II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AR 503",
+          "title": "Building Materials II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AR 506",
+          "title": "Building Science I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AR 501",
+          "title": "Design Studio III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AR 505",
+          "title": "Design Theory I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "AR 502",
+          "title": "History of Architecture I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 507",
+          "title": "Structure I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AR 554",
+          "title": "Building Construction III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AR 551",
+          "title": "Design Studio IV",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AR 555",
+          "title": "Design Theory II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "AR 552",
+          "title": "History of Architecture II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 557",
+          "title": "Structure II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 558",
+          "title": "Surveying",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AR 604",
+          "title": "Building Construction IV",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 607",
+          "title": "Building Services I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 604",
+          "title": "Building Services II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AR 603",
+          "title": "Computer Aided Design & Drafting",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AR 602",
+          "title": "Contemporary Architecture",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AR 601",
+          "title": "Design Studio V",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "AR 605",
+          "title": "Working Drawing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 653",
+          "title": "Building Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AR 654",
+          "title": "Building Science II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AR 651",
+          "title": "Design Studio VI",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 659",
+          "title": "Estimating & Costing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 652",
+          "title": "Sociology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 658",
+          "title": "Specifications",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 657",
+          "title": "Structure III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "AR 652",
+          "title": "Urban & Settlement Planning",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "AR 701",
+          "title": "Practicum",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AR 751",
+          "title": "Architectural Conservation",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 760",
+          "title": "Building Services III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "SH 754",
+          "title": "Communications (English & Nepali)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AR 753",
+          "title": "Construction Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AR 752",
+          "title": "Design Studio VII",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "AR 765",
+          "title": "Elective I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 761",
+          "title": "Structure IV",
+          "isElective": false,
+          "electiveGroup": null
+        }
+      ]
+    },
+    {
+      "name": "Automobile Engineering",
+      "slug": "automobile-engineering",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 452",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Applied Thermodynamics and Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 505",
+          "title": "Computer Aided Drawing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 502",
+          "title": "Engineering Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 501",
+          "title": "Material Science",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 503",
+          "title": "Metrology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Automobile Engines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 554",
+          "title": "Electrical Machine",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "ME 553",
+          "title": "Instrumentation and Measurement",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "ME 551",
+          "title": "Manufacturing And Production Processes",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Mechanics of Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 552",
+          "title": "Probability And Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Automobile Chassis",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Automobile Component Design I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 602",
+          "title": "Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 603",
+          "title": "Numerical Methods",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "ME 601",
+          "title": "Organization and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Theory of Mechanism and Machine",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Automobile Component Design II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 651",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "",
+          "title": "Engine Combustion and Pollution Control",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Fluid Mechanics and Machines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "ME 652",
+          "title": "Industrial Engineering and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Road Transport Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Automobile Air Conditioning System",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "",
+          "title": "Automobile Electrical and Electronics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "",
+          "title": "Construction Equipment",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Finite Element Method",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "",
+          "title": "Industrial Attachment",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Project I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "",
+          "title": "Vehicle Dynamics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Alternative Fuels and Vehicles",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Automobile Maintenance and Repair",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Operations Research",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 751",
+          "title": "Project Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Project II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Quality Management",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "System Design and Simulation",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Vechicle Body Engineering & Safety",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        }
+      ]
+    },
+    {
+      "name": "Civil Engineering(BCE)",
+      "slug": "civil-engineering-bce",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 403",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 402",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 403",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "CE 451",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EE 453",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 452",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 503",
+          "title": "Applied Mechanics(Dynamics)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 506",
+          "title": "Civil Engineering Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 501",
+          "title": "Engineering Geology I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 505",
+          "title": "Fluid mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 502",
+          "title": "Strength of Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CE 504",
+          "title": "Surveying I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 556",
+          "title": "Building Drawing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 553",
+          "title": "Engineering Geology II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 555",
+          "title": "Hydraulics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 552",
+          "title": "Probability And Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 552",
+          "title": "Soil Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 554",
+          "title": "Surveying II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CE 551",
+          "title": "Theory of Structures I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 603",
+          "title": "Concrete Technology and masonry structure",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 606",
+          "title": "Engineering hydrology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 602",
+          "title": "Foundation Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 603",
+          "title": "Numerical Methods",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 604",
+          "title": "Survey Camp",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 601",
+          "title": "Theory of structure II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 605",
+          "title": "Water Supply Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 652",
+          "title": "Building Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 651",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 651",
+          "title": "Design of Steel and Timber Structure",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 655",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 654",
+          "title": "Irrigation and Drainage",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 656",
+          "title": "Sanitary Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 653",
+          "title": "Transportation Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72504",
+          "title": "Bio-Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72513",
+          "title": "Community Development and Participatory Rural Approach",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 702",
+          "title": "Design of RCC Structure",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72507",
+          "title": "Earth Hazard",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 705",
+          "title": "Estimating & Costing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 704",
+          "title": "Hydropower Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 707",
+          "title": "Project (Part I)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 701",
+          "title": "Project Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72505",
+          "title": "Rock Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72510",
+          "title": "Ropeway Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72502",
+          "title": "Seismic Resistant Design of Masonry Structures",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72506",
+          "title": "Soil Conservation and Watershed Management",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72511",
+          "title": "Solid Waste Management",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72501",
+          "title": "Structural Dynamics",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72503",
+          "title": "Trail Suspension Bridge",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 703",
+          "title": "Transportation Engineering II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72509",
+          "title": "Transportation Planning and Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 72512",
+          "title": "Water and WasteWater Quality Analysis",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76512",
+          "title": "Advanced Geotechnical Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76516",
+          "title": "Climate Change",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE751",
+          "title": "Computational Techniques in Civil Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 754",
+          "title": "Construction Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 78502",
+          "title": "Construction Safety Management",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76502",
+          "title": "Design of Bridges",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 78506",
+          "title": "Disaster Risk Management",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76515",
+          "title": "Domestic Water and Waste Water Engineering and Management",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76501",
+          "title": "Earthquake Resistant Design of Structures",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 78504",
+          "title": "Environmental Impact Assessment (EIA)",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76517",
+          "title": "Environmental Management System",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 78501",
+          "title": "GIS Application and Remote Sensing",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76503",
+          "title": "Geotechnical Earthquake Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76509",
+          "title": "Groundwater Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76508",
+          "title": "Hill Irrigation Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76521",
+          "title": "Introduction to Prestressed Concrete Analysis and Design",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76519",
+          "title": "Post Disaster Water and Sanitation Management",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 78503",
+          "title": "Procurement Management",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 755",
+          "title": "Project (Part II)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76520",
+          "title": "Public Health and Risk Assessment",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76511",
+          "title": "Rock Mechanics",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76507",
+          "title": "Rock Slope Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76514",
+          "title": "Rural Road Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76505",
+          "title": "Seismic Risk Assessment",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 753",
+          "title": "Technology Environment and Society",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 78505",
+          "title": "Time Series Analysis",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76513",
+          "title": "Traffic Engineering and Management",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76510",
+          "title": "Traffic and Transport Modeling",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76504",
+          "title": "Vulnerability Assessment and Retrofitting Techniques",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 76518",
+          "title": "Water Quality Management",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        }
+      ]
+    },
+    {
+      "name": "Computer Engineering(BCT)",
+      "slug": "computer-engineering-bct",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 452",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 502",
+          "title": "Digital Logic",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EE 501",
+          "title": "Electric Circuit Theory",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 503",
+          "title": "Electromagnetics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 501",
+          "title": "Electronics Devices and Circuit",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CT 501",
+          "title": "Object Oriented Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CT 502",
+          "title": "Theory of Computation",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 551",
+          "title": "Applied Mathematics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CT 552",
+          "title": "Data Structure and Algorithm",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CT 551",
+          "title": "Discrete Structure",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 554",
+          "title": "Electrical Machine",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 552",
+          "title": "Instrumentation I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EX 551",
+          "title": "Microprocessor",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 553",
+          "title": "Numerical Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 601",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EX 603",
+          "title": "Computer Graphics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 603",
+          "title": "Computer organization and Architecture",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 602",
+          "title": "Data Communication",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EX 602",
+          "title": "Instrumentation II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 602",
+          "title": "Probability and Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 601",
+          "title": "Software Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 653",
+          "title": "Artificial Intelligence",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 652",
+          "title": "Database Management System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 655",
+          "title": "Embedded System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 655",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 654",
+          "title": "Minor Project",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 651",
+          "title": "Object Oriented Analysis and Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 656",
+          "title": "Operating System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 725 01",
+          "title": "Advanced Java",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 725 04",
+          "title": "Aeronautical Telecom",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Biomedical Instrumentation",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 702",
+          "title": "Computer Networks and Security",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Data Mining",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 704",
+          "title": "Digital Signal Analysis and Processing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 703",
+          "title": "Distributed System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Embedded System",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 701",
+          "title": "Energy Environment and Society",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 701",
+          "title": "ICT Project Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 725 04",
+          "title": "Image Processing",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 725 05",
+          "title": "Microwave Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Operating System",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 708",
+          "title": "Organization and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 707",
+          "title": "Project (Part A)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Radar Technology",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Satellite Communicaation",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 725 05",
+          "title": "Web Technology",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 04",
+          "title": "ADVANCED COMPUTER ARCHITECTURE",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 02",
+          "title": "AGILE SOFTWARE DEVELOPMENT",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 06",
+          "title": "ARTIFICIAL INTELLIGENCE",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 07",
+          "title": "BIG DATA TECHNOLOGIES",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 765 03",
+          "title": "BROADCAST ENGINEERING",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 765 06",
+          "title": "DATABASE MANAGEMENT SYSTEMS",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 04",
+          "title": "ENTERPRISE APPLICATION DESIGN AND DEVELOPMENT",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 07",
+          "title": "GEOGRAPHICAL INFORMATION SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 751",
+          "title": "Information Systems",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 754",
+          "title": "Internet and Intranet",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 03",
+          "title": "MULTIMEDIA SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 03",
+          "title": "NETWORKING WITH IPV6",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 765 01",
+          "title": "OPTICAL FIBER COMMUNICATION SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EE 785 07",
+          "title": "POWER ELECTRONICS",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 755",
+          "title": "Project (Part B)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 01",
+          "title": "REMOTE SENSING",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 08",
+          "title": "SPEECH PROCESSING",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 753",
+          "title": "Simulation and Modelling",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 785 03",
+          "title": "TELECOMMUNICATION",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 765 04",
+          "title": "WIRELESS COMMUNICATIONS",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 05",
+          "title": "XML: FOUNDATIONS, TECHNIQUES AND APPLICATIONS",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        }
+      ]
+    },
+    {
+      "name": "Electrical Engineering(BEL)",
+      "slug": "electrical-engineering-bel",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 452",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 502",
+          "title": "Digital Logic",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EE 501",
+          "title": "Electric Circuit Theory",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EE 502",
+          "title": "Electrical Engineering Material",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 503",
+          "title": "Electromagnetics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 501",
+          "title": "Electronics Devices and Circuit",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CT 501",
+          "title": "Object Oriented Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 551",
+          "title": "Applied Mathematics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 550",
+          "title": "Electrical Machines I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 552",
+          "title": "Instrumentation I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EX 551",
+          "title": "Microprocessor",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 553",
+          "title": "Numerical Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 555",
+          "title": "Power System Analysis I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 601",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 602",
+          "title": "Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 603",
+          "title": "Electric Machine Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 601",
+          "title": "Electric Machines - II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EX 602",
+          "title": "Instrumentation II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 605",
+          "title": "Power System Analysis II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 602",
+          "title": "Probability and Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EE 652",
+          "title": "Digital Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 655",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 660",
+          "title": "Hydro Power",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EE 653",
+          "title": "Industrial Power Distribution & Illumination",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 651",
+          "title": "Signal Analysis",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EE 651",
+          "title": "Swichgear & Protection",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Energy Electrical System Management",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 708",
+          "title": "Organization and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EE 701",
+          "title": "Power Electronics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EE 703",
+          "title": "Power Plant Equipment",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EE 707",
+          "title": "Project (Part A)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 701",
+          "title": "Project Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Reliability Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Rural Electrification",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CE 708",
+          "title": "Technology Environment and Society",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EE 702",
+          "title": "Utilization of Electrical Energy",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Advanced Power System Analysis",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Applied Photovoltaic",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Artificial Neural Network",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "BIOMEDICAL INSTRUMENTATION",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EE 751",
+          "title": "High Voltage Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Micro-Hydro Power",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EE 753",
+          "title": "Power Plant Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EE 755",
+          "title": "Project (Part B)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EE 754",
+          "title": "Transmission and Distribution System Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Wind Energy Conversion System",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        }
+      ]
+    },
+    {
+      "name": "Electronics and Communication(BEX)",
+      "slug": "electronics-and-communication-engineering-bex",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 452",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 502",
+          "title": "Digital Logic",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EE 501",
+          "title": "Electric Circuit Theory",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EE 502",
+          "title": "Electrical Engineering Material",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 503",
+          "title": "Electromagnetics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 501",
+          "title": "Electronics Devices and Circuit",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "CT 501",
+          "title": "Object Oriented Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 551",
+          "title": "Applied Mathematics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CT 551",
+          "title": "Discrete Structure",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 554",
+          "title": "Electrical Machine",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 552",
+          "title": "Instrumentation I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EX 551",
+          "title": "Microprocessor",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 553",
+          "title": "Numerical Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 555",
+          "title": "Power System Analysis I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EX 601",
+          "title": "Advanced Electronics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 601",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EX 603",
+          "title": "Computer Graphics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 603",
+          "title": "Computer organization and Architecture",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 602",
+          "title": "Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EX 602",
+          "title": "Instrumentation II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 602",
+          "title": "Probability and Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 653",
+          "title": "Antenna and Propagation",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 652",
+          "title": "Communication System I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 657",
+          "title": "Computer Networks",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 655",
+          "title": "Embedded System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 655",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 654",
+          "title": "Minor Project",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 651",
+          "title": "Signal Analysis",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 725 01",
+          "title": "Advanced Java",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 725 04",
+          "title": "Aeronautical Telecom",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Biomedical Instrumentation",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 702",
+          "title": "Communication System II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Data Mining",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Embedded System",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 701",
+          "title": "Energy Environment and Society",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 704",
+          "title": "Filter Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 701",
+          "title": "ICT Project Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 725 04",
+          "title": "Image Processing",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Operating System",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 708",
+          "title": "Organization and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 707",
+          "title": "Project (Part A)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Radar Technology",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Satellite Communicaation",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 703",
+          "title": "Telecommunication",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 725 05",
+          "title": "Web Technology",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 04",
+          "title": "ADVANCED COMPUTER ARCHITECTURE",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 02",
+          "title": "AGILE SOFTWARE DEVELOPMENT",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 07",
+          "title": "BIG DATA TECHNOLOGIES",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 765 03",
+          "title": "BROADCAST ENGINEERING",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 753",
+          "title": "Digital Signal Processing (DSP)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 04",
+          "title": "ENTERPRISE APPLICATION DESIGN AND DEVELOPMENT",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 07",
+          "title": "GEOGRAPHICAL INFORMATION SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 03",
+          "title": "MULTIMEDIA SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 765 03",
+          "title": "NETWORKING WITH IPV6",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 765 01",
+          "title": "OPTICAL FIBER COMMUNICATION SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EE 785 07",
+          "title": "POWER ELECTRONICS",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 755",
+          "title": "Project (Part B)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 01",
+          "title": "REMOTE SENSING",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 752",
+          "title": "RF and Microwave Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 08",
+          "title": "SPEECH PROCESSING",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 751",
+          "title": "Wireless Communication",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 785 05",
+          "title": "XML: FOUNDATIONS, TECHNIQUES AND APPLICATIONS",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        }
+      ]
+    },
+    {
+      "name": "Electronics and Information (BEI New)",
+      "slug": "electronics-and-information-bei-new",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EX 502",
+          "title": "Digital Logic",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": null,
+          "title": "ELECTRIC CIRCUITS AND MACHINES",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 551",
+          "title": "Microprocessor",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "CT 501",
+          "title": "Object Oriented Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EE 602",
+          "title": "Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 503",
+          "title": "Electromagnetics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "EX 501",
+          "title": "Electronics Devices and Circuit",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Instrumentation (BEI)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 602",
+          "title": "Probability and Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 551",
+          "title": "Applied Mathematics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EX 603",
+          "title": "Computer Graphics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CT 552",
+          "title": "Data Structure and Algorithm",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "CT 551",
+          "title": "Discrete Structure",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 553",
+          "title": "Numerical Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 657",
+          "title": "Computer Networks",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 603",
+          "title": "Computer organization and Architecture",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 652",
+          "title": "Database Management System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CE 655",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EX 704",
+          "title": "Filter Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "CT 656",
+          "title": "Operating System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 653",
+          "title": "Antenna and Propagation",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 601",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 652",
+          "title": "Communication System I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CT 655",
+          "title": "Embedded System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "EX 654",
+          "title": "Minor Project",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 653",
+          "title": "Artificial Intelligence",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "CT 704",
+          "title": "Digital Signal Analysis and Processing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 708",
+          "title": "Organization and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 707",
+          "title": "Project (Part A)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 752",
+          "title": "RF and Microwave Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "EX 751",
+          "title": "Wireless Communication",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 753",
+          "title": "Digital Signal Processing (DSP)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 701",
+          "title": "Energy Environment and Society",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CT 751",
+          "title": "Information Systems",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 755",
+          "title": "Project (Part B)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "EX 703",
+          "title": "Telecommunication",
+          "isElective": false,
+          "electiveGroup": null
+        }
+      ]
+    },
+    {
+      "name": "Geomatics Engineering",
+      "slug": "geomatics-engineering",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 402",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Applied Mechanics (Dynamics)",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Applied Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Fundamental of Civil Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Fundamental of Surverying I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Object Oriented Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 552",
+          "title": "Probability And Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Applied Mathematics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Computing Techniques for Geomatics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Field Survey I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Fundamental of Geographic Information Systems",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Fundamental of Surverying II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 553",
+          "title": "Numerical Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Adjustment of Observations",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Cadastre",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Fundamentals of Geodesy",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Principles of Photogrammety",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Signals and Transforms",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Survery Networks",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Cartography and Geo-Information Visualization",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 601",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "CE 655",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Field Survey II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Geodetic Positioning and Gravity Field in Geodesy",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Remote Sensing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Application of GIS with Python",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Community Development & Participatory Rural Approach",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Design and Implementation of Geospatial Information Systems",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Land Administration and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Project Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Project Work I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Satellite Positioning",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Soil Conservation & Watershed Management",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Civil Engineering Construction Survey",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Digital Imaging & Application",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Digital Terrain Modeling",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Environmental Modeling",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Land Law",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Land Use Planning",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Project Work II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Technology Environment and Society",
+          "isElective": false,
+          "electiveGroup": null
+        }
+      ]
+    },
+    {
+      "name": "Industrial Engineering [BIE]",
+      "slug": "industrial-engineering-bie",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CE 401",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "EE 401",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 402",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 453",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 452",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 453",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 505",
+          "title": "Computer Aided Drawing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Fluid Mechanics and Machines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Group Work Presentation I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Manufacturing Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Material Science and Metallurgy",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": null,
+          "title": "Work Study and Ergonomics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 554",
+          "title": "Electrical Machine",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Group Work Presentation II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Heat and Mass Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Industrial Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Probability And Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Production Process and Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": null,
+          "title": "Strength of Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 602",
+          "title": "Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Elective and Pneumatic Controls",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Energy Audit and Efficiency",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Energy, Power and Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Group Work and Presentation III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Introduction to Bio-Medical Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Metrology and Measurement",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 553",
+          "title": "Numerical Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Power Plant Engineering",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Project Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": null,
+          "title": "Supply Chain Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Basic Accounting & Finance Course",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 601",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Concurrent Engineering and Value Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Design of Machine Elelments",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Entrepreneurship Development",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Human Resource Management",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Maintainence Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Marketing Management",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "New Product Development",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Organizational Behaviour",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 6,
+          "code": null,
+          "title": "Theory of Machine",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Automobile Technology",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Engineering Ethics and Industrial Law",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Environmental Management System",
+          "isElective": true,
+          "electiveGroup": "Elective IV"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Finite Element Analysis",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Management Information System",
+          "isElective": true,
+          "electiveGroup": "Elective IV"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Mechatronics",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Operation Research",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Plant Layout and Design OHS",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Principles of Robotics and Modeling",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Production Planning, Design & Control",
+          "isElective": true,
+          "electiveGroup": "Elective IV"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Project",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Quality Control and Management",
+          "isElective": true,
+          "electiveGroup": "Elective IV"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Refrigeration, HVAC System Design",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Renewable Energy and System Design",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 7,
+          "code": null,
+          "title": "Strategic and Technology Management",
+          "isElective": true,
+          "electiveGroup": "Elective IV"
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Industrial Attachment",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": null,
+          "title": "Seminar",
+          "isElective": false,
+          "electiveGroup": null
+        }
+      ]
+    },
+    {
+      "name": "Mechanical Engineering(BME)",
+      "slug": "mechanical-engineering-bme",
+      "semestersCount": 8,
+      "semesterDurationMonths": 6,
+      "subjects": [
+        {
+          "semesterNumber": 1,
+          "code": "CT 401",
+          "title": "Computer Programming",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 403",
+          "title": "Engineering Chemistry",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 401",
+          "title": "Engineering Drawing I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "SH 401",
+          "title": "Engineering Mathematics I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 402",
+          "title": "Fundamental of Thermodynamics & Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 1,
+          "code": "ME 403",
+          "title": "Workshop Technology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "CE 451",
+          "title": "Applied Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EE 453",
+          "title": "Basic Electrical Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "EX 451",
+          "title": "Basic Electronics Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "ME 451",
+          "title": "Engineering Drawing II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 451",
+          "title": "Engineering Mathematics II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 2,
+          "code": "SH 452",
+          "title": "Engineering Physics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 504",
+          "title": "Applied Thermodynamics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 505",
+          "title": "Computer Aided Drawing",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "SH 501",
+          "title": "Engineering Mathematics III",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 502",
+          "title": "Engineering Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 501",
+          "title": "Material Science",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 3,
+          "code": "ME 503",
+          "title": "Metrology",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "EE 554",
+          "title": "Electrical Machine",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "ME 554",
+          "title": "Fluid Mechanics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "ME 553",
+          "title": "Instrumentation and Measurement",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "ME 551",
+          "title": "Manufacturing And Production Processes",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "SH 552",
+          "title": "Probability And Statistics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 4,
+          "code": "ME 552",
+          "title": "Strength of Materials",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "EE 602",
+          "title": "Control System",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "ME 605",
+          "title": "Fluid Machines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "ME 604",
+          "title": "Heat Transfer",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "ME 602",
+          "title": "Mechanics of Solids",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "SH 603",
+          "title": "Numerical Methods",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 5,
+          "code": "ME 601",
+          "title": "Organization and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "SH 651",
+          "title": "Communication English",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "ME 655",
+          "title": "Energy Resources",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "ME 652",
+          "title": "Industrial Engineering and Management",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "ME 654",
+          "title": "Internal Combustion Engines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "ME 651",
+          "title": "Machine Design I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 6,
+          "code": "ME 653",
+          "title": "Theory of Mechanism and Machine I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 72501",
+          "title": "AUTOMOBILE TECHNOLOGY",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 72506",
+          "title": "BASIC AIRCRAFT & AIR FRAME",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 72505",
+          "title": "BASICS OF MICRO HYDROPOWER PLANT",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 703",
+          "title": "Engineering Economics",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 705",
+          "title": "Environment and Pollution Control",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 72503",
+          "title": "GASEOUS BIO-FUEL",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 72502",
+          "title": "HEATING VENTILATING AND AIR CONDITIONING",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 706",
+          "title": "Industrial Attachment",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 701",
+          "title": "Machine Design II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 72504",
+          "title": "OPERATIONS RESEARCH/MANAGEMENT SCIENCE",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 72508",
+          "title": "TOOL DESIGN FOR ECONOMIC PRODUCTION",
+          "isElective": true,
+          "electiveGroup": "Elective I"
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 702",
+          "title": "Theory of Mechanism and Machine II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 7,
+          "code": "ME 704",
+          "title": "Turbo Machines",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 78507",
+          "title": "ADVANCE MECHANICAL DESIGN",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76508",
+          "title": "AIRCRAFT DYNAMICS",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 785 02",
+          "title": "AN INTRODUCTION TO CONSTRUCTION EQUIPMENT",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76509",
+          "title": "AUTOMOBILE ENGINEERING ENTERPRISES",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 78506",
+          "title": "AVIONICS",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 785 05",
+          "title": "CONSTRUCTION OF MICRO HYDROPOWER SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76505",
+          "title": "DESIGN OF MICRO HYDROPOWER SYSTEM",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76501",
+          "title": "ECONOMICS OF AUTOMOBILE",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 725",
+          "title": "Elective I",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 752",
+          "title": "Engineering Professional Practice",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 751",
+          "title": "Finite Element Method",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76503",
+          "title": "LIQUID BIO-FUEL",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "CE 751",
+          "title": "Project Engineering",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME",
+          "title": "Project I & II",
+          "isElective": false,
+          "electiveGroup": null
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76504",
+          "title": "QUALITY MANAGEMENT",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76502",
+          "title": "REFRIGERATION",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 78503",
+          "title": "SOLID BIO FUEL",
+          "isElective": true,
+          "electiveGroup": "Elective III"
+        },
+        {
+          "semesterNumber": 8,
+          "code": "ME 76510",
+          "title": "SYSTEM DESIGN AND SIMULATION",
+          "isElective": true,
+          "electiveGroup": "Elective II"
+        }
+      ]
+    }
+  ]
+}

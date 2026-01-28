@@ -83,3 +83,17 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
 
     next();
 };
+
+export const requireTeacher = async (req: Request, res: Response, next: NextFunction) => {
+    const user = (req as any).user;
+
+    if (!user) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (user.role !== "teacher") {
+        return res.status(403).json({ message: "Forbidden: Teacher access required" });
+    }
+
+    next();
+};
