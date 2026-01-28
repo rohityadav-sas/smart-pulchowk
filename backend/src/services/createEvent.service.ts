@@ -2,6 +2,7 @@ import { CreateEventInput } from "../types/events.js";
 import { db } from "../lib/db.js";
 import { eq, and } from "drizzle-orm";
 import { clubs, events, clubAdmins } from "../models/event-schema.js";
+import { sendEventNotification } from "./notification.service.js";
 
 
 
@@ -84,6 +85,10 @@ export async function createEvent(userId: string, clubId: number, eventInput: Cr
 
         const [event] = await db.insert(events).values(insertData).returning();
 
+        // Trigger push notification (don't await to avoid blocking response)
+        sendEventNotification(event).catch(err =>
+            console.error('Failed to send automated notification:', err)
+        );
 
         return {
             success: true,

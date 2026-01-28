@@ -19,6 +19,7 @@
 		"dotenv": "^17.2.3",
 		"drizzle-orm": "^0.45.1",
 		"express": "5.1.0",
+		"firebase-admin": "^13.6.0",
 		"multer": "^2.0.2"
 	},
 	"devDependencies": {

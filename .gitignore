@@ -44,6 +44,7 @@ backend/build/
 backend/src/**/*.js
 backend/src/**/*.d.ts
 !backend/src/**/*.config.js
+backend/*.json
 
 # Frontend build
 frontend/dist/
