@@ -57,6 +57,8 @@
   let endTime = $state("");
   let regDate = $state<Date | undefined>(undefined);
   let regTime = $state("");
+  let registrationMethod = $state<"internal" | "external">("internal");
+  let externalRegistrationLink = $state("");
 
   // Media State
   let bannerUrl = $state("");
@@ -249,6 +251,10 @@
           eventStartTime: eventStartTime,
           eventEndTime: eventEndTime,
           bannerUrl: initialBannerUrl || undefined,
+          externalRegistrationLink:
+            registrationMethod === "external"
+              ? externalRegistrationLink
+              : undefined,
         },
       );
 
@@ -698,11 +704,11 @@
                     </div>
                     <div>
                       <label class="block text-black font-bold mb-2"
-                        >Description</label
+                        >Short Description</label
                       >
                       <textarea
                         bind:value={description}
-                        placeholder="Tell us everything. The mission, the vibe, the impact..."
+                        placeholder="Tell short description about the event..."
                         rows="6"
                         class="w-full bg-white/50 border border-gray-200 hover:border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl p-4 transition-all outline-none resize-none shadow-sm placeholder:text-gray-400/70"
                       ></textarea>
@@ -851,6 +857,58 @@
                           </p>
                           <p class="text-xs text-gray-400 mt-1">
                             High resolution assets preferred
+                          </p>
+                        </div>
+                      {/if}
+                    </div>
+
+                    <div class="space-y-4 pt-4 border-t border-gray-100">
+                      <label class="block text-black font-bold mb-2"
+                        >Registration Method <span class="text-red-500">*</span
+                        ></label
+                      >
+                      <div class="grid grid-cols-1 gap-4">
+                        <button
+                          type="button"
+                          class="p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 {registrationMethod ===
+                          'external'
+                            ? 'border-blue-500 bg-blue-50 text-blue-600'
+                            : 'border-gray-100 hover:border-gray-200 text-gray-400'}"
+                          onclick={() => (registrationMethod = registrationMethod === 'external' ? 'internal' : 'external')}
+                        >
+                          <svg
+                            class="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                          <span class="font-bold text-sm">External Link</span>
+                        </button>
+                      </div>
+
+                      {#if registrationMethod === "external"}
+                        <div in:slide>
+                          <label class="block text-black font-bold mb-2"
+                            >Form Link <span class="text-red-500">*</span
+                            ></label
+                          >
+                          <Input
+                            type="url"
+                            bind:value={externalRegistrationLink}
+                            placeholder="https://forms.google.com/your-form"
+                            class="bg-white/50 border-gray-200 rounded-2xl py-4 shadow-sm"
+                            required
+                          />
+                          <p class="text-xs text-gray-400 mt-2">
+                            Users will be redirected to this link to register
+                            for your event.
                           </p>
                         </div>
                       {/if}

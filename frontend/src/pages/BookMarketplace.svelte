@@ -758,19 +758,19 @@
                 <h2
                     class="text-3xl font-black text-slate-900 mb-4 tracking-tight"
                 >
-                    System Empty
+                    No books found
                 </h2>
                 <p
                     class="text-slate-500 mb-10 font-medium leading-relaxed px-6"
                 >
-                    We couldn't find any assets matching your protocols. Try a
-                    broader search or reset your parameters.
+                    Be the first to list a book for sale in your
+                    campus community!
                 </p>
                 <button
                     onclick={clearFilters}
                     class="px-10 py-5 bg-blue-600 text-white font-black rounded-[2rem] hover:bg-blue-700 transition-all shadow-2xl shadow-blue-200"
                 >
-                    Reset Environment
+                    All Books
                 </button>
             </div>
         {:else}

@@ -80,6 +80,7 @@ export async function createEvent(userId: string, clubId: number, eventInput: Cr
             eventStartTime: eventStartTime,
             eventEndTime: eventEndTime,
             bannerUrl: eventInput.bannerUrl || null,
+            externalRegistrationLink: eventInput.externalRegistrationLink || null,
             status: 'published' as const,
         };
 

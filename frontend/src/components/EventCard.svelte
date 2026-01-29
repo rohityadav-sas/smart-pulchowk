@@ -122,7 +122,7 @@
     </h3>
     <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2 flex-1">
       {event.description ||
-        "Join us for this exciting event hosted by our club."}
+        "Join us for an experience that's unlike anything you've seen before. Innovation meets community."}
     </p>
 
     <!-- Metadata -->

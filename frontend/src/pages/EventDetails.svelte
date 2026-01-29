@@ -990,19 +990,27 @@
                 >
                   Participants
                 </p>
-                <p class="font-semibold text-gray-900 mt-1">
-                  {event.currentParticipants}
-                  {#if event.maxParticipants}
-                    <span class="text-gray-400">/ {event.maxParticipants}</span>
-                  {/if}
-                </p>
-                {#if event.maxParticipants}
-                  <p class="text-xs text-gray-500 mt-0.5">
-                    {Math.max(
-                      0,
-                      event.maxParticipants - event.currentParticipants,
-                    )} spots remaining
+                {#if event.externalRegistrationLink}
+                  <p class="font-semibold text-gray-900 mt-1 italic">
+                    Refer to external form
                   </p>
+                {:else}
+                  <p class="font-semibold text-gray-900 mt-1">
+                    {event.currentParticipants}
+                    {#if event.maxParticipants}
+                      <span class="text-gray-400"
+                        >/ {event.maxParticipants}</span
+                      >
+                    {/if}
+                  </p>
+                  {#if event.maxParticipants}
+                    <p class="text-xs text-gray-500 mt-0.5">
+                      {Math.max(
+                        0,
+                        event.maxParticipants - event.currentParticipants,
+                      )} spots remaining
+                    </p>
+                  {/if}
                 {/if}
               </div>
             </div>
@@ -1118,7 +1126,39 @@
                 >
                   <p class="text-gray-600 font-bold">Registration Closed</p>
                   <p class="text-gray-500 text-sm mt-1">
-                    The deadline has passed.
+                    The deadline {new Date(
+                      event.registrationDeadline as string,
+                    ) < new Date()
+                      ? "has passed"
+                      : "is approaching quickly"}.
+                  </p>
+                </div>
+              {:else if event.externalRegistrationLink}
+                <div class="space-y-4">
+                  <a
+                    href={event.externalRegistrationLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg hover:shadow-blue-500/30 ring-4 ring-transparent hover:ring-blue-500/10"
+                  >
+                    <span>Register via External Form</span>
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </a>
+                  <p class="text-xs text-gray-500 text-center">
+                    Registration is handled via an external platform. Please
+                    follow the link above to complete your registration.
                   </p>
                 </div>
               {:else}

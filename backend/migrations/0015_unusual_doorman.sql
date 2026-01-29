@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "external_registration_link" varchar(500);

@@ -31,6 +31,7 @@ export interface ClubEvent {
     eventStartTime: string;
     eventEndTime: string;
     bannerUrl: string | null;
+    externalRegistrationLink: string | null;
     isRegistrationOpen: boolean;
     createdAt: string;
     club?: Club;
@@ -238,6 +239,7 @@ export async function createEvent(authId: string, clubId: number, eventData: {
     eventStartTime: string;
     eventEndTime: string;
     bannerUrl?: string;
+    externalRegistrationLink?: string;
 }): Promise<{ success: boolean; event?: ClubEvent; message?: string }> {
 
 

@@ -87,6 +87,7 @@ export const events = pgTable("events", {
 
   bannerUrl: varchar("banner_url", { length: 500 }),
   bannerPublicId: varchar("banner_public_id", { length: 255 }),
+  externalRegistrationLink: varchar("external_registration_link", { length: 500 }),
   currentParticipants: integer("current_participants").default(0).notNull(),
   isRegistrationOpen: boolean("is_registration_open").default(true).notNull(),
 

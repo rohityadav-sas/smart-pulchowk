@@ -13,7 +13,7 @@ export interface CreateEventInput {
     eventStartTime: Date;
     eventEndTime: Date;
     bannerUrl?: string;
-
+    externalRegistrationLink?: string;
 }
 
 export interface createClubInput {
