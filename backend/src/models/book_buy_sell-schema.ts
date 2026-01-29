@@ -107,36 +107,56 @@ export const bookImages = pgTable(
     "book_images",
     {
         id: serial("id").primaryKey(),
-        listingId: integer("listing_id").notNull().references(() => bookListings.id, { onDelete: "cascade" }), 
+        listingId: integer("listing_id").notNull().references(() => bookListings.id, { onDelete: "cascade" }),
         imageUrl: varchar("image_url", { length: 500 }).notNull(),
         imagePublicId: varchar("image_public_id", { length: 255 }),
         createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-},
-(table) => [
-    index("book_images_listing_idx").on(table.listingId)
-]
+    },
+    (table) => [
+        index("book_images_listing_idx").on(table.listingId)
+    ]
 );
 
-export const buyerContactInfo = pgTable(
-    "buyer_contact_info",
+export const sellerContactInfo = pgTable(
+    "seller_contact_info",
     {
         id: serial("id").primaryKey(),
+        listingId: integer("listing_id").notNull().unique()
+            .references(() => bookListings.id, { onDelete: "cascade" }),
         primaryContactMethod: contactMethodEnum("primary_contact_method").notNull(),
-        whatsapp: varchar("whatsapp_number", {length: 20}),
-        facebookMessenger: varchar("facebook_messenger", {length: 255}),
-        telegramUsername: varchar("telegram_username", {length: 255}),
-        email: varchar("email", {length: 255}),
-        phoneNumber: varchar("phone_number", {length: 20}),
-
-        otherContactMethod: varchar("other_contact_method", {length: 255}),
-        otherContactDetails: varchar("other_contact_details", {length: 500}),
-
-        preferredContactTime: varchar("preferred_contact_time", {length: 100}),
-        additionalNotes: text("additional_notes"),
-        createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),    
+        whatsapp: varchar("whatsapp_number", { length: 20 }),
+        facebookMessenger: varchar("facebook_messenger", { length: 255 }),
+        telegramUsername: varchar("telegram_username", { length: 255 }),
+        email: varchar("email", { length: 255 }),
+        phoneNumber: varchar("phone_number", { length: 20 }),
+        otherContactDetails: text("other_contact_details"),
+        createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
         updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
-    }
-)
+    },
+    (table) => [
+        index("seller_contact_listing_idx").on(table.listingId),
+    ]
+);
+
+export const bookPurchaseRequests = pgTable(
+    "book_purchase_requests",
+    {
+        id: serial("id").primaryKey(),
+        listingId: integer("listing_id").notNull()
+            .references(() => bookListings.id, { onDelete: "cascade" }),
+        buyerId: text("buyer_id").notNull()
+            .references(() => user.id, { onDelete: "cascade" }),
+        status: transactionStatusEnum("status").default("requested").notNull(),
+        message: text("message"),
+        createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+        respondedAt: timestamp("responded_at", { mode: "date" }),
+    },
+    (table) => [
+        uniqueIndex("purchase_request_unique_idx").on(table.listingId, table.buyerId),
+        index("purchase_request_listing_idx").on(table.listingId),
+        index("purchase_request_buyer_idx").on(table.buyerId),
+    ]
+);
 
 export const savedBooks = pgTable(
     "saved_books",
@@ -158,7 +178,7 @@ export const savedBooks = pgTable(
 );
 
 
-export const bookListingsRelations = relations(bookListings, ({one,many}) => ({
+export const bookListingsRelations = relations(bookListings, ({ one, many }) => ({
     seller: one(user, {
         fields: [bookListings.sellerId],
         references: [user.id],
@@ -169,6 +189,26 @@ export const bookListingsRelations = relations(bookListings, ({one,many}) => ({
     }),
     images: many(bookImages),
     savedByUsers: many(savedBooks),
+    contactInfo: one(sellerContactInfo),
+    purchaseRequests: many(bookPurchaseRequests),
+}));
+
+export const sellerContactInfoRelations = relations(sellerContactInfo, ({ one }) => ({
+    listing: one(bookListings, {
+        fields: [sellerContactInfo.listingId],
+        references: [bookListings.id],
+    }),
+}));
+
+export const bookPurchaseRequestsRelations = relations(bookPurchaseRequests, ({ one }) => ({
+    listing: one(bookListings, {
+        fields: [bookPurchaseRequests.listingId],
+        references: [bookListings.id],
+    }),
+    buyer: one(user, {
+        fields: [bookPurchaseRequests.buyerId],
+        references: [user.id],
+    }),
 }));
 
 export const bookImagesRelations = relations(bookImages, ({ one }) => ({
@@ -195,10 +235,9 @@ export const bookCategoriesRelations = relations(bookCategories, ({ one, many })
         references: [bookCategories.id],
         relationName: "Subcategories",
     }),
-    subcategories: many(bookCategories, {   
+    subcategories: many(bookCategories, {
         relationName: "Subcategories",
     }),
     bookListings: many(bookListings),
 }));
 
-    

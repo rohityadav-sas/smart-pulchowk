@@ -35,6 +35,21 @@ import {
     DeleteCategory,
 } from "../controllers/bookCategories.controller.js";
 
+import {
+    UpsertContactInfo,
+    GetContactInfo,
+    DeleteContactInfo,
+} from "../controllers/sellerContactInfo.controller.js";
+
+import {
+    CreatePurchaseRequest,
+    GetListingRequests,
+    GetMyRequests,
+    RespondToRequest,
+    GetRequestStatus,
+    CancelRequest,
+} from "../controllers/purchaseRequest.controller.js";
+
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -60,6 +75,17 @@ router.delete("/listings/:id/save", requireAuth, UnsaveBook);
 router.get("/listings/:id/is-saved", requireAuth, CheckIfSaved);
 router.put("/saved/:id/notes", requireAuth, UpdateNotes);
 
+router.put("/listings/:id/contact-info", requireAuth, UpsertContactInfo);
+router.get("/listings/:id/contact-info", requireAuth, GetContactInfo);
+router.delete("/listings/:id/contact-info", requireAuth, DeleteContactInfo);
+
+router.post("/listings/:id/request", requireAuth, CreatePurchaseRequest);
+router.get("/listings/:id/requests", requireAuth, GetListingRequests);
+router.get("/listings/:id/request-status", requireAuth, GetRequestStatus);
+router.get("/my-requests", requireAuth, GetMyRequests);
+router.put("/requests/:requestId/respond", requireAuth, RespondToRequest);
+router.delete("/requests/:requestId", requireAuth, CancelRequest);
+
 router.get("/categories", GetAllCategories);
 router.get("/categories/:id", GetCategoriesById);
 router.get("/categories/:id/subcategories", GetSubCategories);
@@ -69,3 +95,4 @@ router.put("/categories/:id", requireAuth, requireAdmin, UpdateCategory);
 router.delete("/categories/:id", requireAuth, requireAdmin, DeleteCategory);
 
 export default router;
+

@@ -1067,10 +1067,157 @@ export async function updateSavedBookNotes(listingId: number, notes: string): Pr
     }
 }
 
-// Book Categories
+
 export async function getBookCategories(): Promise<{ success: boolean; data?: BookCategory[]; message?: string }> {
     try {
         const res = await fetch(`${API_BOOKS}/categories`, { credentials: 'include' });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+
+export interface SellerContactInfo {
+    id: number;
+    listingId: number;
+    primaryContactMethod: 'whatsapp' | 'facebook_messenger' | 'telegram' | 'email' | 'phone' | 'other';
+    whatsapp?: string;
+    facebookMessenger?: string;
+    telegramUsername?: string;
+    email?: string;
+    phoneNumber?: string;
+    otherContactDetails?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PurchaseRequest {
+    id: number;
+    listingId: number;
+    buyerId: string;
+    status: 'requested' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
+    message?: string;
+    createdAt: string;
+    respondedAt?: string;
+    buyer?: {
+        id: string;
+        name: string;
+        email: string;
+        image?: string;
+    };
+    listing?: BookListing;
+}
+
+export async function upsertSellerContactInfo(
+    listingId: number,
+    data: {
+        primaryContactMethod: SellerContactInfo['primaryContactMethod'];
+        whatsapp?: string;
+        facebookMessenger?: string;
+        telegramUsername?: string;
+        email?: string;
+        phoneNumber?: string;
+        otherContactDetails?: string;
+    }
+): Promise<{ success: boolean; data?: SellerContactInfo; message?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/listings/${listingId}/contact-info`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(data),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getSellerContactInfo(
+    listingId: number
+): Promise<{ success: boolean; data?: SellerContactInfo | null; hasContactInfo?: boolean; isOwner?: boolean; hasAccess?: boolean; message?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/listings/${listingId}/contact-info`, { credentials: 'include' });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function createPurchaseRequest(
+    listingId: number,
+    message?: string
+): Promise<{ success: boolean; data?: PurchaseRequest; message?: string; existingStatus?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/listings/${listingId}/request`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ message }),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getPurchaseRequestStatus(
+    listingId: number
+): Promise<{ success: boolean; data?: PurchaseRequest | null; message?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/listings/${listingId}/request-status`, { credentials: 'include' });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getListingPurchaseRequests(
+    listingId: number
+): Promise<{ success: boolean; data?: PurchaseRequest[]; message?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/listings/${listingId}/requests`, { credentials: 'include' });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getMyPurchaseRequests(): Promise<{ success: boolean; data?: PurchaseRequest[]; message?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/my-requests`, { credentials: 'include' });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function respondToPurchaseRequest(
+    requestId: number,
+    accept: boolean
+): Promise<{ success: boolean; data?: PurchaseRequest; message?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/requests/${requestId}/respond`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ accept }),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function cancelPurchaseRequest(
+    requestId: number
+): Promise<{ success: boolean; message?: string }> {
+    try {
+        const res = await fetch(`${API_BOOKS}/requests/${requestId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
         return await res.json();
     } catch (error: any) {
         return { success: false, message: error.message };
