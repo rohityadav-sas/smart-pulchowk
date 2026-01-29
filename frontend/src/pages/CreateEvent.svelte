@@ -634,9 +634,10 @@
       <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
         <!-- Main Form Area -->
         <div
-          class="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden relative"
+          class="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white/50  relative"
           in:fly={{ x: -20, duration: 800 }}
         >
+ 
           <!-- Stepper Header -->
           <div class="px-8 pt-10 pb-6 border-b border-gray-100 bg-white/50">
             <div class="flex justify-between items-center mb-8">
