@@ -11,6 +11,7 @@ import {
   getTeacherSubjects,
   submitAssignment,
   upsertMyProfile,
+  gradeStudentSubmission,
 } from "../controllers/classroom.controller.js";
 import { requireAuth, requireTeacher } from "../middleware/auth.middleware.js";
 
@@ -39,6 +40,13 @@ router.get(
   requireAuth,
   requireTeacher,
   getAssignmentSubmissions
+);
+
+router.put(
+  "/submissions/:submissionId/grade",
+  requireAuth,
+  requireTeacher,
+  gradeStudentSubmission
 );
 
 export default router;

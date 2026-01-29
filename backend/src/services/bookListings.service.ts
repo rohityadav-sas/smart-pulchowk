@@ -1,6 +1,7 @@
 import { db } from "../lib/db.js";
 import { and, desc, eq, ilike, or, sql, asc, gte, lte } from "drizzle-orm";
 import { bookListings, bookImages, bookCategories, savedBooks } from "../models/book_buy_sell-schema.js";
+import { sendToTopic } from "./notification.service.js";
 
 
 export interface CreateListingData {
@@ -36,7 +37,7 @@ export const createBookListing = async (
     data: CreateListingData
 ) => {
     try {
-        
+
         if (data.categoryId) {
             const category = await db.query.bookCategories.findFirst({
                 where: eq(bookCategories.id, data.categoryId),
@@ -67,6 +68,16 @@ export const createBookListing = async (
                 status: "available",
             })
             .returning();
+
+        // Trigger notification (non-blocking)
+        sendToTopic('books', {
+            title: 'New Book Listed!',
+            body: `${data.title} is now available for ${data.price} NPR.`,
+            data: {
+                type: 'new_book',
+                bookId: listing.id.toString(),
+            }
+        }).catch(err => console.error('Failed to send book notification:', err));
 
         return {
             success: true,
@@ -100,12 +111,12 @@ export const getBookListings = async (filters: ListingFilters = {}) => {
 
         const conditions = [];
 
-        
+
         if (status) {
             conditions.push(eq(bookListings.status, status as any));
         }
 
-        
+
         if (search) {
             conditions.push(
                 or(
@@ -116,27 +127,27 @@ export const getBookListings = async (filters: ListingFilters = {}) => {
             );
         }
 
-        
+
         if (author) {
             conditions.push(ilike(bookListings.author, `%${author}%`));
         }
 
-        
+
         if (isbn) {
             conditions.push(ilike(bookListings.isbn, `%${isbn}%`));
         }
 
-        
+
         if (categoryId) {
             conditions.push(eq(bookListings.categoryId, categoryId));
         }
 
-        
+
         if (condition) {
             conditions.push(eq(bookListings.condition, condition as any));
         }
 
-        
+
         if (minPrice !== undefined) {
             conditions.push(gte(bookListings.price, minPrice.toString()));
         }
@@ -144,7 +155,7 @@ export const getBookListings = async (filters: ListingFilters = {}) => {
             conditions.push(lte(bookListings.price, maxPrice.toString()));
         }
 
-        
+
         let orderBy;
         switch (sortBy) {
             case "price_asc":
@@ -183,7 +194,7 @@ export const getBookListings = async (filters: ListingFilters = {}) => {
             },
         });
 
-        
+
         const countResult = await db
             .select({ count: sql<number>`count(*)::int` })
             .from(bookListings)
@@ -237,7 +248,7 @@ export const getBookListingById = async (id: number, userId?: string) => {
             };
         }
 
-        
+
         let isSaved = false;
         if (userId) {
             const saved = await db.query.savedBooks.findFirst({
@@ -249,7 +260,7 @@ export const getBookListingById = async (id: number, userId?: string) => {
             isSaved = !!saved;
         }
 
-        
+
         db.update(bookListings)
             .set({ viewCount: sql`${bookListings.viewCount} + 1` })
             .where(eq(bookListings.id, id))
@@ -278,7 +289,7 @@ export const updateBookListing = async (
     data: Partial<CreateListingData>
 ) => {
     try {
-        
+
         const existing = await db.query.bookListings.findFirst({
             where: eq(bookListings.id, id),
         });
@@ -297,7 +308,7 @@ export const updateBookListing = async (
             };
         }
 
-        
+
         if (data.categoryId) {
             const category = await db.query.bookCategories.findFirst({
                 where: eq(bookCategories.id, data.categoryId),
@@ -335,7 +346,7 @@ export const updateBookListing = async (
 
 export const deleteBookListing = async (id: number, sellerId: string) => {
     try {
-        
+
         const existing = await db.query.bookListings.findFirst({
             where: eq(bookListings.id, id),
         });
@@ -354,13 +365,13 @@ export const deleteBookListing = async (id: number, sellerId: string) => {
             };
         }
 
-        
+
         await db.delete(bookImages).where(eq(bookImages.listingId, id));
 
-        
+
         await db.delete(savedBooks).where(eq(savedBooks.listingId, id));
 
-        
+
         await db.delete(bookListings).where(eq(bookListings.id, id));
 
         return {
@@ -404,7 +415,7 @@ export const getMyListings = async (sellerId: string) => {
 
 export const markAsSold = async (id: number, sellerId: string) => {
     try {
-        
+
         const existing = await db.query.bookListings.findFirst({
             where: eq(bookListings.id, id),
         });
@@ -454,7 +465,7 @@ export const addBookImage = async (
     imagePublicId?: string
 ) => {
     try {
-        
+
         const listing = await db.query.bookListings.findFirst({
             where: eq(bookListings.id, listingId),
         });
@@ -501,7 +512,7 @@ export const deleteBookImage = async (
     sellerId: string
 ) => {
     try {
-        
+
         const image = await db.query.bookImages.findFirst({
             where: eq(bookImages.id, imageId),
             with: {

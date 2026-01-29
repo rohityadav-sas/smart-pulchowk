@@ -1,5 +1,8 @@
 import admin from 'firebase-admin';
 import ENV from '../config/ENV.js';
+import { db } from "../lib/db.js";
+import { user } from "../models/auth-schema.js";
+import { eq } from "drizzle-orm";
 import fs from 'fs';
 import path from 'path';
 
@@ -43,22 +46,25 @@ function initializeFirebase() {
 // Initialize on load
 initializeFirebase();
 
-export const sendEventNotification = async (event: any) => {
+interface NotificationPayload {
+    title: string;
+    body: string;
+    data?: Record<string, string>;
+}
+
+export const sendToTopic = async (topic: string, payload: NotificationPayload) => {
     if (!isFirebaseInitialized) {
         console.warn('Cannot send notification: Firebase not initialized.');
         return;
     }
 
-    const topic = 'events';
-
     const message = {
         notification: {
-            title: 'New Event Published!',
-            body: `${event.title} is now open for registration.`,
+            title: payload.title,
+            body: payload.body,
         },
         data: {
-            eventId: event.id.toString(),
-            type: 'new_event',
+            ...payload.data,
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
         },
         topic: topic,
@@ -66,9 +72,61 @@ export const sendEventNotification = async (event: any) => {
 
     try {
         const response = await admin.messaging().send(message);
-        console.log('Successfully sent notification:', response);
+        console.log(`Successfully sent notification to topic ${topic}:`, response);
         return response;
     } catch (error) {
-        console.error('Error sending notification:', error);
+        console.error(`Error sending notification to topic ${topic}:`, error);
     }
+};
+
+export const sendToUser = async (userId: string, payload: NotificationPayload) => {
+    if (!isFirebaseInitialized) {
+        console.warn('Cannot send notification: Firebase not initialized.');
+        return;
+    }
+
+    try {
+        // Fetch user's FCM token from DB
+        const userData = await db.query.user.findFirst({
+            where: eq(user.id, userId),
+            columns: { fcmToken: true }
+        });
+
+        if (!userData?.fcmToken) {
+            console.warn(`Cannot send notification: No FCM token found for user ${userId}`);
+            return;
+        }
+
+        const message = {
+            notification: {
+                title: payload.title,
+                body: payload.body,
+            },
+            data: {
+                ...payload.data,
+                click_action: 'FLUTTER_NOTIFICATION_CLICK',
+            },
+            token: userData.fcmToken,
+        };
+
+        const response = await admin.messaging().send(message);
+        console.log(`Successfully sent notification to user ${userId}:`, response);
+        return response;
+    } catch (error) {
+        console.error(`Error sending notification to user ${userId}:`, error);
+    }
+};
+
+/**
+ * @deprecated Use sendToTopic or sendToUser instead
+ */
+export const sendEventNotification = async (event: any) => {
+    return sendToTopic('events', {
+        title: 'New Event Published!',
+        body: `${event.title} is now open for registration.`,
+        data: {
+            eventId: event.id.toString(),
+            type: 'new_event',
+        }
+    });
 };

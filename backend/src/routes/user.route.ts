@@ -12,7 +12,7 @@ const router = express.Router();
  */
 router.post("/sync-user", async (req, res) => {
     try {
-        const { authStudentId, email, name, image } = req.body;
+        const { authStudentId, email, name, image, fcmToken } = req.body;
 
         if (!authStudentId || !email || !name) {
             res.status(400).json({
@@ -36,6 +36,7 @@ router.post("/sync-user", async (req, res) => {
                 .set({
                     name: name,
                     image: image || existingUserById.image,
+                    fcmToken: fcmToken || existingUserById.fcmToken,
                     updatedAt: new Date(),
                 })
                 .where(eq(user.id, authStudentId));
@@ -63,6 +64,7 @@ router.post("/sync-user", async (req, res) => {
                 .set({
                     name: name,
                     image: image || existingUserByEmail.image,
+                    fcmToken: fcmToken || existingUserByEmail.fcmToken,
                     updatedAt: new Date(),
                 })
                 .where(eq(user.id, existingUserByEmail.id));
@@ -94,6 +96,7 @@ router.post("/sync-user", async (req, res) => {
                 emailVerified: true, // Firebase verifies emails
                 image: image,
                 role: "student",
+                fcmToken: fcmToken,
             })
             .returning();
 

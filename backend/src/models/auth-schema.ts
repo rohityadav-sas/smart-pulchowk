@@ -13,6 +13,7 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  fcmToken: text("fcm_token"),
 });
 
 export const session = pgTable(

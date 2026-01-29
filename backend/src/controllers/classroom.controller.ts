@@ -10,6 +10,7 @@ import {
   listTeacherSubjects,
   submitAssignmentWork,
   upsertStudentProfile,
+  gradeSubmission,
 } from "../services/classroom.service.js";
 
 export async function getFaculties(req: Request, res: Response) {
@@ -198,6 +199,31 @@ export async function getAssignmentSubmissions(req: Request, res: Response) {
       user.id,
       user.role === "admin"
     );
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export async function gradeStudentSubmission(req: Request, res: Response) {
+  try {
+    const user = (req as any).user;
+    const { submissionId } = req.params;
+    const { status, feedback } = req.body || {};
+
+    if (!submissionId || !status) {
+      return res.status(400).json({
+        success: false,
+        message: "submissionId and status are required",
+      });
+    }
+
+    const result = await gradeSubmission(
+      Number(submissionId),
+      user.id,
+      { status, feedback }
+    );
+
     return res.json(result);
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

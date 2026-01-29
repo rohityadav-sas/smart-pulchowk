@@ -17,6 +17,7 @@ import {
   deleteFileFromCloudinary,
   uploadAssignmentFileToCloudinary,
 } from "./cloudinary.service.js";
+import { sendToTopic, sendToUser } from "./notification.service.js";
 
 const { ASSIGNMENT_FILES, FOLDERS } = UPLOAD_CONSTANTS;
 
@@ -265,20 +266,20 @@ export async function getStudentSubjects(userId: string) {
     subjectIds.length === 0
       ? []
       : await db.query.assignments.findMany({
-          where: inArray(assignments.subjectId, subjectIds),
-          orderBy: [desc(assignments.createdAt)],
-        });
+        where: inArray(assignments.subjectId, subjectIds),
+        orderBy: [desc(assignments.createdAt)],
+      });
 
   const assignmentIds = assignmentList.map((assignment) => assignment.id);
   const submissionList =
     assignmentIds.length === 0
       ? []
       : await db.query.submissions.findMany({
-          where: and(
-            inArray(submissions.assignmentId, assignmentIds),
-            eq(submissions.studentId, userId)
-          ),
-        });
+        where: and(
+          inArray(submissions.assignmentId, assignmentIds),
+          eq(submissions.studentId, userId)
+        ),
+      });
 
   const submissionsByAssignment = new Map(
     submissionList.map((submission) => [submission.assignmentId, submission])
@@ -324,9 +325,9 @@ export async function listTeacherSubjects(teacherId: string) {
     subjectIds.length === 0
       ? []
       : await db.query.assignments.findMany({
-          where: inArray(assignments.subjectId, subjectIds),
-          orderBy: [desc(assignments.createdAt)],
-        });
+        where: inArray(assignments.subjectId, subjectIds),
+        orderBy: [desc(assignments.createdAt)],
+      });
 
   const assignmentsBySubject = new Map<number, any[]>();
   assignmentList.forEach((assignment) => {
@@ -418,6 +419,18 @@ export async function createAssignmentForSubject(
       dueAt: data.dueAt ? new Date(data.dueAt) : null,
     })
     .returning();
+
+  // Notify students in the faculty (non-blocking)
+  // We use the faculty ID to target students: 'faculty_1', 'faculty_2', etc.
+  sendToTopic(`faculty_${subject.facultyId}`, {
+    title: 'New Assignment!',
+    body: `A new ${data.type || 'classwork'} was posted for ${subject.title}: ${created.title}`,
+    data: {
+      type: 'new_assignment',
+      assignmentId: created.id.toString(),
+      subjectId: subjectId.toString(),
+    }
+  }).catch(err => console.error('Failed to send assignment notification:', err));
 
   return { success: true, assignment: created };
 }
@@ -581,4 +594,59 @@ export async function listSubmissionsForAssignment(
   });
 
   return { success: true, submissions: results };
+}
+
+export async function gradeSubmission(
+  submissionId: number,
+  teacherId: string,
+  gradeData: { status: "graded" | "returned"; feedback?: string }
+) {
+  const submission = await db.query.submissions.findFirst({
+    where: eq(submissions.id, submissionId),
+    with: {
+      assignment: {
+        with: {
+          subject: true,
+        },
+      },
+    },
+  });
+
+  if (!submission) {
+    throw new Error("Submission not found");
+  }
+
+  // Verify teacher has access
+  const teacherAccess = await db.query.teacherSubjects.findFirst({
+    where: and(
+      eq(teacherSubjects.teacherId, teacherId),
+      eq(teacherSubjects.subjectId, submission.assignment.subjectId)
+    ),
+  });
+
+  if (!teacherAccess) {
+    throw new Error("You are not authorized to grade this submission");
+  }
+
+  const [updated] = await db
+    .update(submissions)
+    .set({
+      status: gradeData.status,
+      updatedAt: new Date(),
+    })
+    .where(eq(submissions.id, submissionId))
+    .returning();
+
+  // Notify student (non-blocking)
+  sendToUser(submission.studentId, {
+    title: gradeData.status === 'graded' ? 'Assignment Graded!' : 'Assignment Returned',
+    body: `Your submission for "${submission.assignment.title}" has been ${gradeData.status}.`,
+    data: {
+      type: 'grading_update',
+      assignmentId: submission.assignmentId.toString(),
+      status: gradeData.status,
+    }
+  }).catch(err => console.error('Failed to notify student of grading update:', err));
+
+  return { success: true, submission: updated };
 }

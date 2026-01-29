@@ -1,6 +1,7 @@
 import { db } from "../lib/db.js";
 import { eq, and, desc } from "drizzle-orm";
 import { bookPurchaseRequests, bookListings } from "../models/book_buy_sell-schema.js";
+import { sendToUser } from "./notification.service.js";
 
 export const createPurchaseRequest = async (
     listingId: number,
@@ -8,7 +9,7 @@ export const createPurchaseRequest = async (
     message?: string
 ) => {
     try {
-        
+
         const listing = await db.query.bookListings.findFirst({
             where: eq(bookListings.id, listingId),
         });
@@ -25,7 +26,7 @@ export const createPurchaseRequest = async (
             return { success: false, message: "This book is no longer available." };
         }
 
-        
+
         const existing = await db.query.bookPurchaseRequests.findFirst({
             where: and(
                 eq(bookPurchaseRequests.listingId, listingId),
@@ -43,7 +44,7 @@ export const createPurchaseRequest = async (
             };
         }
 
-        
+
         const [request] = await db
             .insert(bookPurchaseRequests)
             .values({
@@ -52,6 +53,17 @@ export const createPurchaseRequest = async (
                 message,
             })
             .returning();
+
+        // Notify seller (non-blocking)
+        sendToUser(listing.sellerId, {
+            title: 'New Purchase Request!',
+            body: `Someone is interested in your book: ${listing.title}.`,
+            data: {
+                type: 'purchase_request',
+                listingId: listingId.toString(),
+                requestId: request.id.toString(),
+            }
+        }).catch(err => console.error('Failed to notify seller of purchase request:', err));
 
         return { success: true, data: request, message: "Request sent successfully!" };
     } catch (error) {
@@ -65,7 +77,7 @@ export const getPurchaseRequestsForListing = async (
     sellerId: string
 ) => {
     try {
-        
+
         const listing = await db.query.bookListings.findFirst({
             where: eq(bookListings.id, listingId),
         });
@@ -134,7 +146,7 @@ export const respondToPurchaseRequest = async (
     accept: boolean
 ) => {
     try {
-        
+
         const request = await db.query.bookPurchaseRequests.findFirst({
             where: eq(bookPurchaseRequests.id, requestId),
             with: {
@@ -164,6 +176,19 @@ export const respondToPurchaseRequest = async (
             })
             .where(eq(bookPurchaseRequests.id, requestId))
             .returning();
+
+        // Notify buyer (non-blocking)
+        sendToUser(request.buyerId, {
+            title: accept ? 'Request Accepted!' : 'Request Rejected',
+            body: accept
+                ? `Your request for "${request.listing.title}" was accepted! You can now see the seller's contact info.`
+                : `Your request for "${request.listing.title}" was rejected.`,
+            data: {
+                type: 'request_response',
+                listingId: request.listingId.toString(),
+                status: newStatus,
+            }
+        }).catch(err => console.error('Failed to notify buyer of request response:', err));
 
         return {
             success: true,
