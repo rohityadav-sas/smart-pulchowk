@@ -120,6 +120,13 @@
       "when": 1769673422546,
       "tag": "0016_dashing_korvac",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1769683400700,
+      "tag": "0017_strange_kate_bishop",
+      "breakpoints": true
     }
   ]
 }
