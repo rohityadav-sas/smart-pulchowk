@@ -54,6 +54,19 @@
   let bannerPreview = $state<string | null>(null);
   let uploadLoading = $state(false);
 
+  // Export state
+  let showExportMenu = $state(false);
+
+  // Click outside to close menu
+  function handleGlobalClick(e: MouseEvent) {
+    if (showExportMenu) {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".export-container")) {
+        showExportMenu = false;
+      }
+    }
+  }
+
   $effect(() => {
     if (clubId && eventId) {
       loadEventDetails();
@@ -78,6 +91,11 @@
     }
   });
 
+  $effect(() => {
+    window.addEventListener("click", handleGlobalClick);
+    return () => window.removeEventListener("click", handleGlobalClick);
+  });
+
   async function loadRegisteredStudents() {
     try {
       const studentsResult = await getRegisteredStudents(parseInt(eventId));
@@ -87,6 +105,142 @@
     } catch (e) {
       console.error("Failed to load registered students", e);
     }
+  }
+
+  function exportParticipants(type: "csv" | "excel" | "pdf") {
+    if (registeredStudents.length === 0) return;
+    showExportMenu = false;
+
+    const filename = `${event?.title.replace(/\s+/g, "_")}_Participants`;
+
+    if (type === "csv") {
+      const headers = ["Name", "Email", "Status", "Registration Date"];
+      const csvData = registeredStudents.map((reg) => [
+        reg.student.name,
+        reg.student.email,
+        reg.status,
+        new Date(reg.registeredAt).toLocaleString(),
+      ]);
+      const csvContent = [
+        headers.join(","),
+        ...csvData.map((row) =>
+          row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","),
+        ),
+      ].join("\n");
+
+      downloadFile(csvContent, `${filename}.csv`, "text/csv;charset=utf-8;");
+    } else if (type === "excel") {
+      const tableHtml = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+        <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Participants</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>
+        <body>
+          <table border="1">
+            <tr style="background-color: #2563eb; color: #ffffff; font-weight: bold;">
+              <th style="padding: 10px;">S.N.</th>
+              <th style="padding: 10px;">Name</th>
+              <th style="padding: 10px;">Email</th>
+              <th style="padding: 10px;">Status</th>
+              <th style="padding: 10px;">Registration Date</th>
+            </tr>
+            ${registeredStudents
+              .map(
+                (reg, i) => `
+              <tr>
+                <td style="padding: 8px;">${i + 1}</td>
+                <td style="padding: 8px;">${reg.student.name}</td>
+                <td style="padding: 8px;">${reg.student.email}</td>
+                <td style="padding: 8px;">${reg.status}</td>
+                <td style="padding: 8px;">${new Date(reg.registeredAt).toLocaleString()}</td>
+              </tr>
+            `,
+              )
+              .join("")}
+          </table>
+        </body>
+        </html>
+      `;
+      downloadFile(
+        tableHtml,
+        `${filename}.xls`,
+        "application/vnd.ms-excel;charset=utf-8;",
+      );
+    } else if (type === "pdf") {
+  
+      if (typeof (window as any).jspdf === "undefined") {
+        const jspdfScript = document.createElement("script");
+        jspdfScript.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+        jspdfScript.onload = () => {
+          const autoTableScript = document.createElement("script");
+          autoTableScript.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js";
+          autoTableScript.onload = () => generateHighPerformancePdf(filename);
+          document.head.appendChild(autoTableScript);
+        };
+        document.head.appendChild(jspdfScript);
+      } else {
+        generateHighPerformancePdf(filename);
+      }
+    }
+  }
+
+  function generateHighPerformancePdf(filename: string) {
+    const { jsPDF } = (window as any).jspdf;
+    const doc = new jsPDF();
+
+    // Premium Branding
+    doc.setFontSize(22);
+    doc.setTextColor(37, 99, 235); // Blue-600
+    doc.text(event?.title || "Event Participants", 14, 20);
+
+    doc.setFontSize(10);
+    doc.setTextColor(107, 114, 128); // Gray-500
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+    doc.text(`Hosted by: ${club?.name}`, 14, 35);
+
+    // Table Data
+    const tableHeaders = [
+      ["S.N.", "Full Name", "Email Address", "Status", "Joined Date"],
+    ];
+    const tableData = registeredStudents.map((reg, i) => [
+      i + 1,
+      reg.student.name,
+      reg.student.email,
+      reg.status.toUpperCase(),
+      new Date(reg.registeredAt).toLocaleDateString(),
+    ]);
+
+    // AutoTable Configuration
+    (doc as any).autoTable({
+      head: tableHeaders,
+      body: tableData,
+      startY: 45,
+      theme: "grid",
+      headStyles: {
+        fillColor: [37, 99, 235], // Blue-600
+        fontSize: 10,
+        fontStyle: "bold",
+        halign: "center",
+      },
+      bodyStyles: { fontSize: 9 },
+      alternateRowStyles: { fillColor: [249, 250, 251] }, // Gray-50
+      margin: { top: 45 },
+    });
+
+    // Save PDF
+    doc.save(`${filename}.pdf`);
+  }
+
+  function downloadFile(content: string, filename: string, mimeType: string) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   async function loadEventDetails() {
@@ -822,16 +976,138 @@
             <div
               class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8"
             >
-              <h2
-                class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2"
-              >
-                Registered Students
-                <span
-                  class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium"
+              <div class="flex items-center justify-between mb-6">
+                <h2
+                  class="text-xl font-bold text-gray-900 flex items-center gap-2"
                 >
-                  {registeredStudents.length}
-                </span>
-              </h2>
+                  Registered Students
+                  <span
+                    class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium"
+                  >
+                    {registeredStudents.length}
+                  </span>
+                </h2>
+
+                {#if registeredStudents.length > 0}
+                  <div class="relative export-container">
+                    <button
+                      onclick={() => (showExportMenu = !showExportMenu)}
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl font-bold text-sm transition-all active:scale-95 shadow-md shadow-emerald-500/20"
+                    >
+                      <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                      Export List
+                      <svg
+                        class="w-3 h-3 transition-transform {showExportMenu
+                          ? 'rotate-180'
+                          : ''}"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2.5"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+
+                    {#if showExportMenu}
+                      <div
+                        in:fly={{ y: 10, duration: 200 }}
+                        class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
+                      >
+                        <div class="p-2 space-y-1">
+                          <button
+                            onclick={() => exportParticipants("excel")}
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors group"
+                          >
+                            <div
+                              class="w-8 h-8 rounded-lg bg-emerald-100/50 flex items-center justify-center text-emerald-600"
+                            >
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                              </svg>
+                            </div>
+                            <span>Excel (.xls)</span>
+                          </button>
+
+                          <button
+                            onclick={() => exportParticipants("pdf")}
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors group"
+                          >
+                            <div
+                              class="w-8 h-8 rounded-lg bg-red-100/50 flex items-center justify-center text-red-600"
+                            >
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                />
+                              </svg>
+                            </div>
+                            <span>PDF Document</span>
+                          </button>
+
+                          <button
+                            onclick={() => exportParticipants("csv")}
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-xl transition-colors group"
+                          >
+                            <div
+                              class="w-8 h-8 rounded-lg bg-blue-100/50 flex items-center justify-center text-blue-600"
+                            >
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                              </svg>
+                            </div>
+                            <span>CSV Text File</span>
+                          </button>
+                        </div>
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
+              </div>
 
               {#if registeredStudents.length === 0}
                 <div
@@ -1445,5 +1721,8 @@
 {/if}
 
 <style>
-  /* Add any ephemeral animations or specific styles here if tailwind isn't enough */
+  /* Premium Export Menu Styling */
+  .export-container {
+    user-select: none;
+  }
 </style>
