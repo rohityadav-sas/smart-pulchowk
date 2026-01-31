@@ -9,6 +9,7 @@ import chatBotRoutes from './routes/chatBot.route.js'
 import userRoutes from './routes/user.route.js'
 import bookRoutes from './routes/books.route.js'
 import classroomRoutes from './routes/classroom.route.js'
+import chatRoutes from './routes/chat.route.js'
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.use("/api/chatbot", chatBotRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/classroom", classroomRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.use(express.static(path.join(__dirname, '../../frontend/dist')))
 
