@@ -1223,3 +1223,103 @@ export async function cancelPurchaseRequest(
         return { success: false, message: error.message };
     }
 }
+
+
+const API_CHAT = '/api/chat';
+
+export interface ChatUser {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+}
+
+export interface ChatMessage {
+    id: number;
+    conversationId: number;
+    senderId: string;
+    content: string;
+    isRead: string;
+    createdAt: string;
+    sender?: ChatUser;
+}
+
+export interface ChatConversation {
+    id: number;
+    listingId: number;
+    buyerId: string;
+    sellerId: string;
+    createdAt: string;
+    updatedAt: string;
+    listing?: {
+        id: number;
+        title: string;
+        price: string;
+        images?: { imageUrl: string }[];
+    };
+    buyer?: ChatUser;
+    seller?: ChatUser;
+    messages?: ChatMessage[];
+}
+
+export async function getConversations(): Promise<{
+    success: boolean;
+    data?: ChatConversation[];
+    message?: string
+}> {
+    try {
+        const res = await fetch(`${API_CHAT}/conversations`, { credentials: 'include' });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getMessages(
+    conversationId: number
+): Promise<{ success: boolean; data?: ChatMessage[]; message?: string }> {
+    try {
+        const res = await fetch(`${API_CHAT}/conversations/${conversationId}/messages`, {
+            credentials: 'include'
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+
+export async function startConversation(
+    listingId: number,
+    content: string
+): Promise<{ success: boolean; data?: ChatMessage; message?: string }> {
+    try {
+        const res = await fetch(`${API_CHAT}/send`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ listingId, content }),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}
+
+
+export async function sendMessageToConversation(
+    conversationId: number,
+    content: string
+): Promise<{ success: boolean; data?: ChatMessage; message?: string }> {
+    try {
+        const res = await fetch(`${API_CHAT}/conversations/${conversationId}/messages`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ content }),
+        });
+        return await res.json();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}

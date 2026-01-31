@@ -977,6 +977,27 @@
                                         </a>
                                     {/if}
                                 </div>
+
+                                <!-- Chat with Seller Button -->
+                                <a
+                                    href="/messages?listing={book.id}"
+                                    class="mt-4 flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl transition-all shadow-sm hover:shadow-md"
+                                >
+                                    <svg
+                                        class="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                        ></path>
+                                    </svg>
+                                    Chat with Seller
+                                </a>
                             </div>
                         {/if}
                         {#if book.isOwner && incomingRequestsQuery.data && incomingRequestsQuery.data.length > 0}
@@ -1020,7 +1041,8 @@
                                                 <div class="min-w-0">
                                                     <p
                                                         class="font-medium text-gray-900 text-sm truncate"
-                                                        title={request.buyer?.name}
+                                                        title={request.buyer
+                                                            ?.name}
                                                     >
                                                         {request.buyer?.name ||
                                                             "Unknown"}
@@ -1063,17 +1085,42 @@
                                                     </button>
                                                 </div>
                                             {:else}
-                                                <span
-                                                    class="px-3 py-1 text-xs font-bold rounded-full {request.status ===
-                                                    'accepted'
-                                                        ? 'bg-emerald-100 text-emerald-700'
-                                                        : 'bg-red-100 text-red-700'}"
+                                                <div
+                                                    class="flex items-center gap-2"
                                                 >
-                                                    {request.status ===
-                                                    "accepted"
-                                                        ? "Accepted"
-                                                        : "Declined"}
-                                                </span>
+                                                    <span
+                                                        class="px-3 py-1 text-xs font-bold rounded-full {request.status ===
+                                                        'accepted'
+                                                            ? 'bg-emerald-100 text-emerald-700'
+                                                            : 'bg-red-100 text-red-700'}"
+                                                    >
+                                                        {request.status ===
+                                                        "accepted"
+                                                            ? "Accepted"
+                                                            : "Declined"}
+                                                    </span>
+                                                    {#if request.status === "accepted"}
+                                                        <a
+                                                            href="/messages?listing={book.id}"
+                                                            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1"
+                                                        >
+                                                            <svg
+                                                                class="w-3.5 h-3.5"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                                                ></path>
+                                                            </svg>
+                                                            Chat
+                                                        </a>
+                                                    {/if}
+                                                </div>
                                             {/if}
                                         </div>
                                     {/each}
