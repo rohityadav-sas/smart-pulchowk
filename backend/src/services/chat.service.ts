@@ -60,9 +60,13 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
             content,
         }).returning();
 
-        // 4. Update conversation timestamp
+        // 4. Update conversation timestamp and reset deletion flags
         await db.update(conversations)
-            .set({ updatedAt: new Date() })
+            .set({
+                updatedAt: new Date(),
+                buyerDeleted: "false",
+                sellerDeleted: "false"
+            })
             .where(eq(conversations.id, conversation.id));
 
         return { success: true, data: newMessage };
@@ -75,9 +79,16 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
 export const getConversations = async (userId: string) => {
     try {
         const userConversations = await db.query.conversations.findMany({
-            where: or(
-                eq(conversations.buyerId, userId),
-                eq(conversations.sellerId, userId)
+            where: and(
+                or(
+                    eq(conversations.buyerId, userId),
+                    eq(conversations.sellerId, userId)
+                ),
+                sql`CASE 
+                    WHEN ${conversations.buyerId} = ${userId} THEN ${conversations.buyerDeleted} = 'false'
+                    WHEN ${conversations.sellerId} = ${userId} THEN ${conversations.sellerDeleted} = 'false'
+                    ELSE TRUE
+                END`
             ),
             with: {
                 listing: {
@@ -137,7 +148,7 @@ export const getMessages = async (conversationId: number, userId: string) => {
 
 export const sendMessageToConversation = async (conversationId: number, senderId: string, content: string) => {
     try {
-       
+
         const conversation = await db.query.conversations.findFirst({
             where: and(
                 eq(conversations.id, conversationId),
@@ -152,7 +163,7 @@ export const sendMessageToConversation = async (conversationId: number, senderId
             return { success: false, message: "Conversation not found or access denied." };
         }
 
-    
+
         const acceptedRequest = await db.query.bookPurchaseRequests.findFirst({
             where: and(
                 eq(bookPurchaseRequests.listingId, conversation.listingId),
@@ -168,21 +179,73 @@ export const sendMessageToConversation = async (conversationId: number, senderId
             };
         }
 
-       
+
         const [newMessage] = await db.insert(messages).values({
             conversationId,
             senderId,
             content,
         }).returning();
 
-       
+
         await db.update(conversations)
-            .set({ updatedAt: new Date() })
+            .set({
+                updatedAt: new Date(),
+                buyerDeleted: "false",
+                sellerDeleted: "false"
+            })
             .where(eq(conversations.id, conversationId));
 
         return { success: true, data: newMessage };
     } catch (error) {
         console.error("Error in sendMessageToConversation service:", error);
         return { success: false, message: "Failed to send message." };
+    }
+};
+
+export const deleteConversation = async (conversationId: number, userId: string) => {
+    try {
+        // 1. Verify user is part of conversation
+        const conversation = await db.query.conversations.findFirst({
+            where: and(
+                eq(conversations.id, conversationId),
+                or(
+                    eq(conversations.buyerId, userId),
+                    eq(conversations.sellerId, userId)
+                )
+            ),
+        });
+
+        if (!conversation) {
+            return { success: false, message: "Conversation not found or access denied." };
+        }
+
+        const isBuyer = conversation.buyerId === userId;
+
+        // 2. Set the deleted flag for this user
+        if (isBuyer) {
+            await db.update(conversations)
+                .set({ buyerDeleted: "true" })
+                .where(eq(conversations.id, conversationId));
+        } else {
+            await db.update(conversations)
+                .set({ sellerDeleted: "true" })
+                .where(eq(conversations.id, conversationId));
+        }
+
+        // 3. Re-fetch to check if both are now deleted
+        const updatedConversation = await db.query.conversations.findFirst({
+            where: eq(conversations.id, conversationId),
+        });
+
+        if (updatedConversation && updatedConversation.buyerDeleted === "true" && updatedConversation.sellerDeleted === "true") {
+            // Permanently delete if both deleted
+            await db.delete(conversations).where(eq(conversations.id, conversationId));
+            return { success: true, message: "Conversation deleted permanently." };
+        }
+
+        return { success: true, message: "Conversation deleted for you." };
+    } catch (error) {
+        console.error("Error in deleteConversation service:", error);
+        return { success: false, message: "Failed to delete conversation." };
     }
 };

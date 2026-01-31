@@ -17,6 +17,8 @@ export const conversations = pgTable(
         listingId: integer("listing_id").notNull().references(() => bookListings.id, { onDelete: "cascade" }),
         buyerId: text("buyer_id").notNull().references(() => user.id, { onDelete: "cascade" }),
         sellerId: text("seller_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        buyerDeleted: text("buyer_deleted").default("false").notNull(),
+        sellerDeleted: text("seller_deleted").default("false").notNull(),
         createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
         updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
     },

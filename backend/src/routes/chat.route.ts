@@ -4,6 +4,7 @@ import {
     SendMessage,
     GetConversations,
     GetMessages,
+    DeleteConversation,
     SendMessageToConversation,
 } from "../controllers/chat.controller.js";
 
@@ -13,5 +14,6 @@ router.post("/send", requireAuth, SendMessage);
 router.get("/conversations", requireAuth, GetConversations);
 router.get("/conversations/:conversationId/messages", requireAuth, GetMessages);
 router.post("/conversations/:conversationId/messages", requireAuth, SendMessageToConversation);
+router.delete("/conversations/:conversationId", requireAuth, DeleteConversation);
 
 export default router;

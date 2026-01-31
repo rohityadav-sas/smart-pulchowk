@@ -3,6 +3,7 @@ import {
     sendMessage,
     getConversations,
     getMessages,
+    deleteConversation,
     sendMessageToConversation,
 } from "../services/chat.service.js";
 
@@ -147,6 +148,40 @@ export const SendMessageToConversation = async (req: Request, res: Response) => 
         return res.status(500).json({
             success: false,
             message: "An error occurred while sending the message.",
+        });
+    }
+};
+
+export const DeleteConversation = async (req: Request, res: Response) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required.",
+            });
+        }
+
+        const conversationId = parseInt(req.params.conversationId);
+        if (isNaN(conversationId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Valid conversation ID is required.",
+            });
+        }
+
+        const result = await deleteConversation(conversationId, userId);
+
+        if (!result.success) {
+            return res.status(result.message?.includes("denied") ? 403 : 400).json(result);
+        }
+
+        return res.json(result);
+    } catch (error) {
+        console.error("Error in DeleteConversation controller:", error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while deleting the conversation.",
         });
     }
 };
