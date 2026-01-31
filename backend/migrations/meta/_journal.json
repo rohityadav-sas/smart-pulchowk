@@ -134,6 +134,13 @@
       "when": 1769686063708,
       "tag": "0018_stiff_klaw",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1769879521699,
+      "tag": "0019_simple_hardball",
+      "breakpoints": true
     }
   ]
 }
