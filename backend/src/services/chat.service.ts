@@ -1,7 +1,9 @@
 import { db } from "../lib/db.js";
 import { conversations, messages } from "../models/chat-schema.js";
+import { user } from "../models/auth-schema.js";
 import { bookListings, bookPurchaseRequests } from "../models/book_buy_sell-schema.js";
 import { eq, and, or, desc, sql } from "drizzle-orm";
+import { sendToUser } from "./notification.service.js";
 
 export const sendMessage = async (senderId: string, listingId: number, content: string) => {
     try {
@@ -69,6 +71,20 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
             })
             .where(eq(conversations.id, conversation.id));
 
+        // 5. Send notification to recipient
+        const recipientId = senderId === sellerId ? conversation.buyerId : sellerId;
+        const sender = await db.query.user.findFirst({ where: eq(user.id, senderId) });
+
+        sendToUser(recipientId, {
+            title: sender?.name || "New Message",
+            body: content,
+            data: {
+                type: 'chat_message',
+                conversationId: conversation.id.toString(),
+                senderId,
+            }
+        });
+
         return { success: true, data: newMessage };
     } catch (error) {
         console.error("Error in sendMessage service:", error);
@@ -84,7 +100,7 @@ export const getConversations = async (userId: string) => {
                     eq(conversations.buyerId, userId),
                     eq(conversations.sellerId, userId)
                 ),
-                sql`CASE 
+                sql`CASE
                     WHEN ${conversations.buyerId} = ${userId} THEN ${conversations.buyerDeleted} = 'false'
                     WHEN ${conversations.sellerId} = ${userId} THEN ${conversations.sellerDeleted} = 'false'
                     ELSE TRUE
@@ -194,6 +210,20 @@ export const sendMessageToConversation = async (conversationId: number, senderId
                 sellerDeleted: "false"
             })
             .where(eq(conversations.id, conversationId));
+
+        // 4. Send notification to recipient
+        const recipientId = senderId === conversation.buyerId ? conversation.sellerId : conversation.buyerId;
+        const sender = await db.query.user.findFirst({ where: eq(user.id, senderId) });
+
+        sendToUser(recipientId, {
+            title: sender?.name || "New Message",
+            body: content,
+            data: {
+                type: 'chat_message',
+                conversationId: conversationId.toString(),
+                senderId,
+            }
+        });
 
         return { success: true, data: newMessage };
     } catch (error) {

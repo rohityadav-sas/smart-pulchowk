@@ -19,8 +19,8 @@ export const conversations = pgTable(
         sellerId: text("seller_id").notNull().references(() => user.id, { onDelete: "cascade" }),
         buyerDeleted: text("buyer_deleted").default("false").notNull(),
         sellerDeleted: text("seller_deleted").default("false").notNull(),
-        createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-        updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
     },
     (table) => [
         index("conversations_listing_idx").on(table.listingId),
@@ -37,7 +37,7 @@ export const messages = pgTable(
         senderId: text("sender_id").notNull().references(() => user.id, { onDelete: "cascade" }),
         content: text("content").notNull(),
         isRead: text("is_read").default("false").notNull(), // Using text because of bool issues in some pg versions/drizzle configs if any, but boolean is better. Let's use boolean if available.
-        createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
     },
     (table) => [
         index("messages_conversation_idx").on(table.conversationId),

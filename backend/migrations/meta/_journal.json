@@ -148,6 +148,13 @@
       "when": 1769884233796,
       "tag": "0020_minor_captain_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1769888304537,
+      "tag": "0021_swift_gamora",
+      "breakpoints": true
     }
   ]
 }
