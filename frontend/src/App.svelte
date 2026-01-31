@@ -29,6 +29,7 @@
   import BookDetails from "./pages/BookDetails.svelte";
   import SellBook from "./pages/SellBook.svelte";
   import MyBooks from "./pages/MyBooks.svelte";
+  import Messages from "./pages/Messages.svelte";
   import { onMount, type Component } from "svelte";
 
   let MapComponent: Component | any = $state(null);
@@ -132,6 +133,10 @@
       path: /^\/books\/(?<bookId>\d+)\/?$/,
       component: BookDetails,
     },
+    {
+      path: /^\/messages\/?$/,
+      component: Messages,
+    },
   ];
 </script>
 
@@ -140,79 +145,87 @@
     <nav
       class="bg-white/80 border-b border-gray-200 sticky top-0 z-50 backdrop-blur-md"
     >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a href="/" class="flex items-center gap-2.5 group">
-          <div
-            class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 transition-transform group-hover:scale-105"
-          >
-            <span class="text-white font-bold text-lg">P</span>
-          </div>
-          <span
-            class="text-xl font-bold text-gray-900 tracking-tight group-hover:text-blue-600 transition-colors"
-            >PulchowkX</span
-          >
-        </a>
-        <div class="flex items-center gap-1 sm:gap-2">
-          <a
-            use:route
-            href="/"
-            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >Home</a
-          >
-          <a
-            use:route
-            href="/clubs"
-            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >Clubs</a
-          >
-          <a
-            use:route
-            href="/events"
-            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >Events</a
-          >
-          <a
-            use:route
-            href="/books"
-            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >Books</a
-          >
-          <a
-            use:route
-            href="/map"
-            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >Map</a
-          >
-          {#if $session.isPending}
-            <div class="px-4 py-2 flex items-center justify-center min-w-22.5">
-              <div
-                class="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"
-              ></div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="/" class="flex items-center gap-2.5 group">
+            <div
+              class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 transition-transform group-hover:scale-105"
+            >
+              <span class="text-white font-bold text-lg">P</span>
             </div>
-          {:else if $session.data?.user}
+            <span
+              class="text-xl font-bold text-gray-900 tracking-tight group-hover:text-blue-600 transition-colors"
+              >PulchowkX</span
+            >
+          </a>
+          <div class="flex items-center gap-1 sm:gap-2">
             <a
               use:route
-              href="/dashboard"
+              href="/"
               class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-              >Dashboard</a
+              >Home</a
             >
             <a
               use:route
-              href="/classroom"
+              href="/clubs"
               class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-              >Classroom</a
+              >Clubs</a
             >
-          {:else}
             <a
-              href="/register"
-              class="ml-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow-md transition-all active:scale-95"
-              >Sign In</a
+              use:route
+              href="/events"
+              class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+              >Events</a
             >
-          {/if}
+            <a
+              use:route
+              href="/books"
+              class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+              >Books</a
+            >
+            <a
+              use:route
+              href="/map"
+              class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+              >Map</a
+            >
+            {#if $session.isPending}
+              <div
+                class="px-4 py-2 flex items-center justify-center min-w-22.5"
+              >
+                <div
+                  class="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"
+                ></div>
+              </div>
+            {:else if $session.data?.user}
+              <a
+                use:route
+                href="/messages"
+                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+                >Messages</a
+              >
+              <a
+                use:route
+                href="/dashboard"
+                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+                >Dashboard</a
+              >
+              <a
+                use:route
+                href="/classroom"
+                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+                >Classroom</a
+              >
+            {:else}
+              <a
+                href="/register"
+                class="ml-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow-md transition-all active:scale-95"
+                >Sign In</a
+              >
+            {/if}
+          </div>
         </div>
       </div>
-    </div>
     </nav>
   {/if}
 
@@ -224,7 +237,11 @@
     email address to sign in.
   </ErrorToast>
 
-  <main class="{isEmbedded ? 'h-screen' : 'min-h-[calc(100vh-4rem)]'} bg-gray-50 relative">
+  <main
+    class="{isEmbedded
+      ? 'h-screen'
+      : 'min-h-[calc(100vh-4rem)]'} bg-gray-50 relative"
+  >
     {#if MapComponent}
       <div
         class="absolute inset-0 z-0 transition-opacity duration-300 {isMapRoute

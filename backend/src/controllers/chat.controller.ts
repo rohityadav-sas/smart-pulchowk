@@ -3,6 +3,7 @@ import {
     sendMessage,
     getConversations,
     getMessages,
+    sendMessageToConversation,
 } from "../services/chat.service.js";
 
 const getUserId = (req: Request): string | null => {
@@ -101,6 +102,51 @@ export const GetMessages = async (req: Request, res: Response) => {
         return res.status(500).json({
             success: false,
             message: "An error occurred while fetching messages.",
+        });
+    }
+};
+
+export const SendMessageToConversation = async (req: Request, res: Response) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required.",
+            });
+        }
+
+        const conversationId = parseInt(req.params.conversationId);
+        if (isNaN(conversationId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Valid conversation ID is required.",
+            });
+        }
+
+        const { content } = req.body;
+        if (!content || typeof content !== "string" || content.trim().length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Message content is required.",
+            });
+        }
+
+        const result = await sendMessageToConversation(conversationId, userId, content.trim());
+
+        if (!result.success) {
+            const statusCode = result.message?.includes("denied") || result.message?.includes("no longer available")
+                ? 403
+                : 400;
+            return res.status(statusCode).json(result);
+        }
+
+        return res.status(201).json(result);
+    } catch (error) {
+        console.error("Error in SendMessageToConversation controller:", error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while sending the message.",
         });
     }
 };

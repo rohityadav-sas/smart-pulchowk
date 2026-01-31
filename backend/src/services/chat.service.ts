@@ -1,6 +1,6 @@
 import { db } from "../lib/db.js";
 import { conversations, messages } from "../models/chat-schema.js";
-import { bookListings } from "../models/book_buy_sell-schema.js";
+import { bookListings, bookPurchaseRequests } from "../models/book_buy_sell-schema.js";
 import { eq, and, or, desc, sql } from "drizzle-orm";
 
 export const sendMessage = async (senderId: string, listingId: number, content: string) => {
@@ -15,11 +15,25 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
         }
 
         const sellerId = listing.sellerId;
-        const buyerId = senderId === sellerId ? null : senderId; // If seller sends first (unlikely but possible), who is the buyer? 
-        // Actually, normally a buyer starts a chat.
 
         if (senderId === sellerId) {
             return { success: false, message: "Sellers cannot start a chat with themselves." };
+        }
+
+
+        const acceptedRequest = await db.query.bookPurchaseRequests.findFirst({
+            where: and(
+                eq(bookPurchaseRequests.listingId, listingId),
+                eq(bookPurchaseRequests.buyerId, senderId),
+                eq(bookPurchaseRequests.status, "accepted")
+            ),
+        });
+
+        if (!acceptedRequest) {
+            return {
+                success: false,
+                message: "Chat is only available after your purchase request has been accepted."
+            };
         }
 
         // 2. Find or create conversation
@@ -117,5 +131,58 @@ export const getMessages = async (conversationId: number, userId: string) => {
     } catch (error) {
         console.error("Error in getMessages service:", error);
         return { success: false, message: "Failed to fetch messages." };
+    }
+};
+
+
+export const sendMessageToConversation = async (conversationId: number, senderId: string, content: string) => {
+    try {
+       
+        const conversation = await db.query.conversations.findFirst({
+            where: and(
+                eq(conversations.id, conversationId),
+                or(
+                    eq(conversations.buyerId, senderId),
+                    eq(conversations.sellerId, senderId)
+                )
+            ),
+        });
+
+        if (!conversation) {
+            return { success: false, message: "Conversation not found or access denied." };
+        }
+
+    
+        const acceptedRequest = await db.query.bookPurchaseRequests.findFirst({
+            where: and(
+                eq(bookPurchaseRequests.listingId, conversation.listingId),
+                eq(bookPurchaseRequests.buyerId, conversation.buyerId),
+                eq(bookPurchaseRequests.status, "accepted")
+            ),
+        });
+
+        if (!acceptedRequest) {
+            return {
+                success: false,
+                message: "Chat is no longer available. The purchase request may have been cancelled."
+            };
+        }
+
+       
+        const [newMessage] = await db.insert(messages).values({
+            conversationId,
+            senderId,
+            content,
+        }).returning();
+
+       
+        await db.update(conversations)
+            .set({ updatedAt: new Date() })
+            .where(eq(conversations.id, conversationId));
+
+        return { success: true, data: newMessage };
+    } catch (error) {
+        console.error("Error in sendMessageToConversation service:", error);
+        return { success: false, message: "Failed to send message." };
     }
 };
