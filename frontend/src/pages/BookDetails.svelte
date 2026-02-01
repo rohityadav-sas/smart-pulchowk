@@ -162,7 +162,22 @@
             return result.success ? result.data : null;
         },
         enabled: bookId > 0 && !!$session.data?.user && !query.data?.isOwner,
+        refetchInterval: (query) => {
+            // Only poll if the current status is 'requested' (pending)
+            // TanStack Query automatically handles tab focus/offline states
+            return query.state.data?.status === "requested" ? 5000 : false;
+        },
     }));
+
+    // Automatically refresh contact info when request is accepted
+    $effect(() => {
+        const status = requestStatusQuery.data?.status;
+        if (status === "accepted") {
+            queryClient.invalidateQueries({
+                queryKey: ["seller-contact-info", bookId],
+            });
+        }
+    });
 
     const contactInfoQuery = createQuery(() => ({
         queryKey: ["seller-contact-info", bookId],
@@ -180,6 +195,11 @@
             return result.success ? result.data : [];
         },
         enabled: bookId > 0 && !!query.data?.isOwner,
+        refetchInterval: (query) => {
+            // Poll every 5 seconds for new requests while the seller is on the page
+            // TanStack Query automatically pauses when the tab is not focused
+            return bookId > 0 && query.state.data ? 5000 : false;
+        },
     }));
 
     async function handleRequestToBuy() {
