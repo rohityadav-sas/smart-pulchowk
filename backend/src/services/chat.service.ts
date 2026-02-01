@@ -18,19 +18,21 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
 
         const sellerId = listing.sellerId;
 
-        const acceptedRequest = await db.query.bookPurchaseRequests.findFirst({
-            where: and(
-                eq(bookPurchaseRequests.listingId, listingId),
-                eq(bookPurchaseRequests.buyerId, senderId),
-                eq(bookPurchaseRequests.status, "accepted")
-            ),
-        });
+        if (senderId !== sellerId) {
+            const acceptedRequest = await db.query.bookPurchaseRequests.findFirst({
+                where: and(
+                    eq(bookPurchaseRequests.listingId, listingId),
+                    eq(bookPurchaseRequests.buyerId, senderId),
+                    eq(bookPurchaseRequests.status, "accepted")
+                ),
+            });
 
-        if (!acceptedRequest) {
-            return {
-                success: false,
-                message: "Chat is only available after your purchase request has been accepted."
-            };
+            if (!acceptedRequest) {
+                return {
+                    success: false,
+                    message: "Chat is only available after your purchase request has been accepted."
+                };
+            }
         }
 
         // 2. Find or create conversation
@@ -77,6 +79,8 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
                 type: 'chat_message',
                 conversationId: conversation.id.toString(),
                 senderId,
+                senderName: sender?.name || "Someone",
+                content: content,
             }
         });
 
@@ -175,19 +179,25 @@ export const sendMessageToConversation = async (conversationId: number, senderId
         }
 
 
-        const acceptedRequest = await db.query.bookPurchaseRequests.findFirst({
-            where: and(
-                eq(bookPurchaseRequests.listingId, conversation.listingId),
-                eq(bookPurchaseRequests.buyerId, conversation.buyerId),
-                eq(bookPurchaseRequests.status, "accepted")
-            ),
-        });
+        // If it's a seller, they can always reply.
+        // If it's a buyer, we check if they still have access (any status is fine for now to allow history clearing/post-purchase chat)
+        // unless the user specifically wants strict "accepted only" even for replies.
+        // But usually once a chat starts, it stays open.
+        // Let's at least allow sellers to reply.
+        if (senderId !== conversation.sellerId) {
+            const request = await db.query.bookPurchaseRequests.findFirst({
+                where: and(
+                    eq(bookPurchaseRequests.listingId, conversation.listingId),
+                    eq(bookPurchaseRequests.buyerId, conversation.buyerId)
+                ),
+            });
 
-        if (!acceptedRequest) {
-            return {
-                success: false,
-                message: "Chat is no longer available. The purchase request may have been cancelled."
-            };
+            if (!request) {
+                return {
+                    success: false,
+                    message: "Chat is no longer available."
+                };
+            }
         }
 
 
@@ -217,6 +227,8 @@ export const sendMessageToConversation = async (conversationId: number, senderId
                 type: 'chat_message',
                 conversationId: conversationId.toString(),
                 senderId,
+                senderName: sender?.name || "Someone",
+                content: content,
             }
         });
 
