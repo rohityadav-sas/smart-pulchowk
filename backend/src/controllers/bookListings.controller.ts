@@ -300,7 +300,7 @@ export const UploadBookImage = async (req: Request, res: Response) => {
         let imageUrl: string;
         let publicId: string | undefined;
 
-       
+
         const file = (req as any).file;
         if (file) {
             const uploadResult = await uploadImage(file.buffer, "book-images");
@@ -313,7 +313,7 @@ export const UploadBookImage = async (req: Request, res: Response) => {
             imageUrl = uploadResult.url;
             publicId = uploadResult.publicId;
         } else if (req.body.imageUrl) {
-          
+
             imageUrl = req.body.imageUrl;
         } else {
             return res.status(400).json({
@@ -325,7 +325,7 @@ export const UploadBookImage = async (req: Request, res: Response) => {
         const result = await addBookImage(listingId, userId, imageUrl, publicId);
 
         if (!result.success) {
-          
+
             if (publicId) {
                 await deleteImage(publicId).catch(console.error);
             }
@@ -368,7 +368,7 @@ export const DeleteBookImage = async (req: Request, res: Response) => {
             return res.status(status).json(result);
         }
 
-       
+
         if (result.data?.publicId) {
             await deleteImage(result.data.publicId).catch(console.error);
         }

@@ -1,6 +1,6 @@
 import { db } from "../lib/db.js";
 import { and, desc, eq, ilike, or, sql, asc, gte, lte } from "drizzle-orm";
-import { bookListings, bookImages, bookCategories, savedBooks } from "../models/book_buy_sell-schema.js";
+import { bookListings, bookImages, bookCategories, savedBooks, listingViews } from "../models/book_buy_sell-schema.js";
 import { sendToTopic } from "./notification.service.js";
 
 
@@ -261,10 +261,26 @@ export const getBookListingById = async (id: number, userId?: string) => {
         }
 
 
-        db.update(bookListings)
-            .set({ viewCount: sql`${bookListings.viewCount} + 1` })
-            .where(eq(bookListings.id, id))
-            .catch(console.error);
+        if (userId && listing.sellerId !== userId) {
+            try {
+                const result = await db
+                    .insert(listingViews)
+                    .values({
+                        listingId: id,
+                        userId: userId
+                    })
+                    .onConflictDoNothing();
+
+                if ((result as any).rowCount > 0) {
+                    await db
+                        .update(bookListings)
+                        .set({ viewCount: sql`${bookListings.viewCount} + 1` })
+                        .where(eq(bookListings.id, id));
+                }
+            } catch (error) {
+                console.error("View tracking error:", error);
+            }
+        }
 
         return {
             success: true,
@@ -372,6 +388,8 @@ export const deleteBookListing = async (id: number, sellerId: string) => {
         await db.delete(savedBooks).where(eq(savedBooks.listingId, id));
 
 
+        await db.delete(listingViews).where(eq(listingViews.listingId, id));
+
         await db.delete(bookListings).where(eq(bookListings.id, id));
 
         return {
@@ -443,6 +461,9 @@ export const markAsSold = async (id: number, sellerId: string) => {
             })
             .where(eq(bookListings.id, id))
             .returning();
+
+
+        await db.delete(listingViews).where(eq(listingViews.listingId, id)).catch(console.error);
 
         return {
             success: true,

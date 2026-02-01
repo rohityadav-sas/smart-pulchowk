@@ -178,6 +178,20 @@ export const savedBooks = pgTable(
     ]
 );
 
+export const listingViews = pgTable(
+    "listing_views",
+    {
+        id: serial("id").primaryKey(),
+        listingId: integer("listing_id").notNull().references(() => bookListings.id, { onDelete: "cascade" }),
+        userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("listing_views_listing_idx").on(table.listingId),
+        uniqueIndex("listing_views_user_unique_idx").on(table.listingId, table.userId),
+    ]
+);
+
 
 export const bookListingsRelations = relations(bookListings, ({ one, many }) => ({
     seller: one(user, {
@@ -192,6 +206,18 @@ export const bookListingsRelations = relations(bookListings, ({ one, many }) => 
     savedByUsers: many(savedBooks),
     contactInfo: one(sellerContactInfo),
     purchaseRequests: many(bookPurchaseRequests),
+    views: many(listingViews),
+}));
+
+export const listingViewsRelations = relations(listingViews, ({ one }) => ({
+    listing: one(bookListings, {
+        fields: [listingViews.listingId],
+        references: [bookListings.id],
+    }),
+    visitor: one(user, {
+        fields: [listingViews.userId],
+        references: [user.id],
+    }),
 }));
 
 export const sellerContactInfoRelations = relations(sellerContactInfo, ({ one }) => ({
