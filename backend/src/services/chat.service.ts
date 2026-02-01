@@ -18,11 +18,6 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
 
         const sellerId = listing.sellerId;
 
-        if (senderId === sellerId) {
-            return { success: false, message: "Sellers cannot start a chat with themselves." };
-        }
-
-
         const acceptedRequest = await db.query.bookPurchaseRequests.findFirst({
             where: and(
                 eq(bookPurchaseRequests.listingId, listingId),
