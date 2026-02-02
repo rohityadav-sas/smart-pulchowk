@@ -80,6 +80,7 @@
 
   $effect(() => {
     if (clubId && eventId) {
+      window.scrollTo(0, 0);
       loadEventDetails();
     }
   });
@@ -612,18 +613,18 @@
     {:else if event}
       <!-- Event Banner -->
       <div
-        class="h-64 sm:h-80 bg-linear-to-br from-blue-500 to-purple-600 rounded-3xl overflow-hidden mb-8 relative shadow-xl"
+        class="relative h-72 sm:h-96 rounded-3xl overflow-hidden mb-8 shadow-2xl group"
         in:fly={{ y: 20, duration: 600 }}
       >
         {#if event.bannerUrl}
           <img
             src={event.bannerUrl}
             alt={event.title}
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         {:else}
           <div
-            class="w-full h-full flex items-center justify-center bg-gray-800"
+            class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 via-gray-900 to-black"
           >
             <svg
               class="w-24 h-24 text-white/20"
@@ -640,9 +641,20 @@
             </svg>
           </div>
         {/if}
+
+        <!-- Gradient Overlay for Text Readability -->
         <div
-          class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"
+          class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
         ></div>
+
+        <!-- Status Badge - Top Right -->
+        <div class="absolute top-6 right-6 z-10">
+          <span
+            class={`px-4 py-1.5 text-sm font-bold rounded-full shadow-lg border backdrop-blur-md ${getStatusColor(event.status)} uppercase tracking-wider`}
+          >
+            {event.status}
+          </span>
+        </div>
 
         {#if isClubOwner}
           <div class="absolute top-6 left-6 z-10">
@@ -674,28 +686,19 @@
           </div>
         {/if}
 
-        <div
-          class="absolute bottom-6 left-6 right-6 flex items-end justify-between"
-        >
-          <div>
+        <!-- Banner Content Grid -->
+        <div class="absolute bottom-8 left-8 right-8 z-10">
+          <div class="space-y-4">
             <span
-              class="inline-block px-3 py-1 mb-3 text-sm font-bold text-white bg-blue-600/80 backdrop-blur-sm rounded-full uppercase tracking-wider"
+              class="inline-block px-3 py-1 text-sm font-bold text-white bg-blue-600/60 backdrop-blur-sm rounded-full uppercase tracking-wider border border-white/10"
             >
               {event.eventType}
             </span>
             <h1
-              class="text-3xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-md"
+              class="text-2xl md:text-4xl lg:text-4xl font-black text-white/70 tracking-tight drop-shadow-2xl leading-[1.1]"
             >
               {event.title}
             </h1>
-          </div>
-
-          <div class="absolute top-6 right-6">
-            <span
-              class={`px-4 py-1.5 text-sm font-bold rounded-full shadow-lg border backdrop-blur-md ${getStatusColor(event.status)} uppercase tracking-wider`}
-            >
-              {event.status}
-            </span>
           </div>
         </div>
       </div>
@@ -1019,7 +1022,7 @@
                 </h2>
 
                 {#if isClubOwner}
-                  <div class="relative export-container ">
+                  <div class="relative export-container">
                     <button
                       onclick={() => (showExportMenu = !showExportMenu)}
                       class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl font-bold text-sm transition-all active:scale-95 shadow-md shadow-emerald-500/20"
@@ -1355,7 +1358,7 @@
                 </div>
               </div>
             {/if}
-            </div>
+          </div>
 
           <!-- Registration Action -->
           {#if !isClubOwner}
@@ -1479,33 +1482,34 @@
                   Clicking register will reserve your spot immediately.
                 </p>
               {/if}
-              
             </div>
           {/if}
 
           {#if isClubOwner && isUpcoming}
-              <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-6">
-                <button
-                  onclick={() => (showCancelModal = true)}
-                  class="w-full px-4 py-3 bg-white border-2 border-rose-100 text-rose-600 font-bold rounded-xl hover:bg-rose-50 hover:border-rose-200 transition-all flex items-center justify-center gap-2 group text-sm"
+            <div
+              class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-6"
+            >
+              <button
+                onclick={() => (showCancelModal = true)}
+                class="w-full px-4 py-3 bg-white border-2 border-rose-100 text-rose-600 font-bold rounded-xl hover:bg-rose-50 hover:border-rose-200 transition-all flex items-center justify-center gap-2 group text-sm"
+              >
+                <svg
+                  class="w-4 h-4 group-hover:scale-110 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    class="w-4 h-4 group-hover:scale-110 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  Cancel Event
-                </button>
-              </div>
-            {/if}
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                Cancel Event
+              </button>
+            </div>
+          {/if}
         </div>
       </div>
 
@@ -1617,11 +1621,11 @@
                   First impressions are everything.
                 </p>
               </div>
-        <button
-          onclick={() => (isEditingBanner = false)}
-          class="p-3 hover:bg-white rounded-2xl transition-all hover:shadow-sm active:scale-95 group"
-          aria-label="Close banner editor"
-        >
+              <button
+                onclick={() => (isEditingBanner = false)}
+                class="p-3 hover:bg-white rounded-2xl transition-all hover:shadow-sm active:scale-95 group"
+                aria-label="Close banner editor"
+              >
                 <svg
                   class="w-6 h-6 text-gray-400 group-hover:text-gray-900 transition-colors"
                   fill="none"
@@ -1642,11 +1646,11 @@
               <!-- Live Preview Component -->
               <div class="space-y-4">
                 <div class="flex items-center justify-between px-1">
-            <p
-              class="block text-sm font-bold text-gray-900 uppercase tracking-widest"
-            >
-              Live Preview
-            </p>
+                  <p
+                    class="block text-sm font-bold text-gray-900 uppercase tracking-widest"
+                  >
+                    Live Preview
+                  </p>
                   <span
                     class="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md uppercase"
                     >Hero Display</span
