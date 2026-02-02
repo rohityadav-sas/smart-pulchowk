@@ -164,24 +164,41 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
 /**
  * Clear FCM token on logout to prevent duplicate notifications
  * This endpoint removes the FCM token from the user's record
+ * Uses Firebase Auth middleware to verify the user's identity
  */
-router.post("/clear-fcm-token", async (req, res) => {
+router.post("/clear-fcm-token", requireFirebaseAuth, async (req, res) => {
     try {
-        // Get user ID from Authorization header
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        const firebaseUser = (req as any).firebaseUser as {
+            uid?: string;
+            email?: string;
+        };
+
+        // Get user ID from verified Firebase token
+        const firebaseUid = firebaseUser?.uid;
+        if (!firebaseUid) {
             res.status(401).json({
                 success: false,
-                message: "Unauthorized: No token provided",
+                message: "Unauthorized: Invalid Firebase token",
             });
             return;
         }
 
-        const userId = authHeader.split(' ')[1];
-        if (!userId) {
-            res.status(401).json({
+        // Find the user by Firebase UID or by email (for linked accounts)
+        let dbUser = await db.query.user.findFirst({
+            where: eq(user.id, firebaseUid),
+        });
+
+        // If not found by UID, try finding by email (for web-linked accounts)
+        if (!dbUser && firebaseUser.email) {
+            dbUser = await db.query.user.findFirst({
+                where: eq(user.email, firebaseUser.email),
+            });
+        }
+
+        if (!dbUser) {
+            res.status(404).json({
                 success: false,
-                message: "Unauthorized: Invalid token",
+                message: "User not found",
             });
             return;
         }
@@ -193,7 +210,7 @@ router.post("/clear-fcm-token", async (req, res) => {
                 fcmToken: null,
                 updatedAt: new Date(),
             })
-            .where(eq(user.id, userId));
+            .where(eq(user.id, dbUser.id));
 
         res.json({
             success: true,
@@ -204,6 +221,80 @@ router.post("/clear-fcm-token", async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to clear FCM token",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+});
+
+/**
+ * Update FCM token for a user (used when token refreshes)
+ * Uses Firebase Auth middleware to verify the user's identity
+ */
+router.post("/update-fcm-token", requireFirebaseAuth, async (req, res) => {
+    try {
+        const firebaseUser = (req as any).firebaseUser as {
+            uid?: string;
+            email?: string;
+        };
+
+        const { fcmToken } = req.body;
+
+        if (!fcmToken) {
+            res.status(400).json({
+                success: false,
+                message: "FCM token is required",
+            });
+            return;
+        }
+
+        // Get user ID from verified Firebase token
+        const firebaseUid = firebaseUser?.uid;
+        if (!firebaseUid) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized: Invalid Firebase token",
+            });
+            return;
+        }
+
+        // Find the user by Firebase UID or by email (for linked accounts)
+        let dbUser = await db.query.user.findFirst({
+            where: eq(user.id, firebaseUid),
+        });
+
+        // If not found by UID, try finding by email (for web-linked accounts)
+        if (!dbUser && firebaseUser.email) {
+            dbUser = await db.query.user.findFirst({
+                where: eq(user.email, firebaseUser.email),
+            });
+        }
+
+        if (!dbUser) {
+            res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+            return;
+        }
+
+        // Update FCM token for the user
+        await db
+            .update(user)
+            .set({
+                fcmToken: fcmToken,
+                updatedAt: new Date(),
+            })
+            .where(eq(user.id, dbUser.id));
+
+        res.json({
+            success: true,
+            message: "FCM token updated successfully",
+        });
+    } catch (error) {
+        console.error("Error updating FCM token:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to update FCM token",
             error: error instanceof Error ? error.message : "Unknown error",
         });
     }
