@@ -816,7 +816,7 @@
                     {#if isClubOwner}
                       <button
                         onclick={startEditingClubInfo}
-                        class="flex items-center justify-center w-full md:w-48 gap-2 px-5 py-2.5 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm"
+                        class="flex items-center justify-center w-full md:w-auto gap-2 px-5 py-2.5 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm whitespace-nowrap shrink-0"
                       >
                         <svg
                           class="w-4 h-4"
