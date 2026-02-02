@@ -440,20 +440,20 @@
                                             {book.viewCount} views
                                         </span>
                                         <div
-                                            class="flex items-center gap-2 pt-2 border-t border-slate-50"
+                                            class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-50"
                                         >
                                             {#if book.status === "available"}
                                                 <button
                                                     onclick={() =>
                                                         handleMarkSold(book.id)}
-                                                    class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl transition-all shadow-sm shadow-emerald-200 hover:shadow-md active:scale-95"
+                                                    class="inline-flex shrink-0 items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl transition-all shadow-sm shadow-emerald-200 hover:shadow-md active:scale-95 whitespace-nowrap"
                                                 >
                                                     Mark Sold
                                                 </button>
                                                 <a
                                                     href="/books/sell?edit={book.id}"
                                                     use:routeAction
-                                                    class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-xl transition-all shadow-sm shadow-blue-200 hover:shadow-md active:scale-95"
+                                                    class="inline-flex shrink-0 items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-xl transition-all shadow-sm shadow-blue-200 hover:shadow-md active:scale-95 whitespace-nowrap"
                                                 >
                                                     Edit
                                                 </a>
@@ -486,7 +486,7 @@
                                                     handleDelete(book.id)}
                                                 class="{book.status === 'sold'
                                                     ? 'px-4'
-                                                    : 'flex-1'} flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-rose-500 hover:text-white border border-rose-100 hover:bg-rose-500 rounded-xl transition-all active:scale-95"
+                                                    : 'px-3'} inline-flex shrink-0 items-center justify-center gap-1.5 py-2 text-xs font-bold text-rose-500 hover:text-white border border-rose-100 hover:bg-rose-500 rounded-xl transition-all active:scale-95 whitespace-nowrap"
                                                 title="Delete listing"
                                             >
                                                 <svg
