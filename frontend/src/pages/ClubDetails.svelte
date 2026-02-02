@@ -83,6 +83,7 @@
 
   $effect(() => {
     if (clubId) {
+      window.scrollTo(0, 0);
       loadClub();
     }
   });
@@ -405,17 +406,13 @@
   }
 
   function handleFileSelection(event: Event) {
-
     const target = event.target as HTMLInputElement;
 
     if (target.files && target.files[0]) {
-
       selectedLogoFile = target.files[0];
 
       if (logoPreviewUrl) {
-
         URL.revokeObjectURL(logoPreviewUrl);
-
       }
 
       logoPreviewUrl = URL.createObjectURL(selectedLogoFile);
@@ -428,13 +425,10 @@
     logoUploadLoading = true;
 
     try {
-
       let result;
 
       if (logoUploadMode === "file") {
-
         if (!selectedLogoFile) {
-
           alert("Please select a file first");
           return;
         }
@@ -442,7 +436,6 @@
         result = await uploadClubLogo(parseInt(clubId), selectedLogoFile);
       } else {
         if (!logoUrlLink) {
-
           alert("Please enter a URL first");
           return;
         }
@@ -451,15 +444,12 @@
       }
 
       if (result.success && result.data) {
-
         if (club) {
-
           club.logoUrl = result.data.url;
         }
 
         isEditingLogo = false;
         resetLogoState();
-
       } else {
         alert(result.message || "Failed to upload logo");
       }
@@ -477,18 +467,15 @@
     logoUploadLoading = true;
 
     try {
-
       const result = await deleteClubLogo(parseInt(clubId));
 
       if (result.success) {
-
         if (club) {
           club.logoUrl = null;
         }
 
         isEditingLogo = false;
         resetLogoState();
-
       } else {
         alert(result.message || "Failed to delete logo");
       }
@@ -502,7 +489,7 @@
   function resetLogoState() {
     selectedLogoFile = null;
     logoUrlLink = "";
-    
+
     if (logoPreviewUrl) {
       URL.revokeObjectURL(logoPreviewUrl);
       logoPreviewUrl = null;
@@ -627,15 +614,19 @@
 
                   <div class="md:col-span-2">
                     <label
-                    for="club-logo"
+                      for="club-logo"
                       class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
                       >Club Logo</label
                     >
-                    <div class="bg-gray-50 border border-gray-100 rounded-3xl p-6">
+                    <div
+                      class="bg-gray-50 border border-gray-100 rounded-3xl p-6"
+                    >
                       <div class="flex flex-col md:flex-row gap-8 items-center">
                         <!-- Logo Preview -->
                         <div class="relative shrink-0">
-                          <div class="w-32 h-32 bg-blue-100 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center border-2 border-dashed border-blue-200">
+                          <div
+                            class="w-32 h-32 bg-blue-100 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center border-2 border-dashed border-blue-200"
+                          >
                             {#if logoPreviewUrl || (club && club.logoUrl)}
                               <img
                                 src={logoPreviewUrl || (club && club.logoUrl)}
@@ -643,8 +634,18 @@
                                 class="w-full h-full object-cover"
                               />
                             {:else}
-                              <svg class="w-12 h-12 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              <svg
+                                class="w-12 h-12 text-blue-300"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
                               </svg>
                             {/if}
                           </div>
@@ -655,8 +656,18 @@
                               class="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full shadow-lg hover:bg-red-600 transition-colors"
                               title="Delete Logo"
                             >
-                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
                               </svg>
                             </button>
                           {/if}
@@ -664,27 +675,43 @@
 
                         <!-- Upload Controls -->
                         <div class="flex-1 space-y-4">
-                          <div class="flex gap-2 p-1 bg-white border border-gray-100 rounded-xl w-fit">
+                          <div
+                            class="flex gap-2 p-1 bg-white border border-gray-100 rounded-xl w-fit"
+                          >
                             <button
                               type="button"
-                              onclick={() => { logoUploadMode = 'file'; resetLogoState(); }}
-                              class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all {logoUploadMode === 'file' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'}"
+                              onclick={() => {
+                                logoUploadMode = "file";
+                                resetLogoState();
+                              }}
+                              class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all {logoUploadMode ===
+                              'file'
+                                ? 'bg-blue-600 text-white shadow-sm'
+                                : 'text-gray-500 hover:bg-gray-50'}"
                             >
                               Upload File
                             </button>
                             <button
                               type="button"
-                              onclick={() => { logoUploadMode = 'url'; resetLogoState(); }}
-                              class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all {logoUploadMode === 'url' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'}"
+                              onclick={() => {
+                                logoUploadMode = "url";
+                                resetLogoState();
+                              }}
+                              class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all {logoUploadMode ===
+                              'url'
+                                ? 'bg-blue-600 text-white shadow-sm'
+                                : 'text-gray-500 hover:bg-gray-50'}"
                             >
                               Image URL
                             </button>
                           </div>
 
-                          {#if logoUploadMode === 'file'}
+                          {#if logoUploadMode === "file"}
                             <div class="flex items-center gap-4">
                               <label class="cursor-pointer">
-                                <span class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors inline-block">
+                                <span
+                                  class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors inline-block"
+                                >
                                   Select Image
                                 </span>
                                 <input
@@ -695,7 +722,9 @@
                                 />
                               </label>
                               <span class="text-xs text-gray-400">
-                                {selectedLogoFile ? selectedLogoFile.name : 'No file chosen (Max 5MB)'}
+                                {selectedLogoFile
+                                  ? selectedLogoFile.name
+                                  : "No file chosen (Max 5MB)"}
                               </span>
                             </div>
                           {:else}
@@ -713,22 +742,34 @@
                               onclick={handleLogoUpload}
                               class="px-6 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-600/10 flex items-center gap-2"
                             >
-                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                />
                               </svg>
                               Upload Logo
                             </button>
                           {:else if logoUploadLoading}
                             <div class="flex items-center gap-2 text-blue-600">
                               <LoadingSpinner size="sm" />
-                              <span class="text-sm font-bold">Uploading...</span>
+                              <span class="text-sm font-bold -ml-7.5">Uploading...</span
+                              >
                             </div>
                           {/if}
                         </div>
                       </div>
                     </div>
                     <p class="mt-2 text-[10px] text-gray-400 font-medium">
-                      Recommended: Square image (800x800px), PNG or WebP preferred.
+                      Recommended: Square image (800x800px), PNG or WebP
+                      preferred.
                     </p>
                   </div>
 
@@ -754,10 +795,9 @@
                   <button
                     onclick={handleUpdateClubInfo}
                     disabled={saveClubLoading}
-                    class="w-full sm:flex-1 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    class="w-full sm:flex-1 min-w-50 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {#if saveClubLoading}
-                      <LoadingSpinner size="sm" />
                       Saving...
                     {:else}
                       <svg
