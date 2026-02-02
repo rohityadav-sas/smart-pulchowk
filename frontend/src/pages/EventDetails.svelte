@@ -498,25 +498,24 @@
     const start = parseEventDateTime(startStr);
     const end = parseEventDateTime(endStr);
     const sameDay = start.toDateString() === end.toDateString();
+    const startDate = formatEventDate(startStr, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+    const startTime = formatEventTime(startStr, { hour: "numeric", minute: "2-digit" });
+    const endTime = formatEventTime(endStr, { hour: "numeric", minute: "2-digit" });
     if (sameDay) {
-      return formatEventDate(startStr, {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      });
+      return `${startDate} ${startTime} - ${endTime}`;
     }
-    return `${formatEventDate(startStr, {
-      weekday: "long",
-      month: "long",
+    const endDate = formatEventDate(endStr, {
+      weekday: "short",
+      month: "short",
       day: "numeric",
       year: "numeric",
-    })} - ${formatEventDate(endStr, {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    })}`;
+    });
+    return `${startDate} ${startTime} - ${endDate} ${endTime}`;
   }
 
   function getStatusColor(status: string): string {
@@ -1253,11 +1252,6 @@
                 <p class="font-semibold text-gray-900 mt-1">
                   {formatDateRange(
                     event.eventStartTime,
-                    event.eventEndTime,
-                  )}
-                </p>
-                <p class="text-sm text-gray-500">
-                  {formatTime(event.eventStartTime)} - {formatTime(
                     event.eventEndTime,
                   )}
                 </p>
