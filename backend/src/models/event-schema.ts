@@ -17,6 +17,7 @@ import { user } from "./auth-schema.js";
 export const eventStatusEnum = pgEnum("event_status", [
   "draft",
   "published",
+  "upcoming",
   "ongoing",
   "completed",
   "cancelled",

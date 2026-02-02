@@ -511,7 +511,10 @@ export async function getUpcomingevents() {
 
         const upcomingEvents = await db.query.events.findMany({
             where: and(
-                eq(events.status, 'published'),
+                or(
+                    eq(events.status, 'upcoming'),
+                    eq(events.status, 'published')
+                ),
                 sql`${events.eventStartTime} > ${now} `,
                 eq(events.isRegistrationOpen, true)
             ),
