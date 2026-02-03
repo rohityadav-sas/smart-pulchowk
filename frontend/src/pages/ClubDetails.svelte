@@ -760,7 +760,8 @@
                           {:else if logoUploadLoading}
                             <div class="flex items-center gap-2 text-blue-600">
                               <LoadingSpinner size="sm" />
-                              <span class="text-sm font-bold -ml-7.5">Uploading...</span
+                              <span class="text-sm font-bold -ml-7.5"
+                                >Uploading...</span
                               >
                             </div>
                           {/if}

@@ -181,7 +181,7 @@
 
               <!-- Floating Badge -->
               <div
-                class="absolute top-4 right-4 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 shadow-sm"
+                class="absolute top-4 right-4 bg-gray-900/50 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold text-white uppercase tracking-widest border border-white/20 shadow-lg"
               >
                 Official Club
               </div>
