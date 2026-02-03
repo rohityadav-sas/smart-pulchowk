@@ -18,7 +18,7 @@
     type ExtraEventDetail,
   } from "../lib/api";
   import LoadingSpinner from "../components/LoadingSpinner.svelte";
-  import { fade, fly, slide } from "svelte/transition";
+  import { fade, fly, slide, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import {
     formatEventDate,
@@ -67,6 +67,8 @@
   let bannerPreview = $state<string | null>(null);
   let uploadLoading = $state(false);
   let showBannerPreview = $state(false);
+  let bannerEl = $state<HTMLElement | null>(null);
+  let bannerRect = $state<DOMRect | null>(null);
 
   // Export state
   let showExportMenu = $state(false);
@@ -647,9 +649,10 @@
     {:else if event}
       <!-- Event Banner -->
       <div
+        bind:this={bannerEl}
         class="relative w-full h-56 sm:h-72 lg:h-80 rounded-3xl overflow-hidden mb-8 shadow-2xl group bg-gray-900 cursor-zoom-in"
         in:fly={{ y: 20, duration: 600 }}
-        onclick={() => event?.bannerUrl && (showBannerPreview = true)}
+        onclick={openBannerPreview}
       >
         {#if event.bannerUrl}
           <img
@@ -1903,23 +1906,24 @@
       {#if showBannerPreview && event?.bannerUrl}
         <div
           class="fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-          transition:fade
+          transition:fade={{ duration: 200 }}
         >
           <button
             type="button"
             class="absolute inset-0"
             aria-label="Close banner preview"
-            onclick={() => (showBannerPreview = false)}
+            onclick={closeBannerPreview}
           ></button>
           <div class="relative z-10 max-w-6xl w-full">
             <img
               src={event.bannerUrl}
               alt={event.title}
               class="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+              in:scale={{ duration: 220, easing: quintOut, start: 0.96 }}
             />
             <button
               class="absolute top-4 right-4 px-3 py-2 text-sm font-bold text-white bg-black/60 rounded-xl hover:bg-black/80 transition"
-              onclick={() => (showBannerPreview = false)}
+              onclick={closeBannerPreview}
             >
               Close
             </button>
@@ -1936,3 +1940,12 @@
     user-select: none;
   }
 </style>
+  function openBannerPreview() {
+    if (!event?.bannerUrl) return;
+    bannerRect = bannerEl?.getBoundingClientRect() || null;
+    showBannerPreview = true;
+  }
+
+  function closeBannerPreview() {
+    showBannerPreview = false;
+  }
