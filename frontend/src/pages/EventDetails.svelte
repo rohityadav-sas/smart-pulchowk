@@ -66,6 +66,7 @@
   let bannerFile = $state<File | null>(null);
   let bannerPreview = $state<string | null>(null);
   let uploadLoading = $state(false);
+  let showBannerPreview = $state(false);
 
   // Export state
   let showExportMenu = $state(false);
@@ -646,8 +647,9 @@
     {:else if event}
       <!-- Event Banner -->
       <div
-        class="relative w-full h-72 sm:h-[420px] lg:h-[560px] rounded-3xl overflow-hidden mb-8 shadow-2xl group bg-gray-900"
+        class="relative w-full h-56 sm:h-72 lg:h-80 rounded-3xl overflow-hidden mb-8 shadow-2xl group bg-gray-900 cursor-zoom-in"
         in:fly={{ y: 20, duration: 600 }}
+        onclick={() => event?.bannerUrl && (showBannerPreview = true)}
       >
         {#if event.bannerUrl}
           <img
@@ -1894,6 +1896,33 @@
                 {/if}
               </button>
             </div>
+          </div>
+        </div>
+      {/if}
+
+      {#if showBannerPreview && event?.bannerUrl}
+        <div
+          class="fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          transition:fade
+        >
+          <button
+            type="button"
+            class="absolute inset-0"
+            aria-label="Close banner preview"
+            onclick={() => (showBannerPreview = false)}
+          ></button>
+          <div class="relative z-10 max-w-6xl w-full">
+            <img
+              src={event.bannerUrl}
+              alt={event.title}
+              class="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <button
+              class="absolute top-4 right-4 px-3 py-2 text-sm font-bold text-white bg-black/60 rounded-xl hover:bg-black/80 transition"
+              onclick={() => (showBannerPreview = false)}
+            >
+              Close
+            </button>
           </div>
         </div>
       {/if}
