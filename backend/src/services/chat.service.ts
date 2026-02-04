@@ -2,7 +2,7 @@ import { db } from "../lib/db.js";
 import { conversations, messages } from "../models/chat-schema.js";
 import { user } from "../models/auth-schema.js";
 import { bookListings, bookPurchaseRequests } from "../models/book_buy_sell-schema.js";
-import { eq, and, or, desc, sql } from "drizzle-orm";
+import { eq, and, or, desc } from "drizzle-orm";
 import { sendToUser } from "./notification.service.js";
 
 export const sendMessage = async (senderId: string, listingId: number, content: string, buyerId?: string) => {
@@ -103,16 +103,15 @@ export const sendMessage = async (senderId: string, listingId: number, content: 
 export const getConversations = async (userId: string) => {
     try {
         const userConversations = await db.query.conversations.findMany({
-            where: and(
-                or(
+            where: or(
+                and(
                     eq(conversations.buyerId, userId),
-                    eq(conversations.sellerId, userId)
+                    eq(conversations.buyerDeleted, false)
                 ),
-                sql`CASE
-                    WHEN ${conversations.buyerId} = ${userId} THEN ${conversations.buyerDeleted} = false
-                    WHEN ${conversations.sellerId} = ${userId} THEN ${conversations.sellerDeleted} = false
-                    ELSE TRUE
-                END`
+                and(
+                    eq(conversations.sellerId, userId),
+                    eq(conversations.sellerDeleted, false)
+                )
             ),
             with: {
                 listing: {
