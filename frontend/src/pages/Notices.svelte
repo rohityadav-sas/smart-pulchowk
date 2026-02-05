@@ -58,6 +58,13 @@
   // Delete confirmation
   let deleteConfirmId = $state<number | null>(null)
 
+  function getDownloadUrl(notice: Notice) {
+    if (notice.attachmentType === 'pdf' && notice.attachmentUrl) {
+      return notice.attachmentUrl.replace('/upload/', '/upload/fl_attachment/')
+    }
+    return notice.attachmentUrl!
+  }
+
   const noticesQuery = createQuery(() => ({
     queryKey: ['notices', activeSection, activeSubsection],
     queryFn: async () => {
@@ -656,7 +663,7 @@
                         </button>
                       {:else}
                         <a
-                          href={notice.attachmentUrl}
+                          href={getDownloadUrl(notice)}
                           download={notice.attachmentName || 'attachment.pdf'}
                           class="flex items-center gap-3 text-blue-600 hover:text-blue-700"
                         >
