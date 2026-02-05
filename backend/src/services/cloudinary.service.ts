@@ -237,13 +237,24 @@ export async function uploadAssignmentFileToCloudinary(
       public_id: publicId,
       overwrite: false,
       resource_type: resourceType,
-      access_mode: 'public', // Make raw resources (like PDFs) publicly accessible
+      type: 'upload',
     })
+
+    // For raw resources (like PDFs), generate a signed URL to bypass authentication
+    let finalUrl = uploadResult.secure_url
+    if (resourceType === 'raw') {
+      finalUrl = cloudinary.url(uploadResult.public_id, {
+        resource_type: 'raw',
+        type: 'upload',
+        sign_url: true,
+        secure: true,
+      })
+    }
 
     return {
       success: true,
       data: {
-        url: uploadResult.secure_url,
+        url: finalUrl,
         publicId: uploadResult.public_id,
         resourceType: uploadResult.resource_type,
         bytes: uploadResult.bytes,
