@@ -58,6 +58,69 @@
   // Delete confirmation
   let deleteConfirmId = $state<number | null>(null)
 
+  // Image loading progress state
+  let imagesLoaded = $state<Record<number, boolean>>({})
+  let imageProgress = $state<Record<number, number | undefined>>({})
+  let progressFailedUrls = new Set<string>()
+  const fullyLoadedUrls = new Set<string>()
+
+  async function loadImageWithProgress(url: string, noticeId: number) {
+    // Skip if we know this URL fails to provide progress
+    if (!url || progressFailedUrls.has(url)) {
+      imageProgress[noticeId] = undefined
+      return
+    }
+
+    // Check if we've already fully loaded this image previously in the session
+    if (fullyLoadedUrls.has(url)) {
+      if (!imagesLoaded[noticeId]) {
+        imagesLoaded[noticeId] = true
+        imageProgress[noticeId] = 100
+      }
+      return
+    }
+
+    // If the image is already loaded (from cache/onload firing first), don't reset
+    if (imagesLoaded[noticeId]) {
+      imageProgress[noticeId] = 100
+      fullyLoadedUrls.add(url)
+      return
+    }
+
+    imageProgress[noticeId] = 0
+    imagesLoaded[noticeId] = false
+
+    // Use XMLHttpRequest for progress tracking (better CORS support than fetch)
+    const xhr = new XMLHttpRequest()
+    xhr.open('GET', url, true)
+    xhr.responseType = 'blob'
+
+    xhr.onprogress = (event) => {
+      if (event.lengthComputable) {
+        imageProgress[noticeId] = Math.round((event.loaded / event.total) * 100)
+      }
+    }
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        imageProgress[noticeId] = 100
+        imagesLoaded[noticeId] = true
+        fullyLoadedUrls.add(url)
+      } else {
+        progressFailedUrls.add(url)
+        imageProgress[noticeId] = undefined
+      }
+    }
+
+    xhr.onerror = () => {
+      console.log('XHR progress failed, falling back', url)
+      progressFailedUrls.add(url)
+      imageProgress[noticeId] = undefined
+    }
+
+    xhr.send()
+  }
+
   const noticesQuery = createQuery(() => ({
     queryKey: ['notices', activeSection, activeSubsection],
     queryFn: async () => {
@@ -138,6 +201,26 @@
     previewImage = url
     previewTitle = title
   }
+
+  // Load image with progress when a notice is expanded
+  $effect(() => {
+    if (expandedNoticeId !== null) {
+      const notice = filteredNotices.find((n) => n.id === expandedNoticeId)
+      if (
+        notice?.attachmentUrl &&
+        getAttachmentType(notice.attachmentUrl, notice.attachmentName) ===
+          'image'
+      ) {
+        if (
+          !imagesLoaded[notice.id] &&
+          imageProgress[notice.id] === undefined
+        ) {
+          loadImageWithProgress(notice.attachmentUrl, notice.id)
+        }
+      }
+    }
+  })
+
   function closeImagePreview() {
     previewImage = null
     previewTitle = ''
@@ -705,12 +788,48 @@
                               notice.attachmentUrl!,
                               notice.title,
                             )}
-                          class="block w-full"
+                          class="block w-full relative min-h-64"
                         >
+                          <!-- Loading progress indicator -->
+                          {#if !imagesLoaded[notice.id]}
+                            <div
+                              class="absolute inset-0 flex items-center justify-center bg-slate-100 rounded-lg"
+                            >
+                              {#if imageProgress[notice.id] !== undefined}
+                                <div class="flex flex-col items-center gap-2">
+                                  <div
+                                    class="text-sm text-slate-500 font-medium"
+                                  >
+                                    {imageProgress[notice.id]}%
+                                  </div>
+                                  <div
+                                    class="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden"
+                                  >
+                                    <div
+                                      class="h-full bg-blue-500 transition-all duration-200"
+                                      style="width: {imageProgress[notice.id]}%"
+                                    ></div>
+                                  </div>
+                                </div>
+                              {:else}
+                                <div
+                                  class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"
+                                ></div>
+                              {/if}
+                            </div>
+                          {/if}
                           <img
                             src={notice.attachmentUrl}
                             alt={notice.attachmentName || notice.title}
-                            class="max-h-64 mx-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                            class="max-h-64 mx-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity {imagesLoaded[
+                              notice.id
+                            ]
+                              ? 'opacity-100'
+                              : 'opacity-0'}"
+                            onload={() => {
+                              imagesLoaded[notice.id] = true
+                              fullyLoadedUrls.add(notice.attachmentUrl!)
+                            }}
                           />
                         </button>
                       {:else}

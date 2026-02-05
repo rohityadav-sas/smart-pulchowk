@@ -6,87 +6,87 @@
     query,
     goto,
     route,
-  } from "@mateothegreat/svelte5-router";
-  import { QueryClientProvider } from "@tanstack/svelte-query";
-  import { queryClient } from "./lib/query-client";
-  import { authClient } from "./lib/auth-client";
-  import LoadingSpinner from "./components/LoadingSpinner.svelte";
-  import ErrorToast from "./components/ErrorToast.svelte";
-  import Home from "./pages/Home.svelte";
-  import Register from "./pages/Register.svelte";
-  import Dashboard from "./pages/Dashboard.svelte";
-  import Classroom from "./pages/Classroom.svelte";
-  import Clubs from "./pages/Clubs.svelte";
-  import ClubDetails from "./pages/ClubDetails.svelte";
-  import ClubEvents from "./pages/ClubEvents.svelte";
-  import AllEvents from "./pages/AllEvents.svelte";
-  import EventDetails from "./pages/EventDetails.svelte";
-  import EventCategoryDetails from "./pages/EventCategoryDetails.svelte";
-  import CreateEvent from "./pages/CreateEvent.svelte";
-  import CreateClub from "./pages/CreateClub.svelte";
-  import MapPlaceholder from "./pages/MapPlaceholder.svelte";
-  import BookMarketplace from "./pages/BookMarketplace.svelte";
-  import BookDetails from "./pages/BookDetails.svelte";
-  import SellBook from "./pages/SellBook.svelte";
-  import MyBooks from "./pages/MyBooks.svelte";
-  import Messages from "./pages/Messages.svelte";
-  import Notices from "./pages/Notices.svelte";
-  import { onMount, type Component } from "svelte";
+  } from '@mateothegreat/svelte5-router'
+  import { QueryClientProvider } from '@tanstack/svelte-query'
+  import { queryClient } from './lib/query-client'
+  import { authClient } from './lib/auth-client'
+  import LoadingSpinner from './components/LoadingSpinner.svelte'
+  import ErrorToast from './components/ErrorToast.svelte'
+  import Home from './pages/Home.svelte'
+  import Register from './pages/Register.svelte'
+  import Dashboard from './pages/Dashboard.svelte'
+  import Classroom from './pages/Classroom.svelte'
+  import Clubs from './pages/Clubs.svelte'
+  import ClubDetails from './pages/ClubDetails.svelte'
+  import ClubEvents from './pages/ClubEvents.svelte'
+  import AllEvents from './pages/AllEvents.svelte'
+  import EventDetails from './pages/EventDetails.svelte'
+  import EventCategoryDetails from './pages/EventCategoryDetails.svelte'
+  import CreateEvent from './pages/CreateEvent.svelte'
+  import CreateClub from './pages/CreateClub.svelte'
+  import MapPlaceholder from './pages/MapPlaceholder.svelte'
+  import BookMarketplace from './pages/BookMarketplace.svelte'
+  import BookDetails from './pages/BookDetails.svelte'
+  import SellBook from './pages/SellBook.svelte'
+  import MyBooks from './pages/MyBooks.svelte'
+  import Messages from './pages/Messages.svelte'
+  import Notices from './pages/Notices.svelte'
+  import { onMount, type Component } from 'svelte'
 
-  let MapComponent: Component | any = $state(null);
+  let MapComponent: Component | any = $state(null)
 
   onMount(() => {
     const loadMap = () => {
-      import("./pages/Map.svelte").then((module) => {
-        MapComponent = module.default;
-      });
-    };
+      import('./pages/Map.svelte').then((module) => {
+        MapComponent = module.default
+      })
+    }
 
-    if (document.readyState === "complete") loadMap();
+    if (document.readyState === 'complete') loadMap()
     else
-      window.addEventListener("load", loadMap, {
+      window.addEventListener('load', loadMap, {
         once: true,
-      });
-  });
+      })
+  })
 
-  let instance: RouterInstance = $state()!;
+  let instance: RouterInstance = $state()!
 
-  const isMapRoute = $derived(instance?.current?.route?.path === "/map");
+  const isMapRoute = $derived(instance?.current?.route?.path === '/map')
 
-  const session = authClient.useSession();
+  const session = authClient.useSession()
 
-  const error = query("message");
-  let showError = $state(error === "unauthorized_domain");
+  const error = query('message')
+  let showError = $state(error === 'unauthorized_domain')
 
-  if (error === "unauthorized_domain") {
-    goto("/");
+  if (error === 'unauthorized_domain') {
+    goto('/')
   }
 
-  const embed = query("embed");
-  const isEmbedded = $derived(embed === "true");
+  const embed = query('embed')
+  const isEmbedded = $derived(embed === 'true')
 
   const routes: RouteConfig[] = [
     {
       component: Home,
     },
     {
-      path: "register",
+      path: 'register',
       component: Register,
     },
     {
-      path: "dashboard",
+      path: 'dashboard',
       component: Dashboard,
     },
     {
-      path: "classroom",
+      path: 'classroom',
       component: Classroom,
     },
     {
-      path: "create-club",
+      path: 'create-club',
       component: CreateClub,
     },
     {
-      path: "map",
+      path: 'map',
       component: MapPlaceholder,
     },
     {
@@ -141,7 +141,7 @@
       path: /^\/notices\/?$/,
       component: Notices,
     },
-  ];
+  ]
 </script>
 
 <QueryClientProvider client={queryClient}>
@@ -262,12 +262,12 @@
         <LoadingSpinner size="lg" text="Loading..." />
       </div>
     {/if}
-    <div class={isMapRoute ? "hidden" : "contents"}>
+    <div class={isMapRoute ? 'hidden' : 'contents'}>
       <Router bind:instance {routes} />
     </div>
   </main>
 
-  {#if instance?.current?.route?.path !== "/map"}
+  {#if instance?.current?.route?.path !== '/map'}
     <footer class="bg-white border-t border-gray-200 py-8 mt-auto">
       <div
         class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4"
