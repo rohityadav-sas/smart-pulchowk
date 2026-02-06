@@ -7,8 +7,10 @@
   import { goto } from "@mateothegreat/svelte5-router";
   import { createQuery } from "@tanstack/svelte-query";
   import { getEventTimeMs, parseEventDateTime } from "../lib/event-dates";
+  import { untrack } from "svelte";
 
   const session = authClient.useSession();
+  let hasRedirectedToLogin = $state(false);
 
   const query = createQuery(() => ({
     queryKey: ["events"],
@@ -22,8 +24,13 @@
   }));
 
   $effect(() => {
+    if (hasRedirectedToLogin) return;
+
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      goto("/register?message=login_required");
+      hasRedirectedToLogin = true;
+      untrack(() => {
+        goto("/register?message=login_required");
+      });
     }
   });
 

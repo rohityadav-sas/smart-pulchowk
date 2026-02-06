@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, untrack } from "svelte";
     import { route as routeAction, goto } from "@mateothegreat/svelte5-router";
     import {
         getBookListingById,
@@ -58,10 +58,16 @@
     let reportDescription = $state("");
     let submittingReport = $state(false);
     let isSellerBlocked = $state(false);
+    let hasRedirectedToLogin = $state(false);
 
     $effect(() => {
+        if (hasRedirectedToLogin) return;
+
         if (!$session.isPending && !$session.error && !$session.data?.user) {
-            goto("/register?message=login_required");
+            hasRedirectedToLogin = true;
+            untrack(() => {
+                goto("/register?message=login_required");
+            });
         }
     });
 

@@ -17,6 +17,7 @@
     import { fade, fly } from "svelte/transition";
     import { authClient } from "../lib/auth-client";
     import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+    import { untrack } from "svelte";
 
     const session = authClient.useSession();
     const queryClient = useQueryClient();
@@ -30,6 +31,7 @@
     let errorMessage = $state("");
     let imageFiles = $state<File[]>([]);
     let imagePreviews = $state<string[]>([]);
+    let hasRedirectedToLogin = $state(false);
 
     // Form data
     let title = $state("");
@@ -97,8 +99,13 @@
     });
 
     $effect(() => {
-        if (!$session.isPending && !$session.data?.user) {
-            goto("/register?message=login_required");
+        if (hasRedirectedToLogin) return;
+
+        if (!$session.isPending && !$session.error && !$session.data?.user) {
+            hasRedirectedToLogin = true;
+            untrack(() => {
+                goto("/register?message=login_required");
+            });
         }
     });
 

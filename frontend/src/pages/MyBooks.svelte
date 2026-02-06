@@ -22,6 +22,7 @@
     import { fade, fly } from "svelte/transition";
     import { authClient } from "../lib/auth-client";
     import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+    import { untrack } from "svelte";
 
     const session = authClient.useSession();
     const queryClient = useQueryClient();
@@ -30,10 +31,16 @@
     let activeTab = $state<"listings" | "saved" | "requests" | "messages">(
         initialTab,
     );
+    let hasRedirectedToLogin = $state(false);
 
     $effect(() => {
-        if (!$session.isPending && !$session.data?.user) {
-            goto("/register?message=login_required");
+        if (hasRedirectedToLogin) return;
+
+        if (!$session.isPending && !$session.error && !$session.data?.user) {
+            hasRedirectedToLogin = true;
+            untrack(() => {
+                goto("/register?message=login_required");
+            });
         }
     });
 

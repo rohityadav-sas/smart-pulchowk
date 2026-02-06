@@ -14,6 +14,7 @@
   import pulchowk from "./pulchowk.json";
   import { fade, fly, slide } from "svelte/transition";
   import { quintOut } from "svelte/easing";
+  import { onMount } from "svelte";
   import LoadingSpinner from "../components/LoadingSpinner.svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { chatBot } from "../lib/api";
@@ -155,6 +156,12 @@
     85.32121137093469, 27.68222689200303,
   ]);
   let map: any = $state();
+  let isEmbedded = $state(false);
+  let pendingFocusRequest = $state<{
+    focusName: string | null;
+    lat: number | null;
+    lng: number | null;
+  } | null>(null);
 
   let isLoaded = $state(false);
   let popupOpen = $state(false);
@@ -335,6 +342,118 @@
     }
     return [0, 0];
   }
+
+  function tryApplyPendingFocusRequest() {
+    if (!map || !pendingFocusRequest) return;
+
+    const { focusName, lat, lng } = pendingFocusRequest;
+    let targetFeature: any = null;
+
+    if (focusName) {
+      const normalizedName = focusName.toLowerCase();
+      targetFeature =
+        labels.find((label) => {
+          const description = label.properties?.description;
+          const title = label.properties?.title;
+          return (
+            (typeof description === "string" &&
+              description.toLowerCase() === normalizedName) ||
+            (typeof title === "string" && title.toLowerCase() === normalizedName)
+          );
+        }) ||
+        labels.find((label) => {
+          const description = label.properties?.description;
+          const title = label.properties?.title;
+          return (
+            (typeof description === "string" &&
+              description.toLowerCase().includes(normalizedName)) ||
+            (typeof title === "string" && title.toLowerCase().includes(normalizedName))
+          );
+        });
+    }
+
+    if (targetFeature) {
+      const center = getCentroid(targetFeature);
+      const description = targetFeature.properties?.description;
+      if (typeof description === "string") {
+        search = description;
+      } else if (focusName) {
+        search = focusName;
+      }
+      showSuggestions = false;
+      selectedIndex = -1;
+      map.flyTo({
+        center,
+        zoom: 20,
+        speed: 1.2,
+        curve: 1.42,
+        essential: true,
+      });
+      pendingFocusRequest = null;
+      return;
+    }
+
+    if (lat !== null && lng !== null) {
+      if (focusName) search = focusName;
+      showSuggestions = false;
+      selectedIndex = -1;
+      map.flyTo({
+        center: [lng, lat],
+        zoom: 20,
+        speed: 1.2,
+        curve: 1.42,
+        essential: true,
+      });
+      pendingFocusRequest = null;
+    }
+  }
+
+  function syncMapStateFromUrl() {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    isEmbedded = params.get("embed") === "true";
+
+    if (!/^\/map\/?$/.test(url.pathname)) {
+      pendingFocusRequest = null;
+      return;
+    }
+
+    const focusName = params.get("focus")?.trim() || null;
+    const latRaw = params.get("lat");
+    const lngRaw = params.get("lng");
+
+    const lat =
+      latRaw !== null && Number.isFinite(Number(latRaw)) ? Number(latRaw) : null;
+    const lng =
+      lngRaw !== null && Number.isFinite(Number(lngRaw)) ? Number(lngRaw) : null;
+
+    if (!focusName && (lat === null || lng === null)) {
+      pendingFocusRequest = null;
+      return;
+    }
+
+    pendingFocusRequest = { focusName, lat, lng };
+    tryApplyPendingFocusRequest();
+  }
+
+  onMount(() => {
+    syncMapStateFromUrl();
+    window.addEventListener("pushState", syncMapStateFromUrl);
+    window.addEventListener("replaceState", syncMapStateFromUrl);
+    window.addEventListener("popstate", syncMapStateFromUrl);
+
+    return () => {
+      window.removeEventListener("pushState", syncMapStateFromUrl);
+      window.removeEventListener("replaceState", syncMapStateFromUrl);
+      window.removeEventListener("popstate", syncMapStateFromUrl);
+    };
+  });
+
+  $effect(() => {
+    if (map && pendingFocusRequest) {
+      tryApplyPendingFocusRequest();
+    }
+  });
 
   function getHaversineDistance(
     coord1: [number, number],
@@ -832,6 +951,11 @@
     isLoaded = true;
   };
 
+  async function handleMapLoad() {
+    await loadIcons();
+    tryApplyPendingFocusRequest();
+  }
+
   function resizeImage(image: ImageBitmap | HTMLImageElement, width = 25) {
     const targetWidth = width;
     const targetHeight = Math.round(targetWidth * (image.height / image.width));
@@ -1134,13 +1258,6 @@
     queryToExecute = currentQuery;
     currentQuery = "";
   }
-
-  let isEmbedded = $state(false);
-
-  $effect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    isEmbedded = urlParams.get("embed") === "true";
-  });
 </script>
 
 <!-- Chatbot UI -->
@@ -1970,7 +2087,7 @@
       const longitude = e.lngLat.lng;
       navigator.clipboard.writeText(`[${longitude}, ${latitude}]`);
     }}
-    onload={loadIcons}
+    onload={handleMapLoad}
     maxBounds={PULCHOWK_BOUNDS as any}
   >
     <GeoJSONSource data={pulchowkData} maxzoom={22}>

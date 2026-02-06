@@ -22,11 +22,13 @@
   import LoadingSpinner from "../components/LoadingSpinner.svelte";
   import { fade, fly, slide } from "svelte/transition";
   import { authClient } from "../lib/auth-client";
+  import { untrack } from "svelte";
 
   const { route } = $props();
   const clubId = $derived(route.result.path.params.clubId);
 
   const session = authClient.useSession();
+  let hasRedirectedToLogin = $state(false);
 
   let club = $state<Club | null>(null);
   let profile = $state<ClubProfile | null>(null);
@@ -89,8 +91,13 @@
   });
 
   $effect(() => {
+    if (hasRedirectedToLogin) return;
+
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      goto("/register?message=login_required");
+      hasRedirectedToLogin = true;
+      untrack(() => {
+        goto("/register?message=login_required");
+      });
     }
   });
 

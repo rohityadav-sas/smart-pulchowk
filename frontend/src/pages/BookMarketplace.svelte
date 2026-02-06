@@ -11,8 +11,10 @@
   import { fade, fly, slide } from "svelte/transition";
   import { authClient } from "../lib/auth-client";
   import { createQuery } from "@tanstack/svelte-query";
+  import { untrack } from "svelte";
 
   const session = authClient.useSession();
+  let hasRedirectedToLogin = $state(false);
 
   let searchQuery = $state("");
   let authorFilter = $state("");
@@ -66,8 +68,13 @@
   });
 
   $effect(() => {
+    if (hasRedirectedToLogin) return;
+
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      goto("/register?message=login_required");
+      hasRedirectedToLogin = true;
+      untrack(() => {
+        goto("/register?message=login_required");
+      });
     }
   });
 

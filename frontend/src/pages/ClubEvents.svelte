@@ -13,12 +13,14 @@
   import { fade, fly, slide } from "svelte/transition";
   import { createQuery } from "@tanstack/svelte-query";
   import { getEventTimeMs, parseEventDateTime } from "../lib/event-dates";
+  import { untrack } from "svelte";
 
   const { route } = $props();
   const clubId = $derived(route.result.path.params.clubId);
 
   const session = authClient.useSession();
   const userId = $derived($session.data?.user?.id);
+  let hasRedirectedToLogin = $state(false);
 
   const clubQuery = createQuery(() => ({
     queryKey: ["club", clubId],
@@ -69,8 +71,13 @@
   );
 
   $effect(() => {
+    if (hasRedirectedToLogin) return;
+
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      goto("/register?message=login_required");
+      hasRedirectedToLogin = true;
+      untrack(() => {
+        goto("/register?message=login_required");
+      });
       return;
     }
   });

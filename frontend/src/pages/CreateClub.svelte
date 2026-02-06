@@ -10,6 +10,7 @@
   } from "../lib/api";
   import LoadingSpinner from "../components/LoadingSpinner.svelte";
   import { fade, fly, slide } from "svelte/transition";
+  import { untrack } from "svelte";
 
   const session = authClient.useSession();
 
@@ -49,15 +50,26 @@
   let currentStep = $state(1);
   const totalSteps = 4;
   let creationProgress = $state(0); // 0-100% for the background sequence
+  let hasNavigatedAway = $state(false);
 
   $effect(() => {
+    if (hasNavigatedAway) return;
+
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      goto("/register?message=login_required");
+      hasNavigatedAway = true;
+      untrack(() => {
+        goto("/register?message=login_required");
+      });
+      return;
     } else if (
       $session.data?.user &&
       ($session.data.user as any).role !== "admin"
     ) {
-      goto("/clubs?error=unauthorized");
+      hasNavigatedAway = true;
+      untrack(() => {
+        goto("/clubs?error=unauthorized");
+      });
+      return;
     }
     // Auto-fill email from session if available
     if ($session.data?.user?.email && !email) {
