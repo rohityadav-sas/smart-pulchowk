@@ -537,7 +537,7 @@
           type="text"
           placeholder="Search results..."
           bind:value={searchQuery}
-          class="w-full pl-9 pr-3 py-4 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="w-full pl-9 pr-3 py-3 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -547,7 +547,7 @@
           class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5"
         >
           <svg
-            class="w-4 h-4"
+            class="size-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -930,10 +930,10 @@
     in:fade={{ duration: 150 }}
   >
     <div
-      class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      class="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
     >
-      <div class="p-6 border-b border-slate-200">
-        <h2 class="text-xl font-bold text-slate-800">
+      <div class="p-4 border-b border-slate-200">
+        <h2 class="text-lg font-bold text-slate-800">
           {editingNotice ? 'Edit Notice' : 'Create Notice'}
         </h2>
       </div>
@@ -943,7 +943,7 @@
           e.preventDefault()
           handleSubmit()
         }}
-        class="p-6 space-y-4"
+        class="p-4 space-y-3"
       >
         {#if formError}
           <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
@@ -953,39 +953,39 @@
 
         <div>
           <!-- svelte-ignore a11y_label_has_associated_control -->
-          <label class="block text-sm font-medium text-slate-700 mb-1"
+          <label class="block text-xs font-semibold text-slate-700 mb-1"
             >Title</label
           >
           <input
             type="text"
             bind:value={formTitle}
-            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-xs placeholder:text-slate-400"
             placeholder="Notice title"
           />
         </div>
 
         <div>
           <!-- svelte-ignore a11y_label_has_associated_control -->
-          <label class="block text-sm font-medium text-slate-700 mb-1"
+          <label class="block text-xs font-semibold text-slate-700 mb-1"
             >Content</label
           >
           <textarea
             bind:value={formContent}
             rows="5"
-            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            class="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-xs placeholder:text-slate-400"
             placeholder="Notice content..."
           ></textarea>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
             <!-- svelte-ignore a11y_label_has_associated_control -->
-            <label class="block text-sm font-medium text-slate-700 mb-1"
+            <label class="block text-xs font-semibold text-slate-700 mb-1"
               >Section</label
             >
             <select
               bind:value={formSection}
-              class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="results">Results</option>
               <option value="routines">Routines</option>
@@ -993,12 +993,12 @@
           </div>
           <div>
             <!-- svelte-ignore a11y_label_has_associated_control -->
-            <label class="block text-sm font-medium text-slate-700 mb-1"
+            <label class="block text-xs font-semibold text-slate-700 mb-1"
               >Program</label
             >
             <select
               bind:value={formSubsection}
-              class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="be">BE</option>
               <option value="msc">MSc</option>
@@ -1008,16 +1008,16 @@
 
         <div>
           <!-- svelte-ignore a11y_label_has_associated_control -->
-          <label class="block text-sm font-medium text-slate-700 mb-1"
+          <label class="block text-xs font-semibold text-slate-700 mb-1"
             >Attachment (optional)</label
           >
           {#if !formAttachmentUrl}
             <!-- Attachment Method Tabs -->
-            <div class="flex p-1 bg-slate-100 rounded-lg mb-4">
+            <div class="flex p-0.5 bg-slate-100 rounded-lg mb-3">
               <button
                 type="button"
                 onclick={() => (activeAttachmentTab = 'upload')}
-                class="flex-1 py-1.5 text-sm font-medium rounded-md transition-all {activeAttachmentTab ===
+                class="flex-1 py-1 text-xs font-medium rounded-md transition-all {activeAttachmentTab ===
                 'upload'
                   ? 'bg-white text-slate-800 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700'}"
@@ -1027,7 +1027,7 @@
               <button
                 type="button"
                 onclick={() => (activeAttachmentTab = 'url')}
-                class="flex-1 py-1.5 text-sm font-medium rounded-md transition-all {activeAttachmentTab ===
+                class="flex-1 py-1 text-xs font-medium rounded-md transition-all {activeAttachmentTab ===
                 'url'
                   ? 'bg-white text-slate-800 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700'}"
@@ -1039,7 +1039,7 @@
             {#if activeAttachmentTab === 'upload'}
               <!-- Upload zone when no file is attached -->
               <label
-                class="flex flex-col items-center justify-center gap-1 w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-all {isDragActive
+                class="flex flex-col items-center justify-center gap-1 w-full h-24 rounded-xl border-2 border-dashed cursor-pointer transition-all {isDragActive
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-slate-200 bg-white hover:border-blue-400'}"
                 ondragover={handleAttachmentDragOver}
@@ -1054,7 +1054,7 @@
                   class="sr-only"
                 />
                 <svg
-                  class="w-8 h-8 text-slate-400"
+                  class="w-6 h-6 text-slate-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -1066,13 +1066,13 @@
                     d="M7 16a4 4 0 01.88-7.903A5 5 0 1118 12h-1m-5-6v12m0 0l-3-3m3 3l3-3"
                   />
                 </svg>
-                <span class="text-slate-600 text-sm font-medium mt-2">
+                <span class="text-slate-600 text-xs font-medium mt-1">
                   Click to upload
                   <span class="text-slate-400 font-normal">
                     or drag and drop</span
                   >
                 </span>
-                <span class="text-xs text-slate-400 mt-1"
+                <span class="text-[10px] text-slate-400 mt-0.5"
                   >PNG, JPG or PDF (max 10MB)</span
                 >
               </label>
@@ -1084,7 +1084,7 @@
                     type="url"
                     bind:value={manualUrlInput}
                     placeholder="https://example.com/document.pdf"
-                    class="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="flex-1 px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-xs placeholder:text-slate-400"
                   />
                   <button
                     type="button"
@@ -1096,7 +1096,7 @@
                           manualUrlInput.split('/').pop() || 'External Link'
                       }
                     }}
-                    class="px-4 py-2 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="px-3 py-1.5 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Add
                   </button>
@@ -1198,30 +1198,30 @@
         {#if formAttachmentUrl}
           <div>
             <!-- svelte-ignore a11y_label_has_associated_control -->
-            <label class="block text-sm font-medium text-slate-700 mb-1"
+            <label class="block text-xs font-semibold text-slate-700 mb-1"
               >Display Name (optional)</label
             >
             <input
               type="text"
               bind:value={formAttachmentName}
-              class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-xs placeholder:text-slate-400"
               placeholder="Custom name for the attachment"
             />
           </div>
         {/if}
 
-        <div class="flex justify-end gap-3 pt-4">
+        <div class="flex justify-end gap-2 pt-2">
           <button
             type="button"
             onclick={closeModal}
-            class="px-5 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors"
+            class="px-4 py-1.5 bg-slate-100 text-slate-700 text-sm rounded-lg font-medium hover:bg-slate-200 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting || isUploadingAttachment}
-            class="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+            class="px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             {isSubmitting
               ? 'Saving...'
