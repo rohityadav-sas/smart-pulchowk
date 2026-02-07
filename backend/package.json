@@ -17,6 +17,7 @@
 		"@types/pdfkit": "^0.17.4",
 		"better-auth": "^1.4.10",
 		"cloudinary": "^2.9.0",
+		"compression": "^1.8.1",
 		"dotenv": "^17.2.3",
 		"drizzle-orm": "^0.45.1",
 		"express": "5.1.0",
@@ -26,6 +27,7 @@
 		"pdfkit": "^0.17.2"
 	},
 	"devDependencies": {
+		"@types/compression": "^1.8.1",
 		"@types/cors": "^2.8.19",
 		"@types/express": "5.0.0",
 		"@types/multer": "^2.0.0",

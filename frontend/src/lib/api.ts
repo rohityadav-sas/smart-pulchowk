@@ -1486,14 +1486,25 @@ export async function getConversations(): Promise<{
 
 export async function getMessages(
   conversationId: number,
-): Promise<{ success: boolean; data?: ChatMessage[]; message?: string }> {
+  options?: { limit?: number; before?: string },
+): Promise<{
+  success: boolean
+  data?: ChatMessage[]
+  message?: string
+  meta?: { limit: number; hasMore: boolean; nextBefore: string | null }
+}> {
   try {
-    const res = await fetch(
-      `${API_CHAT}/conversations/${conversationId}/messages`,
-      {
-        credentials: 'include',
-      },
-    )
+    const params = new URLSearchParams()
+    if (options?.limit) params.set('limit', String(options.limit))
+    if (options?.before) params.set('before', options.before)
+    const queryString = params.toString()
+    const url = queryString
+      ? `${API_CHAT}/conversations/${conversationId}/messages?${queryString}`
+      : `${API_CHAT}/conversations/${conversationId}/messages`
+
+    const res = await fetch(url, {
+      credentials: 'include',
+    })
     return await res.json()
   } catch (error: any) {
     return { success: false, message: error.message }
@@ -1592,9 +1603,20 @@ export interface NoticeFilters {
   offset?: number
 }
 
+export interface PaginationMeta {
+  total?: number
+  limit: number
+  offset: number
+}
+
 export async function getNotices(
   filters?: NoticeFilters,
-): Promise<{ success: boolean; data?: Notice[]; message?: string }> {
+): Promise<{
+  success: boolean
+  data?: Notice[]
+  message?: string
+  meta?: PaginationMeta
+}> {
   try {
     const params = new URLSearchParams()
     if (filters?.section) params.append('section', filters.section)
@@ -1612,7 +1634,14 @@ export async function getNotices(
     const json = await res.json()
 
     // Preferred shape: { success, data }
-    if (typeof json?.success === 'boolean') return json
+    if (typeof json?.success === 'boolean') {
+      return {
+        success: json.success,
+        data: json.data,
+        message: json.message,
+        meta: json.meta,
+      }
+    }
 
     // Legacy/alternate shape: { data: { success, notices, message } }
     if (typeof json?.data?.success === 'boolean') {
@@ -2151,7 +2180,6 @@ export async function searchEverything(
 
     const res = await fetch(`${API_SEARCH}?${params.toString()}`, {
       credentials: 'include',
-      cache: 'no-store',
     })
     return await res.json()
   } catch (error: any) {

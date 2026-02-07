@@ -2,7 +2,7 @@ import { db } from "../lib/db.js";
 import { conversations, messages } from "../models/chat-schema.js";
 import { user } from "../models/auth-schema.js";
 import { bookListings, bookPurchaseRequests } from "../models/book_buy_sell-schema.js";
-import { eq, and, or, desc } from "drizzle-orm";
+import { eq, and, or, desc, lt } from "drizzle-orm";
 import { sendToUser } from "./notification.service.js";
 import { isUserBlockedBetween } from "./trust.service.js";
 
@@ -146,7 +146,11 @@ export const getConversations = async (userId: string) => {
     }
 };
 
-export const getMessages = async (conversationId: number, userId: string) => {
+export const getMessages = async (
+    conversationId: number,
+    userId: string,
+    options?: { limit?: number; before?: Date },
+) => {
     try {
         // Verify user is part of conversation
         const conversation = await db.query.conversations.findFirst({
@@ -163,15 +167,38 @@ export const getMessages = async (conversationId: number, userId: string) => {
             return { success: false, message: "Conversation not found or access denied." };
         }
 
+        const limit = Math.max(1, Math.min(options?.limit ?? 30, 100));
+        const whereClause = options?.before
+            ? and(
+                eq(messages.conversationId, conversationId),
+                lt(messages.createdAt, options.before),
+            )
+            : eq(messages.conversationId, conversationId);
+
         const convoMessages = await db.query.messages.findMany({
-            where: eq(messages.conversationId, conversationId),
+            where: whereClause,
             orderBy: [desc(messages.createdAt)],
+            limit: limit + 1,
             with: {
                 sender: true,
             }
         });
 
-        return { success: true, data: convoMessages };
+        const data = convoMessages.slice(0, limit);
+        const hasMore = convoMessages.length > limit;
+        const nextBefore = hasMore && data.length > 0
+            ? data[data.length - 1].createdAt.toISOString()
+            : null;
+
+        return {
+            success: true,
+            data,
+            meta: {
+                limit,
+                hasMore,
+                nextBefore,
+            },
+        };
     } catch (error) {
         console.error("Error in getMessages service:", error);
         return { success: false, message: "Failed to fetch messages." };

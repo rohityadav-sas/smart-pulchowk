@@ -91,7 +91,19 @@ export const GetMessages = async (req: Request, res: Response) => {
             });
         }
 
-        const result = await getMessages(conversationId, userId);
+        const parsedLimit = Number(req.query.limit);
+        const limit = Number.isFinite(parsedLimit) ? parsedLimit : undefined;
+
+        const beforeQuery = req.query.before as string | undefined;
+        const before = beforeQuery ? new Date(beforeQuery) : undefined;
+        if (beforeQuery && Number.isNaN(before?.getTime())) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid before cursor timestamp.",
+            });
+        }
+
+        const result = await getMessages(conversationId, userId, { limit, before });
 
         if (!result.success) {
             return res.status(result.message?.includes("denied") ? 403 : 400).json(result);

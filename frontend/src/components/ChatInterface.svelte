@@ -13,7 +13,7 @@
     import { fade, fly } from "svelte/transition";
     import { authClient } from "../lib/auth-client";
     import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-    import { onMount, onDestroy } from "svelte";
+    import { onMount } from "svelte";
 
     const session = authClient.useSession();
     const queryClient = useQueryClient();
@@ -25,7 +25,8 @@
     let selectedConversationId = $state<number | null>(null);
     let messageInput = $state("");
     let sendingMessage = $state(false);
-    let pollingInterval: ReturnType<typeof setInterval> | null = null;
+    let isPageVisible = $state(typeof document === "undefined" ? true : document.visibilityState === "visible");
+    let isOnline = $state(typeof navigator === "undefined" ? true : navigator.onLine);
     let messagesContainer = $state<HTMLDivElement | null>(null);
 
     // Delete conversation state
@@ -41,6 +42,9 @@
             return result.success ? result.data || [] : [];
         },
         enabled: !!$session.data?.user,
+        refetchInterval:
+            !!$session.data?.user && isPageVisible && isOnline ? 20000 : false,
+        refetchIntervalInBackground: false,
     }));
 
     // Messages query for selected conversation
@@ -52,7 +56,32 @@
             return result.success ? result.data || [] : [];
         },
         enabled: !!selectedConversationId,
+        refetchInterval:
+            !!selectedConversationId && isPageVisible && isOnline ? 7000 : false,
+        refetchIntervalInBackground: false,
     }));
+
+    onMount(() => {
+        const handleVisibilityChange = () => {
+            isPageVisible = document.visibilityState === "visible";
+        };
+        const handleOnline = () => {
+            isOnline = true;
+        };
+        const handleOffline = () => {
+            isOnline = false;
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        window.addEventListener("online", handleOnline);
+        window.addEventListener("offline", handleOffline);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.removeEventListener("online", handleOnline);
+            window.removeEventListener("offline", handleOffline);
+        };
+    });
 
     // Auto-select from URL params or find by listing
     $effect(() => {
@@ -74,30 +103,6 @@
         }
     });
 
-    // 7-second polling for new messages when viewing a conversation
-    $effect(() => {
-        if (selectedConversationId) {
-            // Clear any existing interval
-            if (pollingInterval) clearInterval(pollingInterval);
-
-            pollingInterval = setInterval(() => {
-                queryClient.invalidateQueries({
-                    queryKey: ["chat-messages", selectedConversationId],
-                });
-                queryClient.invalidateQueries({
-                    queryKey: ["chat-conversations"],
-                });
-            }, 7000);
-        }
-
-        return () => {
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
-                pollingInterval = null;
-            }
-        };
-    });
-
     // Scroll to bottom when messages change
     $effect(() => {
         const container = messagesContainer;
@@ -105,12 +110,6 @@
             setTimeout(() => {
                 container.scrollTop = container.scrollHeight;
             }, 100);
-        }
-    });
-
-    onDestroy(() => {
-        if (pollingInterval) {
-            clearInterval(pollingInterval);
         }
     });
 

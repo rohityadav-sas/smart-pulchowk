@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { and, desc, eq } from 'drizzle-orm'
+import { and, desc, eq, ilike, or, sql } from 'drizzle-orm'
 import { db } from '../lib/db.js'
 import { notice, type NewNotice } from '../models/notice-schema.js'
 import { user } from '../models/auth-schema.js'
@@ -20,8 +20,35 @@ export async function getNotices(req: Request, res: Response) {
   try {
     const section = (req.query.section as string | undefined)?.trim() // 'results' | 'routines'
     const subsection = (req.query.subsection as string | undefined)?.trim() // 'be' | 'msc'
+    const search = (req.query.search as string | undefined)?.trim()
+    const parsedLimit = Number(req.query.limit)
+    const parsedOffset = Number(req.query.offset)
+    const limit =
+      Number.isFinite(parsedLimit) && parsedLimit > 0
+        ? Math.min(Math.floor(parsedLimit), 100)
+        : 20
+    const offset =
+      Number.isFinite(parsedOffset) && parsedOffset >= 0
+        ? Math.floor(parsedOffset)
+        : 0
 
-    let query = db
+    const filters: any[] = []
+    if (section) filters.push(eq(notice.section, section))
+    if (subsection) filters.push(eq(notice.subsection, subsection))
+    if (search) {
+      const term = `%${search}%`
+      filters.push(or(ilike(notice.title, term), ilike(notice.content, term)))
+    }
+
+    const whereClause =
+      filters.length > 1 ? and(...filters) : filters.length === 1 ? filters[0] : undefined
+
+    const [totalRow] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(notice)
+      .where(whereClause)
+
+    const results = await db
       .select({
         id: notice.id,
         title: notice.title,
@@ -29,9 +56,7 @@ export async function getNotices(req: Request, res: Response) {
         section: notice.section,
         subsection: notice.subsection,
         attachmentUrl: notice.attachmentUrl,
-
         attachmentName: notice.attachmentName,
-
         createdAt: notice.createdAt,
         updatedAt: notice.updatedAt,
         authorId: notice.authorId,
@@ -43,20 +68,20 @@ export async function getNotices(req: Request, res: Response) {
       })
       .from(notice)
       .leftJoin(user, eq(notice.authorId, user.id))
+      .where(whereClause)
       .orderBy(desc(notice.createdAt))
+      .limit(limit)
+      .offset(offset)
 
-    let results
-    if (section && subsection) {
-      results = await query.where(
-        and(eq(notice.section, section), eq(notice.subsection, subsection)),
-      )
-    } else if (section) {
-      results = await query.where(eq(notice.section, section))
-    } else {
-      results = await query
-    }
-
-    return res.json({ success: true, data: results })
+    return res.json({
+      success: true,
+      data: results,
+      meta: {
+        total: totalRow?.count ?? 0,
+        limit,
+        offset,
+      },
+    })
   } catch (error: any) {
     console.error('Error fetching notices:', error)
     return res.status(500).json({
@@ -69,36 +94,23 @@ export async function getNotices(req: Request, res: Response) {
 // Get notice stats
 export async function getNoticeStats(_req: Request, res: Response) {
   try {
-    const allNotices = await db
+    const [stats] = await db
       .select({
-        section: notice.section,
-        subsection: notice.subsection,
-        createdAt: notice.createdAt,
+        beResults:
+          sql<number>`count(*) filter (where ${notice.section} = 'results' and ${notice.subsection} = 'be')::int`,
+        mscResults:
+          sql<number>`count(*) filter (where ${notice.section} = 'results' and ${notice.subsection} = 'msc')::int`,
+        beRoutines:
+          sql<number>`count(*) filter (where ${notice.section} = 'routines' and ${notice.subsection} = 'be')::int`,
+        mscRoutines:
+          sql<number>`count(*) filter (where ${notice.section} = 'routines' and ${notice.subsection} = 'msc')::int`,
+        newCount:
+          sql<number>`count(*) filter (where ${notice.createdAt} >= now() - interval '7 days')::int`,
+        total: sql<number>`count(*)::int`,
       })
       .from(notice)
 
-    // A notice is "new" if published within the last 7 days (1 week)
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    const isNew = (createdAt: Date) => createdAt >= sevenDaysAgo
-
-    const stats = {
-      beResults: allNotices.filter(
-        (n) => n.section === 'results' && n.subsection === 'be',
-      ).length,
-      mscResults: allNotices.filter(
-        (n) => n.section === 'results' && n.subsection === 'msc',
-      ).length,
-      beRoutines: allNotices.filter(
-        (n) => n.section === 'routines' && n.subsection === 'be',
-      ).length,
-      mscRoutines: allNotices.filter(
-        (n) => n.section === 'routines' && n.subsection === 'msc',
-      ).length,
-      newCount: allNotices.filter((n) => isNew(n.createdAt)).length,
-      total: allNotices.length,
-    }
-
-    return res.json({ success: true, data: stats })
+    return res.json({ success: true, data: stats ?? {} })
   } catch (error: any) {
     console.error('Error fetching notice stats:', error)
     return res.status(500).json({

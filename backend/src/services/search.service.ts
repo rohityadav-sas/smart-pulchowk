@@ -12,6 +12,20 @@ interface SearchInput {
   userId?: string;
 }
 
+type CampusService = { name?: string; purpose?: string; location?: string };
+type CampusBuilding = {
+  id: string;
+  name: string;
+  description: string;
+  coordinates: { lat: number; lng: number };
+  services?: CampusService[];
+};
+
+type SearchableBuilding = CampusBuilding & {
+  searchableText: string;
+  iconText: string;
+};
+
 function getLocationIcon(description: string) {
   const desc = (description ?? "").toLowerCase();
 
@@ -50,6 +64,31 @@ function getLocationIcon(description: string) {
   if (desc.includes("bridge")) return "bridge-icon";
   return "custom-marker";
 }
+
+const searchableBuildings: SearchableBuilding[] = ((locationData as any)?.buildings ?? []).map(
+  (building: CampusBuilding) => {
+    const allServices = building.services ?? [];
+    const servicesText = allServices
+      .flatMap((service) => [service?.name, service?.purpose, service?.location])
+      .filter(Boolean)
+      .join(" ");
+
+    const searchableText = [building.name, building.description, servicesText]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    const iconText = [building.name, building.description, servicesText]
+      .filter(Boolean)
+      .join(" ");
+
+    return {
+      ...building,
+      searchableText,
+      iconText,
+    };
+  },
+);
 
 export async function globalSearch(input: SearchInput) {
   const query = input.query?.trim();
@@ -183,38 +222,17 @@ export async function globalSearch(input: SearchInput) {
   ]);
 
   const normalizedTerm = query.toLowerCase();
-  const places = (locationData as any).buildings
-    .filter((building: any) => {
-      const text = [
-        building.name,
-        building.description,
-        ...(building.services ?? []).map((service: any) => service.name),
-        ...(building.services ?? []).map((service: any) => service.purpose),
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      return text.includes(normalizedTerm);
-    })
+  const places = searchableBuildings
+    .filter((building) => building.searchableText.includes(normalizedTerm))
     .slice(0, limit)
-    .map((building: any) => {
+    .map((building) => {
       const services = (building.services ?? []).slice(0, 3);
-      const iconText = [
-        building.name,
-        building.description,
-        ...services.map((service: any) => service?.name),
-        ...services.map((service: any) => service?.purpose),
-      ]
-        .filter(Boolean)
-        .join(" ");
-
       return {
         id: building.id,
         name: building.name,
         description: building.description,
         coordinates: building.coordinates,
-        icon: getLocationIcon(iconText),
+        icon: getLocationIcon(building.iconText),
         services,
       };
     });
