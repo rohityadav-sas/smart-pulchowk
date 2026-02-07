@@ -797,7 +797,7 @@ export async function cancelEvent(authId: string, eventId: number) {
       data: {
         eventId: eventId.toString(),
         clubId: event.clubId?.toString() ?? "",
-        publisherId: userId,
+        publisherId: authId,
         eventTitle: event.title,
         type: "event_cancelled",
         iconKey: "event",
