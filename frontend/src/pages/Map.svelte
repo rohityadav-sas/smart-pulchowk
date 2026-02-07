@@ -156,6 +156,7 @@
     85.32121137093469, 27.68222689200303,
   ]);
   let map: any = $state();
+  let isMapFullscreen = $state(false);
   let isEmbedded = $state(false);
   let pendingFocusRequest = $state<{
     focusName: string | null;
@@ -443,15 +444,31 @@
   }
 
   onMount(() => {
+    const updateMapFullscreenState = () => {
+      const fullscreenEl = document.fullscreenElement as HTMLElement | null;
+      const mapContainer =
+        (typeof map?.getContainer === "function"
+          ? (map.getContainer() as HTMLElement | null)
+          : null) || null;
+      isMapFullscreen = !!(
+        fullscreenEl &&
+        mapContainer &&
+        (fullscreenEl === mapContainer || mapContainer.contains(fullscreenEl))
+      );
+    };
+
     syncMapStateFromUrl();
+    updateMapFullscreenState();
     window.addEventListener("pushState", syncMapStateFromUrl);
     window.addEventListener("replaceState", syncMapStateFromUrl);
     window.addEventListener("popstate", syncMapStateFromUrl);
+    document.addEventListener("fullscreenchange", updateMapFullscreenState);
 
     return () => {
       window.removeEventListener("pushState", syncMapStateFromUrl);
       window.removeEventListener("replaceState", syncMapStateFromUrl);
       window.removeEventListener("popstate", syncMapStateFromUrl);
+      document.removeEventListener("fullscreenchange", updateMapFullscreenState);
     };
   });
 
@@ -1531,7 +1548,7 @@
 <div
   class="relative w-full h-[calc(100vh-4rem)] bg-linear-to-b from-cyan-50 via-white to-blue-50"
 >
-  {#if !isNavigating}
+  {#if !isNavigating && !isMapFullscreen}
     <!-- Search Container -->
     <div
       class="absolute top-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-md px-4"
@@ -1712,7 +1729,7 @@
     </div>
   {/if}
 
-  {#if isNavigating}
+  {#if isNavigating && !isMapFullscreen}
     <div
       class="absolute top-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-sm px-4 pointer-events-auto"
       transition:fade={{ duration: 200 }}
@@ -2089,6 +2106,484 @@
     onload={handleMapLoad}
     maxBounds={PULCHOWK_BOUNDS as any}
   >
+    {#if isNavigating && isMapFullscreen}
+      <div
+        class="absolute top-6 left-1/2 -translate-x-1/2 z-60 w-full max-w-sm px-4 pointer-events-auto"
+        transition:fade={{ duration: 200 }}
+      >
+        <div
+          class="bg-white/90 backdrop-blur-xl rounded-xl shadow-lg shadow-gray-200/40 border border-gray-100 p-3.5"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2.5">
+              <button
+                aria-label="Exit navigation"
+                class="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                onclick={exitNavigation}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 text-gray-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+              </button>
+              <h2 class="font-semibold text-base text-gray-800">Directions</h2>
+            </div>
+            <button
+              aria-label={isNavMinimized ? "Expand" : "Minimize"}
+              class="p-1.5 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
+              onclick={() => (isNavMinimized = !isNavMinimized)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4.5 w-4.5 text-gray-600 transition-transform duration-300 ease-out {isNavMinimized
+                  ? 'rotate-180'
+                  : 'rotate-0'}"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 15l7-7 7 7"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {#if !isNavMinimized}
+            <div
+              class="flex flex-col gap-2.5 relative"
+              transition:slide={{ duration: 350, easing: quintOut }}
+            >
+              <div
+                class="relative bg-white rounded-lg border border-gray-300 shadow-sm ring-1 ring-gray-900/5 transition-all focus-within:shadow-md focus-within:border-blue-300 isolate"
+              >
+                <div
+                  class="absolute top-4 bottom-4 left-3.5 z-10 flex flex-col items-center justify-between pointer-events-none w-4"
+                >
+                  <div
+                    class="w-2.5 h-2.5 rounded-full border-2 border-gray-400 bg-white shrink-0"
+                  ></div>
+                  <div
+                    class="w-0.5 grow my-1 border-l-2 border-dotted border-gray-300"
+                  ></div>
+                  <div class="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0"></div>
+                </div>
+
+                <div class="relative">
+                  <input
+                    bind:value={navStartSearch}
+                    type="text"
+                    name="navStart"
+                    placeholder="Choose starting point"
+                    class="w-full h-10 pl-9 pr-9 bg-transparent border-none text-sm font-medium text-gray-700 placeholder:text-gray-400 rounded-t-lg"
+                    onfocus={() => {
+                      showNavStartSuggestions = true;
+                      showNavEndSuggestions = false;
+                      focusedInput = "start";
+                    }}
+                    oninput={() => (showNavStartSuggestions = true)}
+                  />
+                  {#if navStartSearch || showNavStartSuggestions}
+                    <button
+                      class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                      onclick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navStartSearch = "";
+                        showNavStartSuggestions = false;
+                      }}
+                      aria-label="Clear start location"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  {/if}
+                  {#if showNavStartSuggestions}
+                    <div
+                      class="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden z-30 max-h-56 overflow-y-auto"
+                    >
+                      <button
+                        class="w-full px-3.5 py-2.5 text-left hover:bg-blue-50 text-blue-600 text-sm font-medium flex items-center gap-2"
+                        onclick={useUserLocation}
+                      >
+                        <svg
+                          class="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        Your Location
+                        {#if waitingForLocation}
+                          <span class="text-xs text-gray-400 font-normal"
+                            >(Locating...)</span
+                          >
+                        {/if}
+                      </button>
+                      {#each filteredNavStartSuggestions as suggestion}
+                        <button
+                          class="w-full px-3.5 py-2.5 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-2.5"
+                          onclick={() => selectNavStart(suggestion)}
+                        >
+                          <img
+                            src={getIconUrl(suggestion.properties?.icon)}
+                            alt=""
+                            class="w-4 h-4 object-contain"
+                          />
+                          <span class="truncate"
+                            >{suggestion.properties?.description}</span
+                          >
+                        </button>
+                      {/each}
+                    </div>
+                  {/if}
+                </div>
+
+                <div class="mx-9 h-px bg-gray-100"></div>
+
+                <div class="relative">
+                  <input
+                    bind:value={navEndSearch}
+                    type="text"
+                    name="navEnd"
+                    placeholder="Choose destination"
+                    class="w-full h-10 pl-9 pr-9 bg-transparent border-none text-sm font-semibold text-gray-900 placeholder:text-gray-400 rounded-b-lg"
+                    onfocus={() => {
+                      showNavEndSuggestions = true;
+                      showNavStartSuggestions = false;
+                      focusedInput = "end";
+                    }}
+                    oninput={() => (showNavEndSuggestions = true)}
+                  />
+                  {#if navEndSearch || showNavEndSuggestions}
+                    <button
+                      class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                      onclick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navEndSearch = "";
+                        showNavEndSuggestions = false;
+                      }}
+                      aria-label="Clear destination"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  {/if}
+                  {#if showNavEndSuggestions}
+                    <div
+                      class="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden z-30 max-h-56 overflow-y-auto"
+                    >
+                      {#each filteredNavEndSuggestions as suggestion}
+                        <button
+                          class="w-full px-3.5 py-2.5 text-left hover:bg-gray-50 text-gray-700 text-sm border-t border-gray-50 flex items-center gap-2.5"
+                          onclick={() => selectNavEnd(suggestion)}
+                        >
+                          <img
+                            src={getIconUrl(suggestion.properties?.icon)}
+                            alt=""
+                            class="w-4 h-4 object-contain"
+                          />
+                          <span class="truncate"
+                            >{suggestion.properties?.description}</span
+                          >
+                        </button>
+                      {/each}
+                    </div>
+                  {/if}
+                </div>
+              </div>
+
+              {#if isCalculatingRoute}
+                <div
+                  class="bg-white rounded-lg border border-gray-200 p-3.5 flex items-center justify-between shadow-sm"
+                >
+                  <div class="flex flex-col gap-2">
+                    <div class="h-5 w-20 bg-gray-100 rounded animate-pulse"></div>
+                    <div
+                      class="h-2.5 w-28 bg-gray-50 rounded animate-pulse"
+                    ></div>
+                  </div>
+                  <div
+                    class="w-9 h-9 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center"
+                  >
+                    <LoadingSpinner size="sm" />
+                  </div>
+                </div>
+              {/if}
+
+              {#if routeDuration}
+                <div
+                  class="bg-white rounded-lg border border-gray-200 p-3.5 flex items-center justify-between shadow-sm"
+                >
+                  <div>
+                    <div class="flex items-baseline gap-2">
+                      <span class="text-xl font-bold text-gray-900"
+                        >{routeDuration}</span
+                      >
+                      <span class="text-xs text-gray-500 font-medium"
+                        >({routeDistance})</span
+                      >
+                    </div>
+                    <div class="text-xs text-gray-500 mt-0.5">
+                      {isDirectFallback
+                        ? "Straight line (Internal paths not mapped)"
+                        : "Walking via campus paths"}
+                    </div>
+                  </div>
+                  <button
+                    aria-label="Get directions"
+                    class="size-9 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-md shadow-blue-600/20 transition-all hover:scale-105 active:scale-95"
+                    onclick={getDirections}
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              {/if}
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
+
+    {#if !isNavigating && isMapFullscreen}
+      <div
+        class="absolute top-6 left-1/2 -translate-x-1/2 z-60 w-full max-w-md px-4"
+      >
+        <div class="relative group">
+          <div
+            class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-blue-600 z-10"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+          </div>
+
+          <input
+            bind:value={search}
+            type="text"
+            placeholder="Search classrooms, departments..."
+            class="w-full pl-10 pr-10 py-2.5 rounded-xl shadow-md shadow-gray-200/40 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white/90 backdrop-blur-xl text-gray-800 placeholder-gray-400 transition-all text-sm font-normal"
+            onfocus={() => (showSuggestions = true)}
+            oninput={() => (showSuggestions = true)}
+            onblur={() => setTimeout(() => (showSuggestions = false), 200)}
+            onkeydown={handleKeydown}
+          />
+
+          {#if search}
+            <button
+              aria-label="Clear search"
+              onclick={() => {
+                search = "";
+                showSuggestions = false;
+                selectedIndex = -1;
+              }}
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          {/if}
+
+          {#if showSuggestions && filteredSuggestions.length > 0}
+            <div
+              class="absolute top-full mt-2.5 w-full bg-white/90 backdrop-blur-xl rounded-xl shadow-lg shadow-gray-200/40 border border-gray-100 overflow-hidden"
+              transition:fly={{ y: 10, duration: 200 }}
+            >
+              <ul class="max-h-[50vh] overflow-y-auto py-1.5">
+                {#each filteredSuggestions as suggestion, index}
+                  {@const iconName = suggestion.properties?.icon}
+                  {@const iconUrl = icons.find((i) => i.name === iconName)?.url}
+                  <li>
+                    <button
+                      data-suggestion-index={index}
+                      onmousedown={(e) => e.preventDefault()}
+                      onclick={() =>
+                        suggestion.properties?.description &&
+                        selectSuggestion(suggestion.properties.description)}
+                      class="w-full px-4 py-2.5 text-left hover:bg-blue-50/80 transition-colors flex items-center gap-3 {index ===
+                      selectedIndex
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'text-gray-700'}"
+                    >
+                      <div
+                        class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center shrink-0 {index ===
+                        selectedIndex
+                          ? 'bg-blue-200 text-blue-700'
+                          : 'text-blue-500'}"
+                      >
+                        {#if iconUrl}
+                          <img
+                            src={iconUrl}
+                            alt=""
+                            class="w-4 h-4 object-contain"
+                          />
+                        {:else}
+                          <svg
+                            class="w-3.5 h-3.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            ></path>
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            ></path>
+                          </svg>
+                        {/if}
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-medium text-sm truncate">
+                          {suggestion.properties?.description}
+                        </p>
+                        <p class="text-[11px] text-gray-500 truncate mt-0.5">
+                          Pulchowk Campus
+                        </p>
+                      </div>
+                      {#if index === selectedIndex}
+                        <svg
+                          class="w-4 h-4 text-blue-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                          ></path>
+                        </svg>
+                      {/if}
+                    </button>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          {/if}
+
+          {#if showSuggestions && search.trim() && filteredSuggestions.length === 0}
+            <div
+              class="absolute top-full mt-2.5 w-full bg-white/90 backdrop-blur-xl rounded-xl shadow-lg border border-gray-100 p-4 text-center"
+              transition:fly={{ y: 10, duration: 200 }}
+            >
+              <div
+                class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2.5 text-gray-400"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+              <p class="text-gray-900 text-sm font-medium">No locations found</p>
+              <p class="text-xs text-gray-500 mt-1">
+                Try searching for a different building or department
+              </p>
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
+
     <GeoJSONSource data={pulchowkData} maxzoom={22}>
       <FillLayer
         paint={{
