@@ -297,13 +297,23 @@ function getVisibleAudiencesForRole(role?: UserRole): Audience[] {
 
   if (role === "teacher") audiences.push("teachers");
   else if (role === "admin") audiences.push("admins");
-  else audiences.push("students");
+  else if (role !== "notice_manager") audiences.push("students");
 
   return audiences;
 }
 
+function getRoleTypeFilter(role?: UserRole): SQL | null {
+  if (role === "notice_manager") {
+    // Restrict notice managers to notice lifecycle notifications only.
+    return sql`${notifications.type} like 'notice_%'`;
+  }
+  return null;
+}
+
 function buildVisibilityFilter(userId: string, role?: UserRole) {
-  return and(
+  const roleTypeFilter = getRoleTypeFilter(role);
+
+  const baseFilter = and(
     or(
       eq(notifications.recipientId, userId),
       inArray(notifications.audience, getVisibleAudiencesForRole(role)),
@@ -346,6 +356,11 @@ function buildVisibilityFilter(userId: string, role?: UserRole) {
       )
     )`,
   );
+
+  if (roleTypeFilter) {
+    return and(baseFilter, roleTypeFilter);
+  }
+  return baseFilter;
 }
 
 export async function createInAppNotificationForUser(input: {

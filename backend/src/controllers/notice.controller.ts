@@ -12,7 +12,7 @@ type AuthedRequest = Request & { user?: { id: string; role?: string | null } }
 
 const isNoticeManager = (req: AuthedRequest): boolean => {
   const role = req.user?.role
-  return role === 'notice_manager' || role === 'admin'
+  return role === 'notice_manager'
 }
 
 const { NOTICE_ATTACHMENTS, FOLDERS } = UPLOAD_CONSTANTS
@@ -125,7 +125,7 @@ export async function getNoticeStats(_req: Request, res: Response) {
   }
 }
 
-// Create a new notice (notice_manager/admin only)
+// Create a new notice (notice_manager only)
 export async function createNotice(req: AuthedRequest, res: Response) {
   try {
     if (!req.user || !isNoticeManager(req)) {
@@ -228,7 +228,7 @@ export async function createNotice(req: AuthedRequest, res: Response) {
   }
 }
 
-// Update a notice (notice_manager/admin only)
+// Update a notice (notice_manager only)
 export async function updateNotice(req: AuthedRequest, res: Response) {
   try {
     if (!req.user || !isNoticeManager(req)) {
@@ -325,7 +325,7 @@ export async function updateNotice(req: AuthedRequest, res: Response) {
   }
 }
 
-// Upload notice attachment (notice_manager/admin only)
+// Upload notice attachment (notice_manager only)
 export async function uploadNoticeAttachment(
   req: AuthedRequest,
   res: Response,
@@ -401,7 +401,7 @@ export async function uploadNoticeAttachment(
   }
 }
 
-// Delete a notice (notice_manager/admin only)
+// Delete a notice (notice_manager only)
 export async function deleteNotice(req: AuthedRequest, res: Response) {
   try {
     if (!req.user || !isNoticeManager(req)) {

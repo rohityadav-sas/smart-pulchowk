@@ -18,9 +18,7 @@
   const sessionUser = $derived(
     $session.data?.user as { role?: string } | undefined,
   );
-  const isNoticeManager = $derived(
-    sessionUser?.role === "notice_manager" || sessionUser?.role === "admin",
-  );
+  const isNoticeManager = $derived(sessionUser?.role === "notice_manager");
 
   type NoticeSection = "results" | "routines";
   type NoticeSubsection = "be" | "msc";
