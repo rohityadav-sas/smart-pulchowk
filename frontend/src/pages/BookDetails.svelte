@@ -876,22 +876,29 @@
                   </div>
 
                   <div
-                    class="flex items-center gap-4 bg-white/5 backdrop-blur-md rounded-[1.5rem] p-4 border border-white/10"
+                    class="flex items-center gap-4 bg-white/5 backdrop-blur-md rounded-[1.5rem] p-4 border border-white/10 shadow-inner"
                   >
-                    <div class="text-center px-4 border-r border-white/10">
+                    <div
+                      class="text-center px-4 border-r border-white/10 group/stat"
+                    >
                       <p
                         class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1"
                       >
                         Rating
                       </p>
-                      <div class="flex items-center gap-1.5">
-                        <span class="text-2xl font-black text-white">
+                      <button
+                        onclick={() => (reviewsModalOpen = true)}
+                        class="flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95"
+                      >
+                        <span
+                          class="text-2xl font-black text-white group-hover/stat:text-blue-400 transition-colors"
+                        >
                           {sellerReputationQuery.data?.averageRating.toFixed(
                             1,
                           ) || "0.0"}
                         </span>
                         <svg
-                          class="w-5 h-5 text-amber-400"
+                          class="w-5 h-5 text-amber-400 group-hover/stat:drop-shadow-[0_0_8px_rgba(251,191,36,0.5)] transition-all"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                         >
@@ -899,9 +906,9 @@
                             d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
                           />
                         </svg>
-                      </div>
+                      </button>
                     </div>
-                    <div class="text-center px-4">
+                    <div class="text-center px-4 group/stat">
                       <p
                         class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1"
                       >
@@ -909,7 +916,7 @@
                       </p>
                       <button
                         onclick={() => (reviewsModalOpen = true)}
-                        class="text-2xl font-black text-white hover:text-blue-400 transition-colors"
+                        class="text-2xl font-black text-white hover:text-blue-400 transition-all hover:scale-105 active:scale-95"
                       >
                         {sellerReputationQuery.data?.totalRatings || 0}
                       </button>
