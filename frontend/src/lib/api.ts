@@ -2600,6 +2600,16 @@ export interface GlobalSearchResponse {
       'id' | 'title' | 'content' | 'section' | 'subsection' | 'attachmentUrl' | 'createdAt'
     >
   >
+  lostFound: Array<{
+    id: number
+    itemType: 'lost' | 'found'
+    title: string
+    description: string
+    locationText: string
+    status: 'open' | 'claimed' | 'resolved' | 'closed'
+    createdAt: string
+    imageUrl?: string | null
+  }>
   places: Array<{
     id: string
     name: string
@@ -2614,7 +2624,9 @@ export interface GlobalSearchResponse {
 export async function searchEverything(
   query: string,
   limit = 6,
-  types?: Array<'clubs' | 'events' | 'books' | 'notices' | 'places'>,
+  types?: Array<
+    'clubs' | 'events' | 'books' | 'notices' | 'places' | 'lost_found'
+  >,
 ): Promise<{ success: boolean; data?: GlobalSearchResponse; message?: string }> {
   try {
     const params = new URLSearchParams()

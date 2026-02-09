@@ -12,13 +12,20 @@ export const SearchAll = async (req: Request, res: Response) => {
     const limit = req.query.limit ? Number(req.query.limit) : undefined;
     const userId = getUserId(req);
     const typesParam = (req.query.types as string | undefined)?.trim();
-    const validTypes = new Set(["clubs", "events", "books", "notices", "places"]);
+    const validTypes = new Set([
+      "clubs",
+      "events",
+      "books",
+      "notices",
+      "places",
+      "lost_found",
+    ]);
     const parsedTypes = typesParam
       ? typesParam
           .split(",")
           .map((type) => type.trim().toLowerCase())
           .filter((type) => validTypes.has(type)) as Array<
-            "clubs" | "events" | "books" | "notices" | "places"
+            "clubs" | "events" | "books" | "notices" | "places" | "lost_found"
           >
       : undefined;
 

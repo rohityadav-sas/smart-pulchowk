@@ -9,29 +9,32 @@
 
   let queryTerm = $state(routeQuery('q') || '')
   const searchTerm = $derived((queryTerm || '').trim())
-  let selectedTypes = $state<Array<'clubs' | 'events' | 'books' | 'notices' | 'places'>>([
+  let selectedTypes = $state<
+    Array<'clubs' | 'events' | 'books' | 'notices' | 'places' | 'lost_found'>
+  >([
     'clubs',
     'events',
     'books',
     'notices',
     'places',
+    'lost_found',
   ])
 
   function parseTypesFromUrl(value: string | null | undefined) {
-    const valid = new Set(['clubs', 'events', 'books', 'notices', 'places'])
-    if (!value) return ['clubs', 'events', 'books', 'notices', 'places'] as Array<
-      'clubs' | 'events' | 'books' | 'notices' | 'places'
+    const valid = new Set(['clubs', 'events', 'books', 'notices', 'places', 'lost_found'])
+    if (!value) return ['clubs', 'events', 'books', 'notices', 'places', 'lost_found'] as Array<
+      'clubs' | 'events' | 'books' | 'notices' | 'places' | 'lost_found'
     >
     const parsed = value
       .split(',')
       .map((item) => item.trim().toLowerCase())
       .filter((item) => valid.has(item)) as Array<
-      'clubs' | 'events' | 'books' | 'notices' | 'places'
+      'clubs' | 'events' | 'books' | 'notices' | 'places' | 'lost_found'
     >
     return parsed.length > 0
       ? parsed
-      : (['clubs', 'events', 'books', 'notices', 'places'] as Array<
-          'clubs' | 'events' | 'books' | 'notices' | 'places'
+      : (['clubs', 'events', 'books', 'notices', 'places', 'lost_found'] as Array<
+          'clubs' | 'events' | 'books' | 'notices' | 'places' | 'lost_found'
         >)
   }
 
@@ -64,7 +67,7 @@
     staleTime: 15 * 1000,
   }))
 
-  function toggleType(type: 'clubs' | 'events' | 'books' | 'notices' | 'places') {
+  function toggleType(type: 'clubs' | 'events' | 'books' | 'notices' | 'places' | 'lost_found') {
     const hasType = selectedTypes.includes(type)
     if (hasType) {
       if (selectedTypes.length === 1) return
@@ -106,10 +109,10 @@
         Results for <span class="text-cyan-600">"{searchTerm || '...'}"</span>
       </h1>
       <p class="mt-2 text-sm text-slate-500 max-w-3xl">
-        Unified search across clubs, events, books, notices, and campus places.
+        Unified search across clubs, events, books, notices, lost &amp; found, and campus places.
       </p>
       <div class="mt-4 flex flex-wrap gap-2">
-        {#each ['clubs', 'events', 'books', 'notices', 'places'] as type}
+        {#each ['clubs', 'events', 'books', 'notices', 'lost_found', 'places'] as type}
           <button
             class="px-3 py-1.5 rounded-full text-xs font-semibold border transition {selectedTypes.includes(
               type as any,
@@ -118,7 +121,7 @@
               : 'bg-white text-slate-600 border-slate-200 hover:border-cyan-300'}"
             onclick={() => toggleType(type as any)}
           >
-            {type}
+            {type === 'lost_found' ? 'lost & found' : type}
           </button>
         {/each}
       </div>
@@ -334,6 +337,49 @@
                       </svg>
                     </p>
                     <p class="text-[11px] text-slate-500 line-clamp-2">{notice.section.toUpperCase()} / {notice.subsection.toUpperCase()}</p>
+                  </div>
+                </a>
+              {/each}
+            {/if}
+          </div>
+        </article>
+        {/if}
+
+        {#if selectedTypes.includes('lost_found')}
+        <article class="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="3" y="7" width="18" height="13" rx="2"></rect>
+                <path d="M8 7V5a4 4 0 0 1 8 0v2"></path>
+              </svg>
+            </span>
+            Lost &amp; Found ({data.lostFound.length})
+          </h3>
+          <div class="mt-2.5 space-y-1.5">
+            {#if data.lostFound.length === 0}
+              <p class="text-[13px] text-slate-500">No matches.</p>
+            {:else}
+              {#each data.lostFound as item}
+                <a use:route href={`/lost-found/${item.id}`} class="group flex items-start gap-2.5 rounded-lg px-2.5 py-1.5 hover:bg-violet-50 transition">
+                  <div class="w-8 h-8 mt-0.5 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center shrink-0 overflow-hidden">
+                    {#if item.imageUrl}
+                      <img src={item.imageUrl} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
+                    {:else}
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="7" width="18" height="13" rx="2"></rect>
+                        <path d="M8 7V5a4 4 0 0 1 8 0v2"></path>
+                      </svg>
+                    {/if}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-[13px] font-semibold text-slate-800 flex items-center justify-between gap-2">
+                      <span class="truncate">{item.title}</span>
+                      <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-violet-600 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </p>
+                    <p class="text-[11px] text-slate-500 truncate">{item.itemType} • {item.locationText}</p>
                   </div>
                 </a>
               {/each}

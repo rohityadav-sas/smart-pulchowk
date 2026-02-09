@@ -1,8 +1,9 @@
-﻿import { and, eq, ilike, notInArray, or } from "drizzle-orm";
+import { and, desc, eq, ilike, notInArray, or } from "drizzle-orm";
 import locationData from "../data/campus_data.json" with { type: "json" };
 import { db } from "../lib/db.js";
 import { bookListings } from "../models/book_buy_sell-schema.js";
 import { clubs, events } from "../models/event-schema.js";
+import { lostFoundItems } from "../models/lost-found-schema.js";
 import { notice } from "../models/notice-schema.js";
 import { getBlockedUserIds } from "./trust.service.js";
 
@@ -10,7 +11,9 @@ interface SearchInput {
   query: string;
   limit?: number;
   userId?: string;
-  types?: Array<"clubs" | "events" | "books" | "notices" | "places">;
+  types?: Array<
+    "clubs" | "events" | "books" | "notices" | "places" | "lost_found"
+  >;
 }
 
 type CampusService = { name?: string; purpose?: string; location?: string };
@@ -105,6 +108,7 @@ export async function globalSearch(input: SearchInput) {
         books: [],
         notices: [],
         places: [],
+        lostFound: [],
         total: 0,
       },
     };
@@ -112,14 +116,18 @@ export async function globalSearch(input: SearchInput) {
 
   const term = `%${query}%`;
   const blockedUserIds = input.userId ? await getBlockedUserIds(input.userId) : [];
-  const requestedTypes = new Set(input.types ?? ["clubs", "events", "books", "notices", "places"]);
+  const requestedTypes = new Set(
+    input.types ?? ["clubs", "events", "books", "notices", "places", "lost_found"],
+  );
   const includeClubs = requestedTypes.has("clubs");
   const includeEvents = requestedTypes.has("events");
   const includeBooks = requestedTypes.has("books");
   const includeNotices = requestedTypes.has("notices");
   const includePlaces = requestedTypes.has("places");
+  const includeLostFound = requestedTypes.has("lost_found");
 
-  const [clubResults, eventResults, noticeResults, bookResults] = await Promise.all([
+  const [clubResults, eventResults, noticeResults, bookResults, lostFoundResults] =
+    await Promise.all([
     includeClubs ? db.query.clubs.findMany({
       where: or(ilike(clubs.name, term), ilike(clubs.description, term)),
       orderBy: (table, { desc }) => [desc(table.createdAt)],
@@ -226,6 +234,35 @@ export async function globalSearch(input: SearchInput) {
         },
       },
     }) : Promise.resolve([]),
+    includeLostFound
+      ? db.query.lostFoundItems.findMany({
+          where: and(
+            or(
+              ilike(lostFoundItems.title, term),
+              ilike(lostFoundItems.description, term),
+              ilike(lostFoundItems.locationText, term),
+            ),
+            notInArray(lostFoundItems.status, ["closed"]),
+          ),
+          orderBy: [desc(lostFoundItems.createdAt)],
+          limit,
+          columns: {
+            id: true,
+            itemType: true,
+            title: true,
+            description: true,
+            locationText: true,
+            status: true,
+            createdAt: true,
+          },
+          with: {
+            images: {
+              columns: { imageUrl: true },
+              limit: 1,
+            },
+          },
+        })
+      : Promise.resolve([]),
   ]);
 
   const normalizedTerm = query.toLowerCase();
@@ -252,6 +289,17 @@ export async function globalSearch(input: SearchInput) {
     })
     : [];
 
+  const normalizedLostFoundResults = lostFoundResults.map((item) => ({
+    id: item.id,
+    itemType: item.itemType,
+    title: item.title,
+    description: item.description,
+    locationText: item.locationText,
+    status: item.status,
+    createdAt: item.createdAt,
+    imageUrl: item.images?.[0]?.imageUrl ?? null,
+  }));
+
   return {
     success: true,
     data: {
@@ -261,13 +309,16 @@ export async function globalSearch(input: SearchInput) {
       books: bookResults,
       notices: normalizedNoticeResults,
       places,
+      lostFound: normalizedLostFoundResults,
       total:
         clubResults.length +
         eventResults.length +
         bookResults.length +
         normalizedNoticeResults.length +
-        places.length,
+        places.length +
+        normalizedLostFoundResults.length,
     },
   };
 }
+
 
