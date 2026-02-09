@@ -347,6 +347,27 @@
           </div>
         {/if}
 
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <button
+            onclick={() => (itemType = "lost")}
+            class="rounded-xl border px-4 py-2 text-xs font-bold transition-all {itemType ===
+            'lost'
+              ? 'border-blue-200 bg-blue-50 text-blue-700'
+              : 'border-slate-100 bg-white text-slate-500 hover:border-blue-100 hover:bg-slate-50 hover:text-blue-600'}"
+          >
+            Lost
+          </button>
+          <button
+            onclick={() => (itemType = "found")}
+            class="rounded-xl border px-4 py-2 text-xs font-bold transition-all {itemType ===
+            'found'
+              ? 'border-blue-200 bg-blue-50 text-blue-700'
+              : 'border-slate-100 bg-white text-slate-500 hover:border-blue-100 hover:bg-slate-50 hover:text-blue-600'}"
+          >
+            Found
+          </button>
+        </div>
+
       </div>
     </div>
 
