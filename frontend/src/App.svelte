@@ -138,6 +138,8 @@
   const navUser = $derived(($session.data?.user as any) ?? navUserCache)
   const showNavSessionLoader = $derived(!navAuthResolved && $session.isPending)
   const currentRole = $derived((navUser as any)?.role as string | undefined)
+  const isGuestRole = $derived(currentRole === 'guest')
+  const isNoticeManagerRole = $derived(currentRole === 'notice_manager')
 
   let unreadNotificationsCount = $state(0)
   let unreadNotificationsPoller: ReturnType<typeof setInterval> | null = null
@@ -207,6 +209,50 @@
   function utilityPillClass(href: string) {
     return `${utilityPillBase} ${isRouteActive(href) ? navPillActive : utilityPillDefault}`
   }
+
+  function isGuestAllowedPath(path: string) {
+    const normalized = normalizePath(path || '/')
+    if (normalized === '/dashboard' || normalized.startsWith('/dashboard/'))
+      return false
+    if (normalized === '/classroom' || normalized.startsWith('/classroom/'))
+      return false
+    if (normalized === '/books' || normalized.startsWith('/books/')) return false
+    if (normalized === '/messages' || normalized.startsWith('/messages/'))
+      return false
+    if (normalized === '/admin' || normalized.startsWith('/admin/')) return false
+    if (normalized === '/create-club' || normalized.startsWith('/create-club/'))
+      return false
+    if (/^\/clubs\/\d+\/events\/create(?:\/|$)/.test(normalized)) return false
+    return true
+  }
+
+  function isNoticeManagerAllowedPath(path: string) {
+    const normalized = normalizePath(path || '/')
+    if (normalized === '/dashboard' || normalized.startsWith('/dashboard/'))
+      return false
+    if (normalized === '/classroom' || normalized.startsWith('/classroom/'))
+      return false
+    if (normalized === '/books' || normalized.startsWith('/books/')) return false
+    if (normalized === '/messages' || normalized.startsWith('/messages/'))
+      return false
+    if (normalized === '/admin' || normalized.startsWith('/admin/')) return false
+    if (normalized === '/create-club' || normalized.startsWith('/create-club/'))
+      return false
+    if (/^\/clubs\/\d+\/events\/create(?:\/|$)/.test(normalized)) return false
+    return true
+  }
+
+  $effect(() => {
+    if (!isGuestRole) return
+    if (isGuestAllowedPath(currentPath || '/')) return
+    goto('/')
+  })
+
+  $effect(() => {
+    if (!isNoticeManagerRole) return
+    if (isNoticeManagerAllowedPath(currentPath || '/')) return
+    goto('/notices')
+  })
 
   const routes: RouteConfig[] = [
     {
@@ -338,26 +384,28 @@
                     ></div>
                   </div>
                 {:else if navUser}
-                  <a
-                    use:route
-                    href="/dashboard"
-                    class={`${utilityPillClass('/dashboard')} hover:bg-emerald-50 hover:text-emerald-700`}
-                  >
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  {#if !isGuestRole && !isNoticeManagerRole}
+                    <a
+                      use:route
+                      href="/dashboard"
+                      class={`${utilityPillClass('/dashboard')} hover:bg-emerald-50 hover:text-emerald-700`}
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M3 12l9-9 9 9M5 10v10h14V10"
-                      />
-                    </svg>
-                    Dashboard
-                  </a>
+                      <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 12l9-9 9 9M5 10v10h14V10"
+                        />
+                      </svg>
+                      Dashboard
+                    </a>
+                  {/if}
                   <a
                     use:route
                     href="/notifications"
@@ -501,22 +549,24 @@
                   </svg>
                   Events
                 </a>
-                <a use:route href="/books" class={navPillClass('/books')}>
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 6.25v13.5m0-13.5c-1.9-1.45-4.5-2.25-7.25-2.25v13.5c2.75 0 5.35.8 7.25 2.25m0-13.5c1.9-1.45 4.5-2.25 7.25-2.25v13.5c-2.75 0-5.35.8-7.25 2.25"
-                    />
-                  </svg>
-                  Books
-                </a>
+                {#if !isGuestRole && !isNoticeManagerRole}
+                  <a use:route href="/books" class={navPillClass('/books')}>
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 6.25v13.5m0-13.5c-1.9-1.45-4.5-2.25-7.25-2.25v13.5c2.75 0 5.35.8 7.25 2.25m0-13.5c1.9-1.45 4.5-2.25 7.25-2.25v13.5c-2.75 0-5.35.8-7.25 2.25"
+                      />
+                    </svg>
+                    Books
+                  </a>
+                {/if}
                 <a use:route href="/map" class={navPillClass('/map')}>
                   <svg
                     class="w-4 h-4"
