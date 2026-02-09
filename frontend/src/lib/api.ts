@@ -1848,6 +1848,12 @@ export interface SellerRatingReview {
     name: string
     image: string | null
   }
+  seller?: {
+    id: string
+    name: string
+    email: string
+    image: string | null
+  }
   listing?: {
     id: number
     title: string

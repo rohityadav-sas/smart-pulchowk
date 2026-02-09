@@ -1003,6 +1003,7 @@
           <button
             onclick={() => (requestToBuyModalOpen = false)}
             class="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+            aria-label="Close"
           >
             <svg
               class="w-5 h-5 text-slate-500"
@@ -1087,6 +1088,7 @@
           <button
             onclick={() => (reviewsModalOpen = false)}
             class="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+            aria-label="Close"
           >
             <svg
               class="w-5 h-5 text-slate-500"

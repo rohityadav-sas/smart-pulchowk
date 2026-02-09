@@ -396,51 +396,51 @@
               : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
           >
             User Roles
-            <button
-              onclick={() => (activeTab = "moderation")}
-              class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
-              'moderation'
-                ? 'text-amber-700 bg-amber-50 border-b-2 border-amber-500'
-                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
-            >
-              Moderation Queue
-              {#if overviewQuery.data.openReports > 0}
-                <span
-                  class="ml-1.5 px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-bold"
-                  >{overviewQuery.data.openReports}</span
-                >
-              {/if}
-            </button>
-            <button
-              onclick={() => (activeTab = "reviews")}
-              class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
-              'reviews'
-                ? 'text-blue-700 bg-blue-50 border-b-2 border-blue-500'
-                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
-            >
-              Reviews
-              {#if overviewQuery.data.ratingsCount > 0}
-                <span
-                  class="ml-1.5 px-1.5 py-0.5 rounded-full bg-blue-500 text-white text-[9px] font-bold"
-                  >{overviewQuery.data.ratingsCount}</span
-                >
-              {/if}
-            </button>
-            <button
-              onclick={() => (activeTab = "blocks")}
-              class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
-              'blocks'
-                ? 'text-rose-700 bg-rose-50 border-b-2 border-rose-500'
-                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
-            >
-              Blocked Users
-              {#if overviewQuery.data.activeBlocks > 0}
-                <span
-                  class="ml-1.5 px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-bold"
-                  >{overviewQuery.data.activeBlocks}</span
-                >
-              {/if}
-            </button>
+          </button>
+          <button
+            onclick={() => (activeTab = "moderation")}
+            class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
+            'moderation'
+              ? 'text-amber-700 bg-amber-50 border-b-2 border-amber-500'
+              : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
+          >
+            Moderation Queue
+            {#if overviewQuery.data.openReports > 0}
+              <span
+                class="ml-1.5 px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-bold"
+                >{overviewQuery.data.openReports}</span
+              >
+            {/if}
+          </button>
+          <button
+            onclick={() => (activeTab = "reviews")}
+            class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
+            'reviews'
+              ? 'text-blue-700 bg-blue-50 border-b-2 border-blue-500'
+              : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
+          >
+            Reviews
+            {#if overviewQuery.data.ratingsCount > 0}
+              <span
+                class="ml-1.5 px-1.5 py-0.5 rounded-full bg-blue-500 text-white text-[9px] font-bold"
+                >{overviewQuery.data.ratingsCount}</span
+              >
+            {/if}
+          </button>
+          <button
+            onclick={() => (activeTab = "blocks")}
+            class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
+            'blocks'
+              ? 'text-rose-700 bg-rose-50 border-b-2 border-rose-500'
+              : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
+          >
+            Blocked Users
+            {#if overviewQuery.data.activeBlocks > 0}
+              <span
+                class="ml-1.5 px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-bold"
+                >{overviewQuery.data.activeBlocks}</span
+              >
+            {/if}
           </button>
         </div>
 
