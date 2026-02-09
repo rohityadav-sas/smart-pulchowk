@@ -226,3 +226,104 @@ export async function updateModerationReport(input: {
   return reviewMarketplaceReport(input);
 }
 
+
+export async function listAllRatingsForAdmin() {
+  const ratings = await db.query.sellerRatings.findMany({
+    orderBy: [desc(sellerRatings.createdAt)],
+    with: {
+      rater: {
+        columns: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      },
+      listing: {
+        columns: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+  });
+
+  const sellerIds = [...new Set(ratings.map((r) => r.sellerId))];
+  const sellers = sellerIds.length
+    ? await db.query.user.findMany({
+        where: inArray(user.id, sellerIds),
+        columns: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      })
+    : [];
+
+  const sellersMap = new Map(sellers.map((s) => [s.id, s]));
+
+  return {
+    success: true,
+    data: ratings.map((r) => ({
+      ...r,
+      seller: sellersMap.get(r.sellerId) || null,
+    })),
+  };
+}
+
+export async function listAllBlocksForAdmin() {
+  const blocks = await db.query.userBlocks.findMany({
+    orderBy: [desc(userBlocks.createdAt)],
+    with: {
+      blockedUser: {
+        columns: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      },
+    },
+  });
+
+  const blockerIds = [...new Set(blocks.map((b) => b.blockerId))];
+  const blockers = blockerIds.length
+    ? await db.query.user.findMany({
+        where: inArray(user.id, blockerIds),
+        columns: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      })
+    : [];
+
+  const blockersMap = new Map(blockers.map((b) => [b.id, b]));
+
+  return {
+    success: true,
+    data: blocks.map((b) => ({
+      ...b,
+      blocker: blockersMap.get(b.blockerId) || null,
+    })),
+  };
+}
+
+export async function unblockUserByAdmin(blockId: number) {
+  const [deleted] = await db
+    .delete(userBlocks)
+    .where(eq(userBlocks.id, blockId))
+    .returning();
+
+  if (!deleted) {
+    return { success: false, message: "Block record not found." };
+  }
+
+  return {
+    success: true,
+    message: "User unblocked successfully by admin.",
+    data: deleted,
+  };
+}

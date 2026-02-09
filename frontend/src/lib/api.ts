@@ -2142,6 +2142,50 @@ export async function updateModerationReport(
   }
 }
 
+export async function getAdminRatings(): Promise<{
+  success: boolean
+  data?: SellerRatingReview[]
+  message?: string
+}> {
+  try {
+    const res = await fetch(`${API_ADMIN}/ratings`, {
+      credentials: 'include',
+    })
+    return await res.json()
+  } catch (error: any) {
+    return { success: false, message: error.message }
+  }
+}
+
+export async function getAdminBlocks(): Promise<{
+  success: boolean
+  data?: (BlockedUser & { blocker?: AdminUser })[]
+  message?: string
+}> {
+  try {
+    const res = await fetch(`${API_ADMIN}/blocks`, {
+      credentials: 'include',
+    })
+    return await res.json()
+  } catch (error: any) {
+    return { success: false, message: error.message }
+  }
+}
+
+export async function adminUnblockUser(
+  blockId: number,
+): Promise<{ success: boolean; message?: string }> {
+  try {
+    const res = await fetch(`${API_ADMIN}/blocks/${blockId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    return await res.json()
+  } catch (error: any) {
+    return { success: false, message: error.message }
+  }
+}
+
 export interface GlobalSearchResponse {
   query: string
   clubs: Club[]

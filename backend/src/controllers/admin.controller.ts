@@ -2,8 +2,11 @@
 import {
   getAdminDashboardStats,
   getModerationReports,
+  listAllBlocksForAdmin,
+  listAllRatingsForAdmin,
   listUsersForAdmin,
   setSellerVerificationByAdmin,
+  unblockUserByAdmin,
   updateModerationReport,
   updateUserRoleByAdmin,
 } from "../services/admin.service.js";
@@ -141,3 +144,39 @@ export const UpdateModerationReport = async (req: Request, res: Response) => {
   }
 };
 
+export const GetAdminRatings = async (_req: Request, res: Response) => {
+  try {
+    const result = await listAllRatingsForAdmin();
+    return res.json(result);
+  } catch (error) {
+    console.error("Error in GetAdminRatings controller:", error);
+    return res.status(500).json({ success: false, message: "Failed to load ratings." });
+  }
+};
+
+export const GetAdminBlocks = async (_req: Request, res: Response) => {
+  try {
+    const result = await listAllBlocksForAdmin();
+    return res.json(result);
+  } catch (error) {
+    console.error("Error in GetAdminBlocks controller:", error);
+    return res.status(500).json({ success: false, message: "Failed to load blocks." });
+  }
+};
+
+export const AdminUnblockUser = async (req: Request, res: Response) => {
+  try {
+    const blockId = Number(req.params.blockId);
+    if (!blockId || Number.isNaN(blockId)) {
+      return res.status(400).json({ success: false, message: "blockId is required." });
+    }
+
+    const result = await unblockUserByAdmin(blockId);
+    if (!result.success) return res.status(404).json(result);
+
+    return res.json(result);
+  } catch (error) {
+    console.error("Error in AdminUnblockUser controller:", error);
+    return res.status(500).json({ success: false, message: "Failed to unblock user." });
+  }
+};

@@ -1,159 +1,201 @@
 ﻿<script lang="ts">
-  import { createQuery, useQueryClient } from '@tanstack/svelte-query'
-  import { authClient } from '../lib/auth-client'
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { authClient } from "../lib/auth-client";
   import {
+    adminUnblockUser,
+    getAdminBlocks,
     getAdminOverview,
+    getAdminRatings,
     getAdminUsers,
     getModerationReports,
     toggleSellerVerification,
     updateAdminUserRole,
     updateModerationReport,
     type AdminUser,
+    type BlockedUser,
     type MarketplaceReport,
-  } from '../lib/api'
-  import { fade } from 'svelte/transition'
-  import LoadingSpinner from '../components/LoadingSpinner.svelte'
+    type SellerRatingReview,
+  } from "../lib/api";
+  import { fade } from "svelte/transition";
+  import LoadingSpinner from "../components/LoadingSpinner.svelte";
 
-  const session = authClient.useSession()
-  const queryClient = useQueryClient()
+  const session = authClient.useSession();
+  const queryClient = useQueryClient();
 
   const sessionRole = $derived(
     ($session.data?.user as any)?.role as string | undefined,
-  )
-  const isAdmin = $derived(sessionRole === 'admin')
+  );
+  const isAdmin = $derived(sessionRole === "admin");
 
-  let userSearch = $state('')
-  let roleFilter = $state('')
+  let userSearch = $state("");
+  let roleFilter = $state("");
   let reportsFilter = $state<
-    'all' | 'open' | 'in_review' | 'resolved' | 'rejected'
-  >('all')
-  let activeTab = $state<'users' | 'moderation'>('users')
+    "all" | "open" | "in_review" | "resolved" | "rejected"
+  >("all");
+  let activeTab = $state<"users" | "moderation" | "reviews" | "blocks">(
+    "users",
+  );
 
-  let busyUserId = $state<string | null>(null)
-  let busyReportId = $state<number | null>(null)
-  let roleUpdateUserId = $state<string | null>(null)
+  let busyUserId = $state<string | null>(null);
+  let busyReportId = $state<number | null>(null);
+  let roleUpdateUserId = $state<string | null>(null);
   let roleStatusByUserId = $state<
-    Record<string, { type: 'success' | 'error'; message: string }>
-  >({})
+    Record<string, { type: "success" | "error"; message: string }>
+  >({});
 
   function setRoleStatus(
     userId: string,
-    status: { type: 'success' | 'error'; message: string } | null,
+    status: { type: "success" | "error"; message: string } | null,
   ) {
-    const next = { ...roleStatusByUserId }
-    if (!status) delete next[userId]
-    else next[userId] = status
-    roleStatusByUserId = next
+    const next = { ...roleStatusByUserId };
+    if (!status) delete next[userId];
+    else next[userId] = status;
+    roleStatusByUserId = next;
   }
 
   const overviewQuery = createQuery(() => ({
-    queryKey: ['admin-overview'],
+    queryKey: ["admin-overview"],
     queryFn: async () => {
-      const result = await getAdminOverview()
-      if (result.success && result.data) return result.data
-      throw new Error(result.message || 'Failed to load overview')
+      const result = await getAdminOverview();
+      if (result.success && result.data) return result.data;
+      throw new Error(result.message || "Failed to load overview");
     },
     enabled: isAdmin,
     staleTime: 1000 * 60,
-  }))
+  }));
 
   const usersQuery = createQuery(() => ({
-    queryKey: ['admin-users', userSearch, roleFilter],
+    queryKey: ["admin-users", userSearch, roleFilter],
     queryFn: async () => {
       const result = await getAdminUsers({
         search: userSearch.trim() || undefined,
         role: roleFilter || undefined,
         limit: 100,
-      })
-      if (result.success && result.data) return result.data
-      throw new Error(result.message || 'Failed to load users')
+      });
+      if (result.success && result.data) return result.data;
+      throw new Error(result.message || "Failed to load users");
     },
-    enabled: isAdmin && activeTab === 'users',
-  }))
+    enabled: isAdmin && activeTab === "users",
+  }));
 
   const reportsQuery = createQuery(() => ({
-    queryKey: ['admin-reports', reportsFilter],
+    queryKey: ["admin-reports", reportsFilter],
     queryFn: async () => {
       const result = await getModerationReports(
-        reportsFilter === 'all' ? undefined : reportsFilter,
-      )
-      if (result.success && result.data) return result.data
-      throw new Error(result.message || 'Failed to load reports')
+        reportsFilter === "all" ? undefined : reportsFilter,
+      );
+      if (result.success && result.data) return result.data;
+      throw new Error(result.message || "Failed to load reports");
     },
-    enabled: isAdmin && activeTab === 'moderation',
-  }))
+    enabled: isAdmin && activeTab === "moderation",
+  }));
+
+  const ratingsQuery = createQuery(() => ({
+    queryKey: ["admin-ratings"],
+    queryFn: async () => {
+      const result = await getAdminRatings();
+      if (result.success && result.data) return result.data;
+      throw new Error(result.message || "Failed to load ratings");
+    },
+    enabled: isAdmin && activeTab === "reviews",
+  }));
+
+  const blocksQuery = createQuery(() => ({
+    queryKey: ["admin-blocks"],
+    queryFn: async () => {
+      const result = await getAdminBlocks();
+      if (result.success && result.data) return result.data;
+      throw new Error(result.message || "Failed to load blocks");
+    },
+    enabled: isAdmin && activeTab === "blocks",
+  }));
 
   async function handleRoleUpdate(user: AdminUser, role: string) {
-    if (role === user.role) return
-    busyUserId = user.id
-    roleUpdateUserId = user.id
-    setRoleStatus(user.id, null)
+    if (role === user.role) return;
+    busyUserId = user.id;
+    roleUpdateUserId = user.id;
+    setRoleStatus(user.id, null);
 
-    const result = await updateAdminUserRole(user.id, role)
+    const result = await updateAdminUserRole(user.id, role);
 
-    busyUserId = null
-    roleUpdateUserId = null
+    busyUserId = null;
+    roleUpdateUserId = null;
     if (result.success) {
-      await queryClient.invalidateQueries({ queryKey: ['admin-users'] })
-      await queryClient.invalidateQueries({ queryKey: ['admin-overview'] })
+      await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
       setRoleStatus(user.id, {
-        type: 'success',
+        type: "success",
         message: `Role updated to ${role}.`,
-      })
-      setTimeout(() => setRoleStatus(user.id, null), 3000)
+      });
+      setTimeout(() => setRoleStatus(user.id, null), 3000);
     } else {
       setRoleStatus(user.id, {
-        type: 'error',
-        message: result.message || 'Failed to update role.',
-      })
+        type: "error",
+        message: result.message || "Failed to update role.",
+      });
     }
   }
 
   async function handleVerification(user: AdminUser, verified: boolean) {
-    busyUserId = user.id
-    const result = await toggleSellerVerification(user.id, verified)
-    busyUserId = null
+    busyUserId = user.id;
+    const result = await toggleSellerVerification(user.id, verified);
+    busyUserId = null;
     if (result.success) {
-      await queryClient.invalidateQueries({ queryKey: ['admin-users'] })
-      await queryClient.invalidateQueries({ queryKey: ['admin-overview'] })
+      await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
     } else {
-      alert(result.message || 'Failed to update verification')
+      alert(result.message || "Failed to update verification");
     }
   }
 
   async function handleModeration(
     report: MarketplaceReport,
-    status: MarketplaceReport['status'],
+    status: MarketplaceReport["status"],
   ) {
-    busyReportId = report.id
+    busyReportId = report.id;
     const result = await updateModerationReport(report.id, {
       status,
       resolutionNotes:
-        status === 'resolved' || status === 'rejected'
+        status === "resolved" || status === "rejected"
           ? `Status updated to ${status} via admin panel.`
           : undefined,
-    })
-    busyReportId = null
+    });
+    busyReportId = null;
     if (result.success) {
-      await queryClient.invalidateQueries({ queryKey: ['admin-reports'] })
-      await queryClient.invalidateQueries({ queryKey: ['admin-overview'] })
+      await queryClient.invalidateQueries({ queryKey: ["admin-reports"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
     } else {
-      alert(result.message || 'Failed to update report')
+      alert(result.message || "Failed to update report");
     }
   }
 
-  const roleOptions = ['student', 'teacher', 'admin', 'guest']
+  async function handleAdminUnblock(block: BlockedUser) {
+    if (!confirm("Are you sure you want to unblock this user?")) return;
+
+    busyReportId = block.id; // Reusing busyReportId for block id
+    const result = await adminUnblockUser(block.id);
+    busyReportId = null;
+
+    if (result.success) {
+      await queryClient.invalidateQueries({ queryKey: ["admin-blocks"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
+    } else {
+      alert(result.message || "Failed to unblock user");
+    }
+  }
+
+  const roleOptions = ["student", "teacher", "admin", "guest"];
 
   function getInitials(name: string) {
-    return name?.charAt(0)?.toUpperCase() || 'U'
+    return name?.charAt(0)?.toUpperCase() || "U";
   }
 
   function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   }
 </script>
 
@@ -347,33 +389,63 @@
       >
         <div class="flex border-b border-slate-100">
           <button
-            onclick={() => (activeTab = 'users')}
+            onclick={() => (activeTab = "users")}
             class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
             'users'
               ? 'text-violet-700 bg-violet-50 border-b-2 border-violet-500'
               : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
           >
             User Roles
-          </button>
-          <button
-            onclick={() => (activeTab = 'moderation')}
-            class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
-            'moderation'
-              ? 'text-amber-700 bg-amber-50 border-b-2 border-amber-500'
-              : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
-          >
-            Moderation Queue
-            {#if overviewQuery.data.openReports > 0}
-              <span
-                class="ml-1.5 px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-bold"
-                >{overviewQuery.data.openReports}</span
-              >
-            {/if}
+            <button
+              onclick={() => (activeTab = "moderation")}
+              class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
+              'moderation'
+                ? 'text-amber-700 bg-amber-50 border-b-2 border-amber-500'
+                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
+            >
+              Moderation Queue
+              {#if overviewQuery.data.openReports > 0}
+                <span
+                  class="ml-1.5 px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-bold"
+                  >{overviewQuery.data.openReports}</span
+                >
+              {/if}
+            </button>
+            <button
+              onclick={() => (activeTab = "reviews")}
+              class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
+              'reviews'
+                ? 'text-blue-700 bg-blue-50 border-b-2 border-blue-500'
+                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
+            >
+              Reviews
+              {#if overviewQuery.data.ratingsCount > 0}
+                <span
+                  class="ml-1.5 px-1.5 py-0.5 rounded-full bg-blue-500 text-white text-[9px] font-bold"
+                  >{overviewQuery.data.ratingsCount}</span
+                >
+              {/if}
+            </button>
+            <button
+              onclick={() => (activeTab = "blocks")}
+              class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
+              'blocks'
+                ? 'text-rose-700 bg-rose-50 border-b-2 border-rose-500'
+                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
+            >
+              Blocked Users
+              {#if overviewQuery.data.activeBlocks > 0}
+                <span
+                  class="ml-1.5 px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-bold"
+                  >{overviewQuery.data.activeBlocks}</span
+                >
+              {/if}
+            </button>
           </button>
         </div>
 
         <div class="p-4 sm:p-6">
-          {#if activeTab === 'users'}
+          {#if activeTab === "users"}
             <div in:fade={{ duration: 150 }}>
               <!-- Filters -->
               <div class="flex flex-col sm:flex-row gap-3 mb-6">
@@ -483,8 +555,9 @@
                                   >
                                 {:else if roleStatusByUserId[user.id]}
                                   <span
-                                    class="text-[10px] {roleStatusByUserId[user.id].type ===
-                                    'success'
+                                    class="text-[10px] {roleStatusByUserId[
+                                      user.id
+                                    ].type === 'success'
                                       ? 'text-emerald-600'
                                       : 'text-rose-600'}"
                                   >
@@ -543,125 +616,224 @@
                 {/if}
               </div>
             </div>
-          {:else if activeTab === 'moderation'}
+          {:else if activeTab === "moderation"}
             <div in:fade={{ duration: 150 }}>
-              <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-                {#each ['all', 'open', 'resolved', 'rejected'] as status}
-                  <button
-                    onclick={() => (reportsFilter = status as any)}
-                    class="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide whitespace-nowrap transition {reportsFilter ===
-                    status
-                      ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                      : 'bg-slate-50 text-slate-500 border border-slate-100 hover:bg-slate-100'}"
-                  >
-                    {status}
-                  </button>
-                {/each}
+              <div class="flex items-center justify-between mb-6 px-2">
+                <h3 class="text-sm font-bold text-slate-900">
+                  Moderation Queue
+                </h3>
+                <select
+                  bind:value={reportsFilter}
+                  class="text-[10px] font-bold uppercase tracking-wider bg-slate-50 border-slate-200 rounded-lg py-1.5 hover:bg-slate-100 transition"
+                >
+                  <option value="all">All Reports</option>
+                  <option value="open">Open</option>
+                  <option value="in_review">In Review</option>
+                  <option value="resolved">Resolved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
               </div>
 
               {#if reportsQuery.isLoading}
                 <div class="p-12 flex justify-center"><LoadingSpinner /></div>
               {:else if reportsQuery.data?.length === 0}
-                <div class="py-12 text-center">
-                  <div
-                    class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3"
-                  >
-                    <svg
-                      class="w-6 h-6 text-emerald-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      ><path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      /></svg
-                    >
-                  </div>
-                  <p class="text-sm font-medium text-slate-900">All clear!</p>
-                  <p class="text-xs text-slate-500">
-                    No reports in {reportsFilter === 'all'
-                      ? 'moderation'
-                      : reportsFilter} queue.
-                  </p>
+                <div class="py-12 text-center text-slate-500 text-sm">
+                  No reports found matching the filter.
                 </div>
               {:else if reportsQuery.data}
-                <div class="space-y-4">
+                <div class="grid gap-3 px-2">
                   {#each reportsQuery.data as report}
                     <div
-                      class="bg-white rounded-xl border border-slate-200 p-4 relative overflow-hidden"
+                      class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm"
                     >
-                      {#if report.status === 'open'}<div
-                          class="absolute top-0 right-0 w-2 h-full bg-amber-400"
-                        ></div>{/if}
-
-                      <div class="flex justify-between items-start gap-4 pr-4">
-                        <div>
-                          <span
-                            class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-slate-100 text-slate-600 rounded mb-2"
-                            >{report.category}</span
-                          >
+                      <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 mb-2">
+                            <span
+                              class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border {reportsFilter ===
+                              'all'
+                                ? 'bg-slate-50 text-slate-600 border-slate-200'
+                                : 'bg-blue-50 text-blue-600 border-blue-100'}"
+                            >
+                              {report.category}
+                            </span>
+                            <span class="text-[10px] text-slate-400"
+                              >{formatDate(report.createdAt)}</span
+                            >
+                          </div>
                           <p
-                            class="text-sm text-slate-800 italic bg-slate-50 border border-slate-100 rounded-lg p-3 mb-3"
+                            class="text-sm text-slate-800 mb-3 leading-relaxed"
                           >
                             "{report.description}"
                           </p>
-
-                          <div
-                            class="flex flex-wrap gap-4 text-xs text-slate-500"
-                          >
-                            <span class="flex items-center gap-1.5"
-                              ><span
-                                class="w-1.5 h-1.5 rounded-full bg-slate-300"
-                              ></span>Reporter:
-                              <span class="font-medium text-slate-900"
-                                >{report.reporter?.name || 'Unknown'}</span
+                          <div class="flex flex-wrap gap-4 text-[11px]">
+                            <span class="text-slate-500"
+                              >Reporter: <span class="text-slate-900 font-bold"
+                                >{report.reporter?.name}</span
                               ></span
                             >
-                            <span class="flex items-center gap-1.5"
-                              ><span
-                                class="w-1.5 h-1.5 rounded-full bg-slate-300"
-                              ></span>Target:
-                              <span class="font-medium text-slate-900"
-                                >{report.reportedUser?.name || 'Unknown'}</span
+                            <span class="text-slate-500"
+                              >Reported: <span class="text-slate-900 font-bold"
+                                >{report.reportedUser?.name}</span
                               ></span
-                            >
-                            <span class="flex items-center gap-1.5"
-                              ><span
-                                class="w-1.5 h-1.5 rounded-full bg-slate-300"
-                              ></span>Date: {formatDate(report.createdAt)}</span
                             >
                           </div>
                         </div>
+                        <div
+                          class="flex md:flex-col gap-2 justify-end items-end"
+                        >
+                          <div class="flex gap-2">
+                            <button
+                              onclick={() =>
+                                handleModeration(report, "resolved")}
+                              disabled={busyReportId === report.id}
+                              class="px-3 py-1.5 rounded-lg text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition border border-emerald-100"
+                            >
+                              Resolve
+                            </button>
+                            <button
+                              onclick={() =>
+                                handleModeration(report, "rejected")}
+                              disabled={busyReportId === report.id}
+                              class="px-3 py-1.5 rounded-lg text-[10px] font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition border border-rose-100"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                          <button
+                            onclick={() =>
+                              handleModeration(report, "in_review")}
+                            disabled={busyReportId === report.id}
+                            class="px-3 py-1.5 rounded-lg text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 transition border border-blue-100"
+                          >
+                            Mark In Review
+                          </button>
+                        </div>
                       </div>
-
-                      <div
-                        class="mt-4 pt-4 border-t border-slate-100 flex gap-2 justify-end pr-2"
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          {:else if activeTab === "reviews"}
+            <div in:fade={{ duration: 150 }}>
+              <h3 class="text-sm font-bold text-slate-900 mb-4 px-2">
+                Latest Seller Reviews
+              </h3>
+              {#if ratingsQuery.isLoading}
+                <div class="p-12 flex justify-center"><LoadingSpinner /></div>
+              {:else if ratingsQuery.data?.length === 0}
+                <div class="py-12 text-center text-slate-500 text-sm">
+                  No reviews have been posted yet.
+                </div>
+              {:else if ratingsQuery.data}
+                <div class="grid gap-3 px-2">
+                  {#each ratingsQuery.data as rating}
+                    <div
+                      class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm"
+                    >
+                      <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 mb-2">
+                            <div class="flex text-amber-400">
+                              {#each Array(5) as _, i}
+                                <svg
+                                  class="w-3.5 h-3.5"
+                                  fill={i < rating.rating
+                                    ? "currentColor"
+                                    : "none"}
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                  />
+                                </svg>
+                              {/each}
+                            </div>
+                            <span class="text-[10px] text-slate-400"
+                              >{formatDate(rating.createdAt)}</span
+                            >
+                          </div>
+                          <p class="text-sm text-slate-800 italic mb-3">
+                            "{rating.review || "No comment provided."}"
+                          </p>
+                          <div class="flex flex-wrap gap-4 text-[11px]">
+                            <span class="text-slate-500"
+                              >Rater: <span class="text-slate-900 font-bold"
+                                >{rating.rater?.name}</span
+                              ></span
+                            >
+                            <span class="text-slate-500"
+                              >Seller: <span class="text-slate-900 font-bold"
+                                >{rating.seller?.name}</span
+                              ></span
+                            >
+                            {#if rating.listing}
+                              <span class="text-slate-500"
+                                >Book: <span class="text-slate-900 font-bold"
+                                  >{rating.listing.title}</span
+                                ></span
+                              >
+                            {/if}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          {:else if activeTab === "blocks"}
+            <div in:fade={{ duration: 150 }}>
+              <h3 class="text-sm font-bold text-slate-900 mb-4 px-2">
+                Platform-wide Active Blocks
+              </h3>
+              {#if blocksQuery.isLoading}
+                <div class="p-12 flex justify-center"><LoadingSpinner /></div>
+              {:else if blocksQuery.data?.length === 0}
+                <div class="py-12 text-center text-slate-500 text-sm">
+                  There are no active user blocks at this time.
+                </div>
+              {:else if blocksQuery.data}
+                <div class="grid gap-3 px-2">
+                  {#each blocksQuery.data as block}
+                    <div
+                      class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center justify-between gap-4"
+                    >
+                      <div class="min-w-0">
+                        <p class="text-sm font-bold text-slate-900 truncate">
+                          {block.blockedUser?.name}
+                        </p>
+                        <p class="text-[10px] text-slate-500 truncate mb-2">
+                          {block.blockedUser?.email}
+                        </p>
+                        <div class="flex flex-wrap gap-3 text-[10px]">
+                          <span class="text-slate-400"
+                            >Blocked by: <span class="text-slate-700"
+                              >{block.blocker?.name || "Unknown"}</span
+                            ></span
+                          >
+                          <span class="text-slate-400"
+                            >Reason: <span class="text-slate-700 italic"
+                              >{block.reason || "None provided"}</span
+                            ></span
+                          >
+                          <span class="text-slate-400"
+                            >Date: {formatDate(block.createdAt)}</span
+                          >
+                        </div>
+                      </div>
+                      <button
+                        onclick={() => handleAdminUnblock(block)}
+                        disabled={busyReportId === block.id}
+                        class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition border border-rose-100"
                       >
-                        {#if report.status === 'open' || report.status === 'in_review'}
-                          <button
-                            onclick={() => handleModeration(report, 'rejected')}
-                            disabled={busyReportId === report.id}
-                            class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-50 transition border border-transparent hover:border-slate-200"
-                            >Dismiss</button
-                          >
-                          <button
-                            onclick={() => handleModeration(report, 'resolved')}
-                            disabled={busyReportId === report.id}
-                            class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 disabled:opacity-50 transition shadow-sm shadow-amber-200"
-                            >Resolve</button
-                          >
-                        {:else}
-                          <span
-                            class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide {report.status ===
-                            'resolved'
-                              ? 'bg-emerald-50 text-emerald-600'
-                              : 'bg-slate-50 text-slate-500'}"
-                            >{report.status.replace('_', ' ')}</span
-                          >
-                        {/if}
-                      </div>
+                        {busyReportId === block.id ? "Wait..." : "Unblock"}
+                      </button>
                     </div>
                   {/each}
                 </div>

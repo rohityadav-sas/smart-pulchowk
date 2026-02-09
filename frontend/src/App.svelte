@@ -6,276 +6,291 @@
     query,
     goto,
     route,
-  } from '@mateothegreat/svelte5-router'
-  import { QueryClientProvider } from '@tanstack/svelte-query'
-  import { queryClient } from './lib/query-client'
-  import { authClient } from './lib/auth-client'
-  import ErrorToast from './components/ErrorToast.svelte'
-  import Home from './pages/Home.svelte'
-  import Register from './pages/Register.svelte'
-  import Dashboard from './pages/Dashboard.svelte'
-  import Classroom from './pages/Classroom.svelte'
-  import Clubs from './pages/Clubs.svelte'
-  import ClubDetails from './pages/ClubDetails.svelte'
-  import ClubEvents from './pages/ClubEvents.svelte'
-  import AllEvents from './pages/AllEvents.svelte'
-  import EventDetails from './pages/EventDetails.svelte'
-  import EventCategoryDetails from './pages/EventCategoryDetails.svelte'
-  import CreateEvent from './pages/CreateEvent.svelte'
-  import CreateClub from './pages/CreateClub.svelte'
-  import MapPlaceholder from './pages/MapPlaceholder.svelte'
-  import BookMarketplace from './pages/BookMarketplace.svelte'
-  import BookDetails from './pages/BookDetails.svelte'
-  import SellBook from './pages/SellBook.svelte'
-  import MyBooks from './pages/MyBooks.svelte'
-  import Messages from './pages/Messages.svelte'
-  import Notices from './pages/Notices.svelte'
-  import Search from './pages/Search.svelte'
-  import Admin from './pages/Admin.svelte'
-  import Notifications from './pages/Notifications.svelte'
-  import GlobalSearch from './components/GlobalSearch.svelte'
-  import { onMount, type Component } from 'svelte'
-  import { getUnreadNotificationsCount } from './lib/api'
+  } from "@mateothegreat/svelte5-router";
+  import { QueryClientProvider } from "@tanstack/svelte-query";
+  import { queryClient } from "./lib/query-client";
+  import { authClient } from "./lib/auth-client";
+  import ErrorToast from "./components/ErrorToast.svelte";
+  import Home from "./pages/Home.svelte";
+  import Register from "./pages/Register.svelte";
+  import Dashboard from "./pages/Dashboard.svelte";
+  import Classroom from "./pages/Classroom.svelte";
+  import Clubs from "./pages/Clubs.svelte";
+  import ClubDetails from "./pages/ClubDetails.svelte";
+  import ClubEvents from "./pages/ClubEvents.svelte";
+  import AllEvents from "./pages/AllEvents.svelte";
+  import EventDetails from "./pages/EventDetails.svelte";
+  import EventCategoryDetails from "./pages/EventCategoryDetails.svelte";
+  import CreateEvent from "./pages/CreateEvent.svelte";
+  import CreateClub from "./pages/CreateClub.svelte";
+  import MapPlaceholder from "./pages/MapPlaceholder.svelte";
+  import BookMarketplace from "./pages/BookMarketplace.svelte";
+  import BookDetails from "./pages/BookDetails.svelte";
+  import SellBook from "./pages/SellBook.svelte";
+  import MyBooks from "./pages/MyBooks.svelte";
+  import Messages from "./pages/Messages.svelte";
+  import Notices from "./pages/Notices.svelte";
+  import Search from "./pages/Search.svelte";
+  import Admin from "./pages/Admin.svelte";
+  import Settings from "./pages/Settings.svelte";
+  import Notifications from "./pages/Notifications.svelte";
+  import GlobalSearch from "./components/GlobalSearch.svelte";
+  import { onMount, type Component } from "svelte";
+  import { getUnreadNotificationsCount } from "./lib/api";
 
-  let MapComponent: Component | any = $state(null)
+  let MapComponent: Component | any = $state(null);
 
   onMount(() => {
     const loadMap = () => {
-      import('./pages/Map.svelte').then((module) => {
-        MapComponent = module.default
-      })
-    }
+      import("./pages/Map.svelte").then((module) => {
+        MapComponent = module.default;
+      });
+    };
 
-    if (document.readyState === 'complete') loadMap()
+    if (document.readyState === "complete") loadMap();
     else
-      window.addEventListener('load', loadMap, {
+      window.addEventListener("load", loadMap, {
         once: true,
-      })
-  })
+      });
+  });
 
-  let instance: RouterInstance = $state()!
+  let instance: RouterInstance = $state()!;
 
   function normalizePath(path: string) {
-    const clean = path.split('?')[0].split('#')[0]
-    if (clean.length > 1 && clean.endsWith('/')) return clean.slice(0, -1)
-    return clean
+    const clean = path.split("?")[0].split("#")[0];
+    if (clean.length > 1 && clean.endsWith("/")) return clean.slice(0, -1);
+    return clean;
   }
 
   function tryNormalizePath(path?: string | null) {
-    if (!path) return null
-    return normalizePath(path)
+    if (!path) return null;
+    return normalizePath(path);
   }
 
-  let activePath = $state('/')
+  let activePath = $state("/");
 
   function syncActivePathFromWindow() {
-    if (typeof window === 'undefined') return
-    activePath = normalizePath(window.location.pathname)
+    if (typeof window === "undefined") return;
+    activePath = normalizePath(window.location.pathname);
   }
 
   onMount(() => {
-    syncActivePathFromWindow()
-    window.addEventListener('pushState', syncActivePathFromWindow)
-    window.addEventListener('replaceState', syncActivePathFromWindow)
-    window.addEventListener('popstate', syncActivePathFromWindow)
+    syncActivePathFromWindow();
+    window.addEventListener("pushState", syncActivePathFromWindow);
+    window.addEventListener("replaceState", syncActivePathFromWindow);
+    window.addEventListener("popstate", syncActivePathFromWindow);
 
     return () => {
-      window.removeEventListener('pushState', syncActivePathFromWindow)
-      window.removeEventListener('replaceState', syncActivePathFromWindow)
-      window.removeEventListener('popstate', syncActivePathFromWindow)
-    }
-  })
+      window.removeEventListener("pushState", syncActivePathFromWindow);
+      window.removeEventListener("replaceState", syncActivePathFromWindow);
+      window.removeEventListener("popstate", syncActivePathFromWindow);
+    };
+  });
 
   onMount(() => {
     const handleUnreadCountUpdate = (event: Event) => {
-      const custom = event as CustomEvent<{ count?: number }>
-      unreadNotificationsCount = Math.max(0, custom.detail?.count ?? 0)
-    }
+      const custom = event as CustomEvent<{ count?: number }>;
+      unreadNotificationsCount = Math.max(0, custom.detail?.count ?? 0);
+    };
 
-    window.addEventListener('notifications:unread-count', handleUnreadCountUpdate)
+    window.addEventListener(
+      "notifications:unread-count",
+      handleUnreadCountUpdate,
+    );
     return () =>
       window.removeEventListener(
-        'notifications:unread-count',
+        "notifications:unread-count",
         handleUnreadCountUpdate,
-      )
-  })
+      );
+  });
 
   $effect(() => {
     const routerPath = tryNormalizePath(
       instance?.current?.result?.path?.original,
-    )
+    );
     if (routerPath && routerPath !== activePath) {
-      activePath = routerPath
+      activePath = routerPath;
     }
-  })
+  });
 
-  const currentPath = $derived(activePath)
+  const currentPath = $derived(activePath);
 
-  const isMapRoute = $derived(currentPath === '/map')
+  const isMapRoute = $derived(currentPath === "/map");
 
-  const session = authClient.useSession()
-  let navUserCache = $state<any | null>(null)
-  let navAuthResolved = $state(false)
+  const session = authClient.useSession();
+  let navUserCache = $state<any | null>(null);
+  let navAuthResolved = $state(false);
 
   $effect(() => {
-    const liveUser = ($session.data?.user as any) ?? null
+    const liveUser = ($session.data?.user as any) ?? null;
 
     if (!$session.isPending) {
-      navAuthResolved = true
+      navAuthResolved = true;
     }
 
     if (liveUser) {
-      navUserCache = liveUser
-      return
+      navUserCache = liveUser;
+      return;
     }
 
     // Clear cache only after initial auth has resolved and session settles as signed-out.
     if (navAuthResolved && !$session.isPending) {
-      navUserCache = null
+      navUserCache = null;
     }
-  })
+  });
 
-  const navUser = $derived(($session.data?.user as any) ?? navUserCache)
-  const showNavSessionLoader = $derived(!navAuthResolved && $session.isPending)
-  const currentRole = $derived((navUser as any)?.role as string | undefined)
-  const isGuestRole = $derived(currentRole === 'guest')
-  const isNoticeManagerRole = $derived(currentRole === 'notice_manager')
+  const navUser = $derived(($session.data?.user as any) ?? navUserCache);
+  const showNavSessionLoader = $derived(!navAuthResolved && $session.isPending);
+  const currentRole = $derived((navUser as any)?.role as string | undefined);
+  const isGuestRole = $derived(currentRole === "guest");
+  const isNoticeManagerRole = $derived(currentRole === "notice_manager");
 
-  let unreadNotificationsCount = $state(0)
-  let unreadNotificationsPoller: ReturnType<typeof setInterval> | null = null
+  let unreadNotificationsCount = $state(0);
+  let unreadNotificationsPoller: ReturnType<typeof setInterval> | null = null;
 
   async function refreshUnreadNotificationsCount() {
     if (!navUser) {
-      unreadNotificationsCount = 0
-      return
+      unreadNotificationsCount = 0;
+      return;
     }
 
-    const result = await getUnreadNotificationsCount()
-    unreadNotificationsCount = result.success ? result.count || 0 : 0
+    const result = await getUnreadNotificationsCount();
+    unreadNotificationsCount = result.success ? result.count || 0 : 0;
   }
 
   $effect(() => {
     if (!navUser) {
-      unreadNotificationsCount = 0
+      unreadNotificationsCount = 0;
       if (unreadNotificationsPoller) {
-        clearInterval(unreadNotificationsPoller)
-        unreadNotificationsPoller = null
+        clearInterval(unreadNotificationsPoller);
+        unreadNotificationsPoller = null;
       }
-      return
+      return;
     }
 
-    refreshUnreadNotificationsCount()
+    refreshUnreadNotificationsCount();
 
-    if (unreadNotificationsPoller) clearInterval(unreadNotificationsPoller)
-    unreadNotificationsPoller = setInterval(refreshUnreadNotificationsCount, 20000)
+    if (unreadNotificationsPoller) clearInterval(unreadNotificationsPoller);
+    unreadNotificationsPoller = setInterval(
+      refreshUnreadNotificationsCount,
+      20000,
+    );
 
     return () => {
       if (unreadNotificationsPoller) {
-        clearInterval(unreadNotificationsPoller)
-        unreadNotificationsPoller = null
+        clearInterval(unreadNotificationsPoller);
+        unreadNotificationsPoller = null;
       }
-    }
-  })
+    };
+  });
 
-  const error = query('message')
-  let showError = $state(error === 'unauthorized_domain')
+  const error = query("message");
+  let showError = $state(error === "unauthorized_domain");
 
-  if (error === 'unauthorized_domain') goto('/')
+  if (error === "unauthorized_domain") goto("/");
 
-  const embed = query('embed')
-  const isEmbedded = $derived(embed === 'true')
+  const embed = query("embed");
+  const isEmbedded = $derived(embed === "true");
 
   const navPillBase =
-    'inline-flex h-10 items-center gap-1.5 rounded-xl px-3.5 text-sm font-semibold transition-colors whitespace-nowrap'
+    "inline-flex h-10 items-center gap-1.5 rounded-xl px-3.5 text-sm font-semibold transition-colors whitespace-nowrap";
   const navPillDefault =
-    'border border-slate-200 bg-white text-slate-700 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-700'
-  const navPillActive = 'border border-cyan-200 bg-cyan-50 text-cyan-700'
+    "border border-slate-200 bg-white text-slate-700 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-700";
+  const navPillActive = "border border-cyan-200 bg-cyan-50 text-cyan-700";
 
   const utilityPillBase =
-    'inline-flex h-10 items-center gap-2 rounded-xl px-4 text-xs sm:text-sm font-semibold transition-colors'
-  const utilityPillDefault = 'border border-slate-200 bg-white text-slate-700'
+    "inline-flex h-10 items-center gap-2 rounded-xl px-4 text-xs sm:text-sm font-semibold transition-colors";
+  const utilityPillDefault = "border border-slate-200 bg-white text-slate-700";
 
   function isRouteActive(href: string, exact = false) {
-    const current = normalizePath(currentPath || '/')
-    const target = normalizePath(href || '/')
-    if (exact) return current === target
-    return current === target || current.startsWith(`${target}/`)
+    const current = normalizePath(currentPath || "/");
+    const target = normalizePath(href || "/");
+    if (exact) return current === target;
+    return current === target || current.startsWith(`${target}/`);
   }
 
   function navPillClass(href: string, exact = false) {
-    return `${navPillBase} ${isRouteActive(href, exact) ? navPillActive : navPillDefault}`
+    return `${navPillBase} ${isRouteActive(href, exact) ? navPillActive : navPillDefault}`;
   }
 
   function utilityPillClass(href: string) {
-    return `${utilityPillBase} ${isRouteActive(href) ? navPillActive : utilityPillDefault}`
+    return `${utilityPillBase} ${isRouteActive(href) ? navPillActive : utilityPillDefault}`;
   }
 
   function isGuestAllowedPath(path: string) {
-    const normalized = normalizePath(path || '/')
-    if (normalized === '/dashboard' || normalized.startsWith('/dashboard/'))
-      return false
-    if (normalized === '/classroom' || normalized.startsWith('/classroom/'))
-      return false
-    if (normalized === '/books' || normalized.startsWith('/books/')) return false
-    if (normalized === '/messages' || normalized.startsWith('/messages/'))
-      return false
-    if (normalized === '/admin' || normalized.startsWith('/admin/')) return false
-    if (normalized === '/create-club' || normalized.startsWith('/create-club/'))
-      return false
-    if (/^\/clubs\/\d+\/events\/create(?:\/|$)/.test(normalized)) return false
-    return true
+    const normalized = normalizePath(path || "/");
+    if (normalized === "/dashboard" || normalized.startsWith("/dashboard/"))
+      return false;
+    if (normalized === "/classroom" || normalized.startsWith("/classroom/"))
+      return false;
+    if (normalized === "/books" || normalized.startsWith("/books/"))
+      return false;
+    if (normalized === "/messages" || normalized.startsWith("/messages/"))
+      return false;
+    if (normalized === "/admin" || normalized.startsWith("/admin/"))
+      return false;
+    if (normalized === "/settings" || normalized.startsWith("/settings/"))
+      return false;
+    if (normalized === "/create-club" || normalized.startsWith("/create-club/"))
+      return false;
+    if (/^\/clubs\/\d+\/events\/create(?:\/|$)/.test(normalized)) return false;
+    return true;
   }
 
   function isNoticeManagerAllowedPath(path: string) {
-    const normalized = normalizePath(path || '/')
-    if (normalized === '/dashboard' || normalized.startsWith('/dashboard/'))
-      return false
-    if (normalized === '/classroom' || normalized.startsWith('/classroom/'))
-      return false
-    if (normalized === '/books' || normalized.startsWith('/books/')) return false
-    if (normalized === '/messages' || normalized.startsWith('/messages/'))
-      return false
-    if (normalized === '/admin' || normalized.startsWith('/admin/')) return false
-    if (normalized === '/create-club' || normalized.startsWith('/create-club/'))
-      return false
-    if (/^\/clubs\/\d+\/events\/create(?:\/|$)/.test(normalized)) return false
-    return true
+    const normalized = normalizePath(path || "/");
+    if (normalized === "/dashboard" || normalized.startsWith("/dashboard/"))
+      return false;
+    if (normalized === "/classroom" || normalized.startsWith("/classroom/"))
+      return false;
+    if (normalized === "/books" || normalized.startsWith("/books/"))
+      return false;
+    if (normalized === "/messages" || normalized.startsWith("/messages/"))
+      return false;
+    if (normalized === "/admin" || normalized.startsWith("/admin/"))
+      return false;
+    if (normalized === "/settings" || normalized.startsWith("/settings/"))
+      return false;
+    if (normalized === "/create-club" || normalized.startsWith("/create-club/"))
+      return false;
+    if (/^\/clubs\/\d+\/events\/create(?:\/|$)/.test(normalized)) return false;
+    return true;
   }
 
   $effect(() => {
-    if (!isGuestRole) return
-    if (isGuestAllowedPath(currentPath || '/')) return
-    goto('/')
-  })
+    if (!isGuestRole) return;
+    if (isGuestAllowedPath(currentPath || "/")) return;
+    goto("/");
+  });
 
   $effect(() => {
-    if (!isNoticeManagerRole) return
-    if (isNoticeManagerAllowedPath(currentPath || '/')) return
-    goto('/notices')
-  })
+    if (!isNoticeManagerRole) return;
+    if (isNoticeManagerAllowedPath(currentPath || "/")) return;
+    goto("/notices");
+  });
 
   const routes: RouteConfig[] = [
     {
       component: Home,
     },
     {
-      path: 'register',
+      path: "register",
       component: Register,
     },
     {
-      path: 'dashboard',
+      path: "dashboard",
       component: Dashboard,
     },
     {
-      path: 'classroom',
+      path: "classroom",
       component: Classroom,
     },
     {
-      path: 'create-club',
+      path: "create-club",
       component: CreateClub,
     },
     {
-      path: 'map',
+      path: "map",
       component: MapPlaceholder,
     },
     {
@@ -342,7 +357,11 @@
       path: /^\/notifications\/?$/,
       component: Notifications,
     },
-  ]
+    {
+      path: /^\/settings\/?$/,
+      component: Settings,
+    },
+  ];
 </script>
 
 <QueryClientProvider client={queryClient}>
@@ -388,7 +407,7 @@
                     <a
                       use:route
                       href="/dashboard"
-                      class={`${utilityPillClass('/dashboard')} hover:bg-emerald-50 hover:text-emerald-700`}
+                      class={`${utilityPillClass("/dashboard")} hover:bg-emerald-50 hover:text-emerald-700`}
                     >
                       <svg
                         class="w-4 h-4"
@@ -409,7 +428,7 @@
                   <a
                     use:route
                     href="/notifications"
-                    class={`${utilityPillClass('/notifications')} hover:bg-cyan-50 hover:text-cyan-700 relative`}
+                    class={`${utilityPillClass("/notifications")} hover:bg-cyan-50 hover:text-cyan-700 relative`}
                   >
                     <svg
                       class="w-4 h-4"
@@ -433,11 +452,37 @@
                       </span>
                     {/if}
                   </a>
-                  {#if currentRole === 'student' || currentRole === 'teacher'}
+                  <a
+                    use:route
+                    href="/settings"
+                    class={`${utilityPillClass("/settings")} hover:bg-slate-50 hover:text-slate-700`}
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Settings
+                  </a>
+                  {#if currentRole === "student" || currentRole === "teacher"}
                     <a
                       use:route
                       href="/classroom"
-                      class={`${utilityPillClass('/classroom')} hover:bg-emerald-50 hover:text-emerald-700`}
+                      class={`${utilityPillClass("/classroom")} hover:bg-emerald-50 hover:text-emerald-700`}
                     >
                       <svg
                         class="w-4 h-4"
@@ -455,7 +500,7 @@
                       Classroom
                     </a>
                   {/if}
-                  {#if currentRole === 'admin'}
+                  {#if currentRole === "admin"}
                     <a
                       use:route
                       href="/admin"
@@ -501,7 +546,7 @@
               </div>
 
               <div class="flex items-center gap-2 overflow-x-auto pb-1 xl:pb-0">
-                <a use:route href="/" class={navPillClass('/', true)}>
+                <a use:route href="/" class={navPillClass("/", true)}>
                   <svg
                     class="w-4 h-4"
                     fill="none"
@@ -517,7 +562,7 @@
                   </svg>
                   Home
                 </a>
-                <a use:route href="/clubs" class={navPillClass('/clubs')}>
+                <a use:route href="/clubs" class={navPillClass("/clubs")}>
                   <svg
                     class="w-4 h-4"
                     fill="none"
@@ -533,7 +578,7 @@
                   </svg>
                   Clubs
                 </a>
-                <a use:route href="/events" class={navPillClass('/events')}>
+                <a use:route href="/events" class={navPillClass("/events")}>
                   <svg
                     class="w-4 h-4"
                     fill="none"
@@ -550,7 +595,7 @@
                   Events
                 </a>
                 {#if !isGuestRole && !isNoticeManagerRole}
-                  <a use:route href="/books" class={navPillClass('/books')}>
+                  <a use:route href="/books" class={navPillClass("/books")}>
                     <svg
                       class="w-4 h-4"
                       fill="none"
@@ -567,7 +612,7 @@
                     Books
                   </a>
                 {/if}
-                <a use:route href="/map" class={navPillClass('/map')}>
+                <a use:route href="/map" class={navPillClass("/map")}>
                   <svg
                     class="w-4 h-4"
                     fill="none"
@@ -584,7 +629,7 @@
                   </svg>
                   Map
                 </a>
-                <a use:route href="/notices" class={navPillClass('/notices')}>
+                <a use:route href="/notices" class={navPillClass("/notices")}>
                   <svg
                     class="w-4 h-4"
                     fill="none"
@@ -638,7 +683,7 @@
           <MapComponent />
         </div>
       {/if}
-      <div class={isMapRoute ? 'hidden' : 'contents'}>
+      <div class={isMapRoute ? "hidden" : "contents"}>
         <Router bind:instance {routes} />
       </div>
     </main>
