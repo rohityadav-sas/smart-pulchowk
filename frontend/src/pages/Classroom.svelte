@@ -1,8 +1,8 @@
 ﻿<script lang="ts">
-  import { query as routeQuery } from '@mateothegreat/svelte5-router'
-  import { createQuery } from '@tanstack/svelte-query'
-  import { authClient } from '../lib/auth-client'
-  import StyledSelect from '../components/StyledSelect.svelte'
+  import { query as routeQuery } from "@mateothegreat/svelte5-router";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { authClient } from "../lib/auth-client";
+  import StyledSelect from "../components/StyledSelect.svelte";
   import {
     addTeacherSubject,
     createAssignment,
@@ -16,185 +16,185 @@
     type Assignment,
     type AssignmentSubmission,
     type Subject,
-  } from '../lib/api'
+  } from "../lib/api";
 
-  const session = authClient.useSession()
+  const session = authClient.useSession();
   const sessionUser = $derived(
     $session.data?.user as { role?: string } | undefined,
-  )
-  const userRole = $derived(sessionUser?.role || '')
-  const isTeacher = $derived(userRole === 'teacher')
-  const isAdmin = $derived(userRole === 'admin')
-  const isStudent = $derived(userRole === 'student')
+  );
+  const userRole = $derived(sessionUser?.role || "");
+  const isTeacher = $derived(userRole === "teacher");
+  const isAdmin = $derived(userRole === "admin");
+  const isStudent = $derived(userRole === "student");
 
   const facultiesQuery = createQuery(() => ({
-    queryKey: ['classroom-faculties'],
+    queryKey: ["classroom-faculties"],
     queryFn: getFaculties,
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
-  }))
+  }));
 
   const profileQuery = createQuery(() => ({
-    queryKey: ['classroom-profile', $session.data?.user?.id],
+    queryKey: ["classroom-profile", $session.data?.user?.id],
     queryFn: getStudentProfile,
     enabled: !!$session.data?.user?.id && isStudent,
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
-  }))
+  }));
 
   const mySubjectsQuery = createQuery(() => ({
-    queryKey: ['classroom-subjects', $session.data?.user?.id],
+    queryKey: ["classroom-subjects", $session.data?.user?.id],
     queryFn: getMySubjects,
     enabled:
       !!$session.data?.user?.id && isStudent && !!profileQuery.data?.profile,
     staleTime: 1000 * 30,
     refetchOnWindowFocus: false,
-  }))
+  }));
 
   const teacherSubjectsQuery = createQuery(() => ({
-    queryKey: ['classroom-teacher-subjects', $session.data?.user?.id],
+    queryKey: ["classroom-teacher-subjects", $session.data?.user?.id],
     queryFn: getTeacherSubjects,
     enabled: !!$session.data?.user?.id && isTeacher,
     staleTime: 1000 * 30,
     refetchOnWindowFocus: false,
-  }))
+  }));
 
   function formatDate(dateStr?: string | null) {
-    if (!dateStr) return 'No due date'
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+    if (!dateStr) return "No due date";
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   }
 
   function formatDateTime(dateStr?: string | null) {
-    if (!dateStr) return ''
-    return new Date(dateStr).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   }
 
   function getSemesterProgress() {
-    const profile = profileQuery.data?.profile
-    if (!profile?.semesterStartDate || !profile?.semesterEndDate) return 0
-    const start = new Date(profile.semesterStartDate).getTime()
-    const end = new Date(profile.semesterEndDate).getTime()
-    if (!start || !end || end <= start) return 0
-    const now = Date.now()
-    const progress = ((now - start) / (end - start)) * 100
-    return Math.max(0, Math.min(100, Math.round(progress)))
+    const profile = profileQuery.data?.profile;
+    if (!profile?.semesterStartDate || !profile?.semesterEndDate) return 0;
+    const start = new Date(profile.semesterStartDate).getTime();
+    const end = new Date(profile.semesterEndDate).getTime();
+    if (!start || !end || end <= start) return 0;
+    const now = Date.now();
+    const progress = ((now - start) / (end - start)) * 100;
+    return Math.max(0, Math.min(100, Math.round(progress)));
   }
 
-  const semesterProgress = $derived(getSemesterProgress())
-  let activeSubmissionId = $state<number | null>(null)
-  let submissionFile = $state<File | null>(null)
-  let submissionComment = $state('')
-  let submissionError = $state<string | null>(null)
-  let submissionLoading = $state(false)
+  const semesterProgress = $derived(getSemesterProgress());
+  let activeSubmissionId = $state<number | null>(null);
+  let submissionFile = $state<File | null>(null);
+  let submissionComment = $state("");
+  let submissionError = $state<string | null>(null);
+  let submissionLoading = $state(false);
 
   function openSubmission(assignmentId: number) {
-    activeSubmissionId = assignmentId
-    submissionFile = null
-    submissionComment = ''
-    submissionError = null
+    activeSubmissionId = assignmentId;
+    submissionFile = null;
+    submissionComment = "";
+    submissionError = null;
   }
 
   async function handleSubmit(assignment: Assignment) {
     if (!submissionFile) {
-      submissionError = 'Please upload an image or PDF file.'
-      return
+      submissionError = "Please upload an image or PDF file.";
+      return;
     }
-    submissionError = null
-    submissionLoading = true
+    submissionError = null;
+    submissionLoading = true;
     try {
       const result = await submitAssignment(
         assignment.id,
         submissionFile,
         submissionComment,
-      )
+      );
       if (!result.success) {
-        submissionError = result.message || 'Submission failed.'
+        submissionError = result.message || "Submission failed.";
       } else {
-        activeSubmissionId = null
-        await mySubjectsQuery.refetch()
+        activeSubmissionId = null;
+        await mySubjectsQuery.refetch();
       }
     } catch (error: any) {
-      submissionError = error.message
+      submissionError = error.message;
     } finally {
-      submissionLoading = false
+      submissionLoading = false;
     }
   }
 
-  let teacherAssign = $state({ facultyId: '', semester: '1', subjectId: '' })
-  let availableSubjects = $state<Subject[]>([])
-  let assignError = $state<string | null>(null)
-  let assignLoading = $state(false)
+  let teacherAssign = $state({ facultyId: "", semester: "1", subjectId: "" });
+  let availableSubjects = $state<Subject[]>([]);
+  let assignError = $state<string | null>(null);
+  let assignLoading = $state(false);
 
   $effect(() => {
-    const facultyId = Number(teacherAssign.facultyId)
-    const semester = Number(teacherAssign.semester)
+    const facultyId = Number(teacherAssign.facultyId);
+    const semester = Number(teacherAssign.semester);
     if (!facultyId) {
-      availableSubjects = []
-      teacherAssign.subjectId = ''
-      return
+      availableSubjects = [];
+      teacherAssign.subjectId = "";
+      return;
     }
-    let cancelled = false
-    ;(async () => {
-      const result = await getSubjects(facultyId, semester)
-      if (cancelled) return
+    let cancelled = false;
+    (async () => {
+      const result = await getSubjects(facultyId, semester);
+      if (cancelled) return;
       if (result.success) {
-        availableSubjects = result.subjects
+        availableSubjects = result.subjects;
         teacherAssign.subjectId = result.subjects[0]
           ? String(result.subjects[0].id)
-          : ''
+          : "";
       }
-    })()
+    })();
     return () => {
-      cancelled = true
-    }
-  })
+      cancelled = true;
+    };
+  });
 
   async function handleAddSubject() {
-    assignError = null
-    assignLoading = true
+    assignError = null;
+    assignLoading = true;
     try {
-      const result = await addTeacherSubject(Number(teacherAssign.subjectId))
+      const result = await addTeacherSubject(Number(teacherAssign.subjectId));
       if (!result.success) {
-        assignError = result.message || 'Failed to add subject.'
+        assignError = result.message || "Failed to add subject.";
       } else {
-        await teacherSubjectsQuery.refetch()
+        await teacherSubjectsQuery.refetch();
       }
     } catch (error: any) {
-      assignError = error.message
+      assignError = error.message;
     } finally {
-      assignLoading = false
+      assignLoading = false;
     }
   }
 
   let assignmentForm = $state({
-    subjectId: '',
-    title: '',
-    description: '',
-    type: 'classwork' as 'classwork' | 'homework',
-    dueAt: '',
-  })
-  let assignmentError = $state<string | null>(null)
-  let assignmentLoading = $state(false)
+    subjectId: "",
+    title: "",
+    description: "",
+    type: "classwork" as "classwork" | "homework",
+    dueAt: "",
+  });
+  let assignmentError = $state<string | null>(null);
+  let assignmentLoading = $state(false);
 
   $effect(() => {
-    const subjects = teacherSubjectsQuery.data?.subjects || []
+    const subjects = teacherSubjectsQuery.data?.subjects || [];
     if (!assignmentForm.subjectId && subjects.length > 0) {
-      assignmentForm.subjectId = String(subjects[0].id)
+      assignmentForm.subjectId = String(subjects[0].id);
     }
-  })
+  });
 
   async function handleCreateAssignment() {
-    assignmentError = null
-    assignmentLoading = true
+    assignmentError = null;
+    assignmentLoading = true;
     try {
       const result = await createAssignment({
         subjectId: Number(assignmentForm.subjectId),
@@ -202,135 +202,140 @@
         description: assignmentForm.description,
         type: assignmentForm.type,
         dueAt: assignmentForm.dueAt || undefined,
-      })
+      });
       if (!result.success) {
-        assignmentError = result.message || 'Failed to create assignment.'
+        assignmentError = result.message || "Failed to create assignment.";
       } else {
-        assignmentForm.title = ''
-        assignmentForm.description = ''
-        assignmentForm.dueAt = ''
-        await teacherSubjectsQuery.refetch()
-        await mySubjectsQuery.refetch()
+        assignmentForm.title = "";
+        assignmentForm.description = "";
+        assignmentForm.dueAt = "";
+        await teacherSubjectsQuery.refetch();
+        await mySubjectsQuery.refetch();
       }
     } catch (error: any) {
-      assignmentError = error.message
+      assignmentError = error.message;
     } finally {
-      assignmentLoading = false
+      assignmentLoading = false;
     }
   }
 
   let submissionsByAssignment = $state<Record<number, AssignmentSubmission[]>>(
     {},
-  )
-  let submissionsLoading = $state<Record<number, boolean>>({})
+  );
+  let submissionsLoading = $state<Record<number, boolean>>({});
 
   async function toggleSubmissions(assignmentId: number) {
     if (submissionsByAssignment[assignmentId]) {
-      const updated = { ...submissionsByAssignment }
-      delete updated[assignmentId]
-      submissionsByAssignment = updated
-      return
+      const updated = { ...submissionsByAssignment };
+      delete updated[assignmentId];
+      submissionsByAssignment = updated;
+      return;
     }
-    submissionsLoading = { ...submissionsLoading, [assignmentId]: true }
-    const result = await getAssignmentSubmissions(assignmentId)
-    submissionsLoading = { ...submissionsLoading, [assignmentId]: false }
+    submissionsLoading = { ...submissionsLoading, [assignmentId]: true };
+    const result = await getAssignmentSubmissions(assignmentId);
+    submissionsLoading = { ...submissionsLoading, [assignmentId]: false };
     if (result.success) {
       submissionsByAssignment = {
         ...submissionsByAssignment,
         [assignmentId]: result.submissions,
-      }
+      };
     }
   }
 
   const studentSummary = $derived.by(() => {
-    const subjects = mySubjectsQuery.data?.subjects || []
-    const assignments = subjects.flatMap((subject) => subject.assignments || [])
-    const now = Date.now()
-    const submittedCount = assignments.filter((a) => a.submission).length
-    const pendingCount = assignments.filter((a) => !a.submission).length
+    const subjects = mySubjectsQuery.data?.subjects || [];
+    const assignments = subjects.flatMap(
+      (subject) => subject.assignments || [],
+    );
+    const now = Date.now();
+    const submittedCount = assignments.filter((a) => a.submission).length;
+    const pendingCount = assignments.filter((a) => !a.submission).length;
     const overdueCount = assignments.filter(
       (a) => !a.submission && a.dueAt && new Date(a.dueAt).getTime() < now,
-    ).length
+    ).length;
     return {
       subjectCount: subjects.length,
       assignmentCount: assignments.length,
       submittedCount,
       pendingCount,
       overdueCount,
-    }
-  })
+    };
+  });
 
   const teacherSummary = $derived.by(() => {
-    const subjects = teacherSubjectsQuery.data?.subjects || []
-    const assignments = subjects.flatMap((subject) => subject.assignments || [])
+    const subjects = teacherSubjectsQuery.data?.subjects || [];
+    const assignments = subjects.flatMap(
+      (subject) => subject.assignments || [],
+    );
     const classworkCount = assignments.filter(
-      (a) => a.type === 'classwork',
-    ).length
+      (a) => a.type === "classwork",
+    ).length;
     const homeworkCount = assignments.filter(
-      (a) => a.type === 'homework',
-    ).length
+      (a) => a.type === "homework",
+    ).length;
     return {
       subjectCount: subjects.length,
       assignmentCount: assignments.length,
       classworkCount,
       homeworkCount,
-    }
-  })
+    };
+  });
 
-  let studentView = $state<'todo' | 'done' | 'subjects'>('todo')
+  let studentView = $state<"todo" | "done" | "subjects">("todo");
   let highlightedSection = $state<string | null>(
-    (routeQuery('highlightSection') as string | undefined) || null,
-  )
+    (routeQuery("highlightSection") as string | undefined) || null,
+  );
 
   $effect(() => {
-    if (!highlightedSection) return
-  })
+    if (!highlightedSection) return;
+  });
 
   const studentAssignments = $derived.by(() => {
-    const subjects = mySubjectsQuery.data?.subjects || []
+    const subjects = mySubjectsQuery.data?.subjects || [];
     const all = subjects.flatMap((subject) =>
       (subject.assignments || []).map((a) => ({
         ...a,
         subjectTitle: subject.title,
         subjectCode: subject.code,
       })),
-    )
+    );
     return all.sort((a, b) => {
-      if (!a.dueAt && !b.dueAt) return 0
-      if (!a.dueAt) return 1
-      if (!b.dueAt) return -1
-      return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime()
-    })
-  })
+      if (!a.dueAt && !b.dueAt) return 0;
+      if (!a.dueAt) return 1;
+      if (!b.dueAt) return -1;
+      return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime();
+    });
+  });
 
   const todoAssignments = $derived(
     studentAssignments.filter((a) => !a.submission),
-  )
+  );
   const doneAssignments = $derived(
     studentAssignments.filter((a) => !!a.submission),
-  )
+  );
 
   function getStatusColor(assignment: any) {
     if (assignment.submission)
-      return 'bg-emerald-100 text-emerald-700 border-emerald-200'
-    if (!assignment.dueAt) return 'bg-slate-100 text-slate-600 border-slate-200'
-    const now = new Date()
-    const due = new Date(assignment.dueAt)
-    if (due < now) return 'bg-rose-100 text-rose-700 border-rose-200'
-    const diffHours = (due.getTime() - now.getTime()) / (1000 * 60 * 60)
-    if (diffHours < 24) return 'bg-amber-100 text-amber-700 border-amber-200'
-    return 'bg-blue-50 text-blue-700 border-blue-200'
+      return "bg-emerald-100 text-emerald-700 border-emerald-200";
+    if (!assignment.dueAt)
+      return "bg-slate-100 text-slate-600 border-slate-200";
+    const now = new Date();
+    const due = new Date(assignment.dueAt);
+    if (due < now) return "bg-rose-100 text-rose-700 border-rose-200";
+    const diffHours = (due.getTime() - now.getTime()) / (1000 * 60 * 60);
+    if (diffHours < 24) return "bg-amber-100 text-amber-700 border-amber-200";
+    return "bg-blue-50 text-blue-700 border-blue-200";
   }
 
   function getStatusText(assignment: any) {
-    if (assignment.submission) return 'Done'
-    if (!assignment.dueAt) return 'No Due'
-    const now = new Date()
-    const due = new Date(assignment.dueAt)
-    if (due < now) return 'Overdue'
-    const diffHours = (due.getTime() - now.getTime()) / (1000 * 60 * 60)
-    if (diffHours < 24) return 'Due Soon'
-    return 'Pending'
+    if (assignment.submission) return "Done";
+    if (!assignment.dueAt) return "No Due";
+    const now = new Date();
+    const due = new Date(assignment.dueAt);
+    if (due < now) return "Overdue";
+    const diffHours = (due.getTime() - now.getTime()) / (1000 * 60 * 60);
+    if (diffHours < 24) return "Due Soon";
+    return "Pending";
   }
 </script>
 
@@ -345,10 +350,11 @@
     class="pointer-events-none absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-blue-200/15 blur-3xl"
   ></div>
 
-  <div class="max-w-5xl mx-auto rounded-2xl {highlightedSection ===
-    'assignments'
-    ? 'ring-2 ring-cyan-400 ring-offset-2 px-3 py-3 bg-cyan-50/20 border border-cyan-300 notif-highlight-blink'
-    : ''}">
+  <div
+    class="max-w-5xl mx-auto rounded-2xl {highlightedSection === 'assignments'
+      ? 'ring-2 ring-cyan-400 ring-offset-2 px-3 py-3 bg-cyan-50/20 border border-cyan-300 notif-highlight-blink'
+      : ''}"
+  >
     {#if $session.isPending}
       <div class="flex flex-col items-center justify-center py-20">
         <div class="flex items-center gap-1.5 mb-3">
@@ -421,12 +427,12 @@
             class="text-[10px] font-bold uppercase tracking-wider text-violet-700"
           >
             {isTeacher
-              ? 'Teacher'
+              ? "Teacher"
               : isAdmin
-                ? 'Admin'
+                ? "Admin"
                 : isStudent
-                  ? 'Student'
-                  : 'Classroom'}
+                  ? "Student"
+                  : "Classroom"}
           </span>
         </div>
       </div>
@@ -552,7 +558,7 @@
               'todo'
                 ? 'bg-violet-100 text-violet-700 shadow-sm'
                 : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
-              onclick={() => (studentView = 'todo')}
+              onclick={() => (studentView = "todo")}
             >
               To Do
               {#if todoAssignments.length > 0}<span
@@ -565,14 +571,14 @@
               'done'
                 ? 'bg-emerald-100 text-emerald-700 shadow-sm'
                 : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
-              onclick={() => (studentView = 'done')}>Completed</button
+              onclick={() => (studentView = "done")}>Completed</button
             >
             <button
               class="px-4 py-2 rounded-lg text-xs font-medium transition-all {studentView ===
               'subjects'
                 ? 'bg-blue-100 text-blue-700 shadow-sm'
                 : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}"
-              onclick={() => (studentView = 'subjects')}>My Subjects</button
+              onclick={() => (studentView = "subjects")}>My Subjects</button
             >
           </div>
 
@@ -582,7 +588,7 @@
                 class="w-5 h-5 border-2 border-slate-200 border-t-violet-600 rounded-full animate-spin"
               ></div>
             </div>
-          {:else if studentView === 'subjects'}
+          {:else if studentView === "subjects"}
             <!-- Subjects Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {#each mySubjectsQuery.data?.subjects || [] as subject}
@@ -592,7 +598,7 @@
                   <p
                     class="text-[9px] font-bold text-violet-600 uppercase tracking-wide"
                   >
-                    {subject.code || 'Subject'}
+                    {subject.code || "Subject"}
                   </p>
                   <h3
                     class="text-sm font-semibold text-slate-900 mt-0.5 line-clamp-2 group-hover:text-violet-600 transition"
@@ -620,7 +626,7 @@
           {:else}
             <!-- Assignment List -->
             {@const assignmentsToShow =
-              studentView === 'todo' ? todoAssignments : doneAssignments}
+              studentView === "todo" ? todoAssignments : doneAssignments}
             <div class="space-y-3 max-w-3xl mx-auto">
               {#each assignmentsToShow as assignment}
                 <div
@@ -631,7 +637,7 @@
                       <div class="flex flex-wrap items-center gap-1.5 mb-1">
                         <span
                           class="text-[9px] font-medium px-1.5 py-0.5 rounded bg-slate-100 text-slate-600"
-                          >{assignment.type === 'homework' ? 'HW' : 'CW'}</span
+                          >{assignment.type === "homework" ? "HW" : "CW"}</span
                         >
                         <span class="text-[10px] text-slate-400">•</span>
                         <span
@@ -689,7 +695,7 @@
                     <button
                       class="shrink-0 px-4 py-2 text-xs font-medium rounded-lg bg-violet-50 text-violet-600 hover:bg-violet-100 transition"
                       onclick={() => openSubmission(assignment.id)}
-                      >{assignment.submission ? 'Resubmit' : 'Submit'}</button
+                      >{assignment.submission ? "Resubmit" : "Submit"}</button
                     >
                   </div>
 
@@ -746,8 +752,8 @@
                               accept="image/*,application/pdf"
                               class="hidden"
                               onchange={(e) => {
-                                const t = e.target as HTMLInputElement
-                                submissionFile = t.files ? t.files[0] : null
+                                const t = e.target as HTMLInputElement;
+                                submissionFile = t.files ? t.files[0] : null;
                               }}
                             />
                           </label>
@@ -776,8 +782,8 @@
                             onclick={() => handleSubmit(assignment)}
                             disabled={submissionLoading}
                             >{submissionLoading
-                              ? 'Submitting...'
-                              : 'Turn In'}</button
+                              ? "Submitting..."
+                              : "Turn In"}</button
                           >
                           <button
                             class="px-4 py-2 text-xs font-medium rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition"
@@ -810,7 +816,7 @@
                     >
                   </div>
                   <p class="font-medium text-slate-900">
-                    No {studentView === 'todo' ? 'pending' : 'completed'} assignments
+                    No {studentView === "todo" ? "pending" : "completed"} assignments
                   </p>
                   <p class="text-sm text-slate-500 mt-0.5">
                     You're all caught up!
@@ -904,8 +910,8 @@
                 ><StyledSelect
                   bind:value={assignmentForm.subjectId}
                   placeholder={teacherSubjectsQuery.data?.subjects?.length
-                    ? 'Select'
-                    : 'None'}
+                    ? "Select"
+                    : "None"}
                   options={(teacherSubjectsQuery.data?.subjects || []).map(
                     (s) => ({ value: String(s.id), label: s.title }),
                   )}
@@ -920,8 +926,8 @@
                   ><StyledSelect
                     bind:value={assignmentForm.type}
                     options={[
-                      { value: 'classwork', label: 'Classwork' },
-                      { value: 'homework', label: 'Homework' },
+                      { value: "classwork", label: "Classwork" },
+                      { value: "homework", label: "Homework" },
                     ]}
                   />
                 </div>
@@ -962,7 +968,7 @@
                 class="w-full py-2.5 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 transition shadow-sm disabled:opacity-50"
                 onclick={handleCreateAssignment}
                 disabled={assignmentLoading || !assignmentForm.subjectId}
-                >{assignmentLoading ? 'Publishing...' : 'Publish'}</button
+                >{assignmentLoading ? "Publishing..." : "Publish"}</button
               >
             </div>
           </div>
@@ -1020,8 +1026,8 @@
                 ><StyledSelect
                   bind:value={teacherAssign.subjectId}
                   placeholder={availableSubjects.length
-                    ? 'Select'
-                    : 'Choose context'}
+                    ? "Select"
+                    : "Choose context"}
                   options={availableSubjects.map((s) => ({
                     value: String(s.id),
                     label: s.title,
@@ -1032,7 +1038,7 @@
                 class="w-full py-2.5 rounded-lg bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition shadow-sm disabled:opacity-50"
                 onclick={handleAddSubject}
                 disabled={assignLoading || !teacherAssign.subjectId}
-                >{assignLoading ? 'Adding...' : 'Add Subject'}</button
+                >{assignLoading ? "Adding..." : "Add Subject"}</button
               >
             </div>
           </div>
@@ -1068,7 +1074,7 @@
                         {subject.title}
                       </h3>
                       <p class="text-[10px] text-slate-500">
-                        {subject.code || 'NO-CODE'} • Semester {subject.semesterNumber}
+                        {subject.code || "NO-CODE"} • Semester {subject.semesterNumber}
                       </p>
                     </div>
                     <span class="text-[10px] font-medium text-slate-500"
@@ -1085,7 +1091,7 @@
                             <div>
                               <div class="flex items-center gap-1.5 mb-0.5">
                                 <span
-                                  class={`text-[9px] uppercase font-medium px-1 py-0.5 rounded border ${assignment.type === 'homework' ? 'bg-purple-50 text-purple-700 border-purple-100' : 'bg-blue-50 text-blue-700 border-blue-100'}`}
+                                  class={`text-[9px] uppercase font-medium px-1 py-0.5 rounded border ${assignment.type === "homework" ? "bg-purple-50 text-purple-700 border-purple-100" : "bg-blue-50 text-blue-700 border-blue-100"}`}
                                   >{assignment.type}</span
                                 >
                                 {#if assignment.dueAt}<span
@@ -1101,8 +1107,8 @@
                               class="text-[10px] font-medium text-blue-600 hover:underline"
                               onclick={() => toggleSubmissions(assignment.id)}
                               >{submissionsByAssignment[assignment.id]
-                                ? 'Hide'
-                                : 'View'}</button
+                                ? "Hide"
+                                : "View"}</button
                             >
                           </div>
                           {#if submissionsLoading[assignment.id]}<p
@@ -1128,7 +1134,7 @@
                                         class="w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px] font-medium"
                                       >
                                         {(
-                                          submission.student?.name?.[0] || 'S'
+                                          submission.student?.name?.[0] || "S"
                                         ).toUpperCase()}
                                       </div>
                                       <div class="flex flex-col">
@@ -1173,7 +1179,7 @@
             </div>
           {/if}
         </div>
-      {:else if userRole === 'notice_manager'}
+      {:else if userRole === "notice_manager"}
         <div
           class="max-w-lg mx-auto text-center py-8 px-6 bg-white rounded-2xl border border-slate-200 shadow-sm"
         >
@@ -1182,7 +1188,9 @@
           >
             !
           </div>
-          <h2 class="font-semibold text-slate-900 mb-1">Classroom Not Available</h2>
+          <h2 class="font-semibold text-slate-900 mb-1">
+            Classroom Not Available
+          </h2>
           <p class="text-sm text-slate-500">
             Your account is configured for notice management. Classroom is only
             available to student and teacher roles.
@@ -1206,4 +1214,3 @@
     {/if}
   </div>
 </div>
-

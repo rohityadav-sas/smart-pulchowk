@@ -1,46 +1,46 @@
 <script lang="ts">
-  import { route, goto } from '@mateothegreat/svelte5-router'
-  import { getClubs, type Club } from '../lib/api'
-  import LoadingSpinner from '../components/LoadingSpinner.svelte'
-  import { fade, fly } from 'svelte/transition'
-  import { authClient } from '../lib/auth-client'
-  import { createQuery } from '@tanstack/svelte-query'
-  import { untrack } from 'svelte'
+  import { route, goto } from "@mateothegreat/svelte5-router";
+  import { getClubs, type Club } from "../lib/api";
+  import LoadingSpinner from "../components/LoadingSpinner.svelte";
+  import { fade, fly } from "svelte/transition";
+  import { authClient } from "../lib/auth-client";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { untrack } from "svelte";
 
-  const session = authClient.useSession()
+  const session = authClient.useSession();
 
   const query = createQuery(() => ({
-    queryKey: ['clubs'],
+    queryKey: ["clubs"],
     queryFn: async () => {
-      const result = await getClubs()
+      const result = await getClubs();
       if (result.success && result.existingClub) {
-        return result.existingClub
+        return result.existingClub;
       }
-      throw new Error(result.message || 'Failed to load clubs')
+      throw new Error(result.message || "Failed to load clubs");
     },
-  }))
+  }));
 
   $effect(() => {
     if (!$session.isPending && !$session.error && !$session.data?.user) {
       untrack(() => {
-        goto('/register?message=login_required')
-      })
+        goto("/register?message=login_required");
+      });
     }
-  })
+  });
 
   const gradients = [
-    'from-blue-500 to-indigo-600',
-    'from-purple-500 to-pink-600',
-    'from-emerald-500 to-teal-600',
-    'from-orange-500 to-red-600',
-    'from-cyan-500 to-blue-600',
-    'from-rose-500 to-purple-600',
-    'from-amber-500 to-orange-600',
-    'from-lime-500 to-emerald-600',
-  ]
+    "from-blue-500 to-indigo-600",
+    "from-purple-500 to-pink-600",
+    "from-emerald-500 to-teal-600",
+    "from-orange-500 to-red-600",
+    "from-cyan-500 to-blue-600",
+    "from-rose-500 to-purple-600",
+    "from-amber-500 to-orange-600",
+    "from-lime-500 to-emerald-600",
+  ];
 
   function getGradient(index: number): string {
-    return gradients[index % gradients.length]
+    return gradients[index % gradients.length];
   }
 </script>
 
@@ -48,7 +48,7 @@
   <div class="max-w-7xl mx-auto sm:px-4">
     <!-- Header -->
     <div class="text-center mb-10 animate-fade-in">
-      {#if $session.data?.user && ($session.data.user as any).role === 'admin'}
+      {#if $session.data?.user && ($session.data.user as any).role === "admin"}
         <a
           href="/create-club"
           use:route
@@ -216,7 +216,7 @@
                   class="text-gray-500 text-[11px] leading-relaxed line-clamp-3 min-h-10"
                 >
                   {club.description ||
-                    'The vibrant community of students at Pulchowk Campus, dedicated to excellence and innovation.'}
+                    "The vibrant community of students at Pulchowk Campus, dedicated to excellence and innovation."}
                 </p>
 
                 <!-- Stats/Details Row -->

@@ -1,73 +1,73 @@
 <script lang="ts">
-  import { route as routeAction, goto } from '@mateothegreat/svelte5-router'
+  import { route as routeAction, goto } from "@mateothegreat/svelte5-router";
   import {
     getBookListings,
     getBookCategories,
     type BookListing,
     type BookCategory,
     type BookFilters,
-  } from '../lib/api'
-  import LoadingSpinner from '../components/LoadingSpinner.svelte'
-  import { fade, slide } from 'svelte/transition'
-  import { authClient } from '../lib/auth-client'
-  import { createQuery } from '@tanstack/svelte-query'
-  import { untrack } from 'svelte'
+  } from "../lib/api";
+  import LoadingSpinner from "../components/LoadingSpinner.svelte";
+  import { fade, slide } from "svelte/transition";
+  import { authClient } from "../lib/auth-client";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { untrack } from "svelte";
 
-  const session = authClient.useSession()
-  let hasRedirectedToLogin = $state(false)
+  const session = authClient.useSession();
+  let hasRedirectedToLogin = $state(false);
 
-  let searchQuery = $state('')
-  let authorFilter = $state('')
-  let isbnFilter = $state('')
-  let selectedCategory = $state<number | undefined>(undefined)
-  let selectedCondition = $state('')
-  let minPrice = $state<number | undefined>(undefined)
-  let maxPrice = $state<number | undefined>(undefined)
-  let sortBy = $state<BookFilters['sortBy']>('newest')
-  let currentPage = $state(1)
-  let showFilters = $state(false)
+  let searchQuery = $state("");
+  let authorFilter = $state("");
+  let isbnFilter = $state("");
+  let selectedCategory = $state<number | undefined>(undefined);
+  let selectedCondition = $state("");
+  let minPrice = $state<number | undefined>(undefined);
+  let maxPrice = $state<number | undefined>(undefined);
+  let sortBy = $state<BookFilters["sortBy"]>("newest");
+  let currentPage = $state(1);
+  let showFilters = $state(false);
 
   $effect(() => {
-    if (hasRedirectedToLogin) return
+    if (hasRedirectedToLogin) return;
 
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      hasRedirectedToLogin = true
+      hasRedirectedToLogin = true;
       untrack(() => {
-        goto('/register?message=login_required')
-      })
+        goto("/register?message=login_required");
+      });
     }
-  })
+  });
 
   const conditionLabels: Record<string, string> = {
-    new: 'New',
-    like_new: 'Like New',
-    good: 'Good',
-    fair: 'Fair',
-    poor: 'Poor',
-  }
+    new: "New",
+    like_new: "Like New",
+    good: "Good",
+    fair: "Fair",
+    poor: "Poor",
+  };
 
   const conditionColors: Record<string, string> = {
-    new: 'bg-emerald-100 text-emerald-700',
-    like_new: 'bg-blue-100 text-blue-700',
-    good: 'bg-amber-100 text-amber-700',
-    fair: 'bg-orange-100 text-orange-700',
-    poor: 'bg-red-100 text-red-700',
-  }
+    new: "bg-emerald-100 text-emerald-700",
+    like_new: "bg-blue-100 text-blue-700",
+    good: "bg-amber-100 text-amber-700",
+    fair: "bg-orange-100 text-orange-700",
+    poor: "bg-red-100 text-red-700",
+  };
 
   const categoriesQuery = createQuery(() => ({
-    queryKey: ['book-categories'],
+    queryKey: ["book-categories"],
     queryFn: async () => {
-      const result = await getBookCategories()
+      const result = await getBookCategories();
       if (result.success && result.data) {
-        return result.data
+        return result.data;
       }
-      return []
+      return [];
     },
-  }))
+  }));
 
   const listingsQuery = createQuery(() => ({
     queryKey: [
-      'book-listings',
+      "book-listings",
       searchQuery,
       authorFilter,
       isbnFilter,
@@ -83,49 +83,49 @@
         page: currentPage,
         limit: 12,
         sortBy,
-      }
-      if (searchQuery) filters.search = searchQuery
-      if (authorFilter) filters.author = authorFilter
-      if (isbnFilter) filters.isbn = isbnFilter
-      if (selectedCategory) filters.categoryId = selectedCategory
-      if (selectedCondition) filters.condition = selectedCondition
-      if (minPrice !== undefined) filters.minPrice = minPrice
-      if (maxPrice !== undefined) filters.maxPrice = maxPrice
+      };
+      if (searchQuery) filters.search = searchQuery;
+      if (authorFilter) filters.author = authorFilter;
+      if (isbnFilter) filters.isbn = isbnFilter;
+      if (selectedCategory) filters.categoryId = selectedCategory;
+      if (selectedCondition) filters.condition = selectedCondition;
+      if (minPrice !== undefined) filters.minPrice = minPrice;
+      if (maxPrice !== undefined) filters.maxPrice = maxPrice;
 
-      const result = await getBookListings(filters)
+      const result = await getBookListings(filters);
       if (result.success && result.data) {
-        return result.data
+        return result.data;
       }
-      throw new Error(result.message || 'Failed to load listings')
+      throw new Error(result.message || "Failed to load listings");
     },
-  }))
+  }));
 
   function clearFilters() {
-    searchQuery = ''
-    authorFilter = ''
-    isbnFilter = ''
-    selectedCategory = undefined
-    selectedCondition = ''
-    minPrice = undefined
-    maxPrice = undefined
-    sortBy = 'newest'
-    currentPage = 1
+    searchQuery = "";
+    authorFilter = "";
+    isbnFilter = "";
+    selectedCategory = undefined;
+    selectedCondition = "";
+    minPrice = undefined;
+    maxPrice = undefined;
+    sortBy = "newest";
+    currentPage = 1;
   }
 
   function formatPrice(price: string) {
-    return `Rs. ${parseFloat(price).toLocaleString()}`
+    return `Rs. ${parseFloat(price).toLocaleString()}`;
   }
 
   function getTimeAgo(dateStr: string) {
-    const date = new Date(dateStr)
-    const now = new Date()
-    const diff = now.getTime() - date.getTime()
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    if (days === 0) return 'Today'
-    if (days === 1) return 'Yesterday'
-    if (days < 7) return `${days} days ago`
-    if (days < 30) return `${Math.floor(days / 7)} weeks ago`
-    return `${Math.floor(days / 30)} months ago`
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days === 0) return "Today";
+    if (days === 1) return "Yesterday";
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    return `${Math.floor(days / 30)} months ago`;
   }
 
   const activeFiltersCount = $derived(
@@ -137,12 +137,12 @@
       selectedCondition,
       minPrice,
       maxPrice,
-    ].filter((v) => v !== '' && v !== undefined).length,
-  )
+    ].filter((v) => v !== "" && v !== undefined).length,
+  );
 
   function getCategoryName(id: number | undefined) {
-    if (!id || !categoriesQuery.data) return ''
-    return categoriesQuery.data.find((c) => c.id === id)?.name || ''
+    if (!id || !categoriesQuery.data) return "";
+    return categoriesQuery.data.find((c) => c.id === id)?.name || "";
   }
 </script>
 
@@ -177,7 +177,7 @@
             />
             {#if searchQuery}
               <button
-                onclick={() => (searchQuery = '')}
+                onclick={() => (searchQuery = "")}
                 aria-label="Clear search"
                 class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-slate-300 hover:text-slate-600 transition-colors"
               >
@@ -260,7 +260,7 @@
 
             {#if searchQuery}
               <button
-                onclick={() => (searchQuery = '')}
+                onclick={() => (searchQuery = "")}
                 class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200 flex items-center gap-2 hover:bg-slate-200 transition-colors"
               >
                 Search: {searchQuery}
@@ -274,7 +274,7 @@
 
             {#if authorFilter}
               <button
-                onclick={() => (authorFilter = '')}
+                onclick={() => (authorFilter = "")}
                 class="px-3 py-1 bg-violet-50 text-violet-600 text-xs font-bold rounded-lg border border-violet-100 flex items-center gap-2 hover:bg-violet-100 transition-colors"
               >
                 Author: {authorFilter}
@@ -288,7 +288,7 @@
 
             {#if isbnFilter}
               <button
-                onclick={() => (isbnFilter = '')}
+                onclick={() => (isbnFilter = "")}
                 class="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-lg border border-indigo-100 flex items-center gap-2 hover:bg-indigo-100 transition-colors"
               >
                 ISBN: {isbnFilter}
@@ -316,7 +316,7 @@
 
             {#if selectedCondition}
               <button
-                onclick={() => (selectedCondition = '')}
+                onclick={() => (selectedCondition = "")}
                 class="px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-lg border border-emerald-100 flex items-center gap-2 hover:bg-emerald-100 transition-colors"
               >
                 {conditionLabels[selectedCondition]}
@@ -331,12 +331,12 @@
             {#if minPrice || maxPrice}
               <button
                 onclick={() => {
-                  minPrice = undefined
-                  maxPrice = undefined
+                  minPrice = undefined;
+                  maxPrice = undefined;
                 }}
                 class="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-bold rounded-lg border border-amber-100 flex items-center gap-2 hover:bg-amber-100 transition-colors"
               >
-                {minPrice || 0} - {maxPrice || 'Any'}
+                {minPrice || 0} - {maxPrice || "Any"}
                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"
                   ><path
                     d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -474,11 +474,11 @@
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-1.5">
-                {#each ['new', 'good', 'fair', 'poor'] as cond}
+                {#each ["new", "good", "fair", "poor"] as cond}
                   <button
                     onclick={() =>
                       (selectedCondition =
-                        selectedCondition === cond ? '' : cond)}
+                        selectedCondition === cond ? "" : cond)}
                     class="px-3 py-2 rounded-lg border transition-all font-medium text-xs flex items-center justify-center gap-1.5
                                         {selectedCondition === cond
                       ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm'
@@ -593,7 +593,6 @@
           </div>
         </div>
       {/if}
-
     </div>
 
     <!-- Results Info -->

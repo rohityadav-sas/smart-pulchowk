@@ -443,9 +443,11 @@
   }
 </script>
 
-<div class="min-h-[calc(100vh-4rem)] bg-gray-50/50 px-4 py-5 sm:px-6 lg:px-8 {highlightListing
-  ? 'ring-2 ring-cyan-400 ring-offset-2 bg-cyan-50/20 notif-highlight-blink'
-  : ''}">
+<div
+  class="min-h-[calc(100vh-4rem)] bg-gray-50/50 px-4 py-5 sm:px-6 lg:px-8 {highlightListing
+    ? 'ring-2 ring-cyan-400 ring-offset-2 bg-cyan-50/20 notif-highlight-blink'
+    : ''}"
+>
   <div class="max-w-6xl mx-auto">
     <a
       href="/books"
@@ -1663,4 +1665,3 @@
     </div>
   </div>
 {/if}
-

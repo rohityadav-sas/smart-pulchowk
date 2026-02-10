@@ -497,10 +497,14 @@
       string | number | boolean | null
     >;
     const itemTypeRaw =
-      typeof data.itemType === "string" ? data.itemType.trim().toLowerCase() : "";
+      typeof data.itemType === "string"
+        ? data.itemType.trim().toLowerCase()
+        : "";
     if (itemTypeRaw === "lost" || itemTypeRaw === "found") return itemTypeRaw;
-    if (notification.body.toLowerCase().includes(" your lost item")) return "lost";
-    if (notification.body.toLowerCase().includes(" your found item")) return "found";
+    if (notification.body.toLowerCase().includes(" your lost item"))
+      return "lost";
+    if (notification.body.toLowerCase().includes(" your found item"))
+      return "found";
     return null;
   }
 

@@ -1,150 +1,152 @@
 <script lang="ts">
-  import { route as routeAction, goto } from '@mateothegreat/svelte5-router'
-  import { authClient } from '../lib/auth-client'
+  import { route as routeAction, goto } from "@mateothegreat/svelte5-router";
+  import { authClient } from "../lib/auth-client";
   import {
     getClubEvents,
     getClub,
     getClubAdmins,
     type ClubEvent,
     type Club,
-  } from '../lib/api'
-  import LoadingSpinner from '../components/LoadingSpinner.svelte'
-  import EventCard from '../components/EventCard.svelte'
-  import { fade, fly, slide } from 'svelte/transition'
-  import { createQuery } from '@tanstack/svelte-query'
-  import { getEventTimeMs, parseEventDateTime } from '../lib/event-dates'
-  import { untrack } from 'svelte'
+  } from "../lib/api";
+  import LoadingSpinner from "../components/LoadingSpinner.svelte";
+  import EventCard from "../components/EventCard.svelte";
+  import { fade, fly, slide } from "svelte/transition";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { getEventTimeMs, parseEventDateTime } from "../lib/event-dates";
+  import { untrack } from "svelte";
 
-  const { route } = $props()
-  const clubId = $derived(route.result.path.params.clubId)
+  const { route } = $props();
+  const clubId = $derived(route.result.path.params.clubId);
 
-  const session = authClient.useSession()
-  const userId = $derived($session.data?.user?.id)
-  let hasRedirectedToLogin = $state(false)
+  const session = authClient.useSession();
+  const userId = $derived($session.data?.user?.id);
+  let hasRedirectedToLogin = $state(false);
 
   const clubQuery = createQuery(() => ({
-    queryKey: ['club', clubId],
+    queryKey: ["club", clubId],
     queryFn: async () => {
-      const res = await getClub(parseInt(clubId))
-      if (res.success && res.clubData) return res.clubData
-      throw new Error(res.message || 'Club not found')
+      const res = await getClub(parseInt(clubId));
+      if (res.success && res.clubData) return res.clubData;
+      throw new Error(res.message || "Club not found");
     },
     enabled: !!clubId && !isNaN(parseInt(clubId)),
-  }))
+  }));
 
   const eventsQuery = createQuery(() => ({
-    queryKey: ['clubEvents', clubId],
+    queryKey: ["clubEvents", clubId],
     queryFn: async () => {
-      const res = await getClubEvents(parseInt(clubId))
-      if (res.success && res.clubEvents) return res.clubEvents
-      if (res.message === 'No events yet') return []
-      throw new Error(res.message)
+      const res = await getClubEvents(parseInt(clubId));
+      if (res.success && res.clubEvents) return res.clubEvents;
+      if (res.message === "No events yet") return [];
+      throw new Error(res.message);
     },
     enabled: !!clubId && !isNaN(parseInt(clubId)),
-  }))
+  }));
 
   const adminsQuery = createQuery(() => ({
-    queryKey: ['clubAdmins', clubId],
+    queryKey: ["clubAdmins", clubId],
     queryFn: async () => {
-      const res = await getClubAdmins(parseInt(clubId))
-      if (res.success && res.admins) return res.admins
-      return []
+      const res = await getClubAdmins(parseInt(clubId));
+      if (res.success && res.admins) return res.admins;
+      return [];
     },
     enabled: !!clubId && !isNaN(parseInt(clubId)) && !!userId,
-  }))
+  }));
 
   const isClubOwner = $derived(
     userId && clubQuery.data && clubQuery.data.authClubId === userId,
-  )
+  );
 
   const isTempAdmin = $derived(
     userId &&
       adminsQuery.data &&
       adminsQuery.data.some((admin: any) => admin.id === userId),
-  )
+  );
 
-  const canCreateEvent = $derived(isClubOwner || isTempAdmin)
+  const canCreateEvent = $derived(isClubOwner || isTempAdmin);
 
-  const loading = $derived(clubQuery.isLoading || eventsQuery.isLoading)
-  const error = $derived(clubQuery.error?.message || eventsQuery.error?.message)
+  const loading = $derived(clubQuery.isLoading || eventsQuery.isLoading);
+  const error = $derived(
+    clubQuery.error?.message || eventsQuery.error?.message,
+  );
 
   $effect(() => {
-    if (hasRedirectedToLogin) return
+    if (hasRedirectedToLogin) return;
 
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      hasRedirectedToLogin = true
+      hasRedirectedToLogin = true;
       untrack(() => {
-        goto('/register?message=login_required')
-      })
-      return
+        goto("/register?message=login_required");
+      });
+      return;
     }
-  })
+  });
 
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'upcoming':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-200'
-      case 'draft':
-        return 'bg-amber-100 text-amber-800 border-amber-200'
-      case 'cancelled':
-        return 'bg-rose-100 text-rose-800 border-rose-200'
-      case 'completed':
-        return 'bg-slate-100 text-slate-800 border-slate-200'
-      case 'ongoing':
-        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case "upcoming":
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
+      case "draft":
+        return "bg-amber-100 text-amber-800 border-amber-200";
+      case "cancelled":
+        return "bg-rose-100 text-rose-800 border-rose-200";
+      case "completed":
+        return "bg-slate-100 text-slate-800 border-slate-200";
+      case "ongoing":
+        return "bg-blue-100 text-blue-800 border-blue-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   }
 
   // Categorization logic
   const categorizedEvents = $derived.by(
     (): {
-      ongoing: ClubEvent[]
-      upcoming: ClubEvent[]
-      completed: ClubEvent[]
-      cancelled: ClubEvent[]
+      ongoing: ClubEvent[];
+      upcoming: ClubEvent[];
+      completed: ClubEvent[];
+      cancelled: ClubEvent[];
     } => {
       if (!eventsQuery.data) {
-        return { ongoing: [], upcoming: [], completed: [], cancelled: [] }
+        return { ongoing: [], upcoming: [], completed: [], cancelled: [] };
       }
 
-      const ongoing: ClubEvent[] = []
-      const upcoming: ClubEvent[] = []
-      const completed: ClubEvent[] = []
-      const cancelled: ClubEvent[] = []
+      const ongoing: ClubEvent[] = [];
+      const upcoming: ClubEvent[] = [];
+      const completed: ClubEvent[] = [];
+      const cancelled: ClubEvent[] = [];
 
-      const now = new Date()
+      const now = new Date();
       const sorted: ClubEvent[] = [...eventsQuery.data].sort(
         (a, b) =>
           getEventTimeMs(b.eventStartTime) - getEventTimeMs(a.eventStartTime),
-      )
+      );
 
       sorted.forEach((e) => {
-        const start = parseEventDateTime(e.eventStartTime)
-        const end = parseEventDateTime(e.eventEndTime)
-        const status = (e.status || '').toLowerCase().trim()
+        const start = parseEventDateTime(e.eventStartTime);
+        const end = parseEventDateTime(e.eventEndTime);
+        const status = (e.status || "").toLowerCase().trim();
 
-        if (status === 'draft') {
-          return
+        if (status === "draft") {
+          return;
         }
 
         // Check cancelled first - cancelled events should never go to other categories
-        if (status === 'cancelled') {
-          cancelled.push(e)
-        } else if (end < now || status === 'completed') {
+        if (status === "cancelled") {
+          cancelled.push(e);
+        } else if (end < now || status === "completed") {
           // Event has ended OR is marked as completed
-          completed.push(e)
-        } else if (status === 'ongoing' || (start <= now && end >= now)) {
-          ongoing.push(e)
+          completed.push(e);
+        } else if (status === "ongoing" || (start <= now && end >= now)) {
+          ongoing.push(e);
         } else {
-          upcoming.push(e)
+          upcoming.push(e);
         }
-      })
+      });
 
-      return { ongoing, upcoming, completed, cancelled }
+      return { ongoing, upcoming, completed, cancelled };
     },
-  )
+  );
 </script>
 
 <div class="min-h-[calc(100vh-4rem)] bg-gray-50/30 px-4 py-8 sm:px-6 lg:px-8">
@@ -173,7 +175,7 @@
         href="/clubs/{clubId}"
         use:routeAction
         class="hover:text-blue-600 transition-colors hover:underline max-w-50 truncate"
-        >{clubQuery.data?.name || 'Club Details'}</a
+        >{clubQuery.data?.name || "Club Details"}</a
       >
       <svg
         class="w-4 h-4 text-gray-300"
@@ -220,8 +222,8 @@
         <p class="text-red-600 font-medium mb-4">{error}</p>
         <button
           onclick={() => {
-            clubQuery.refetch()
-            eventsQuery.refetch()
+            clubQuery.refetch();
+            eventsQuery.refetch();
           }}
           class="px-6 py-2 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-colors shadow-sm"
         >
@@ -257,7 +259,7 @@
                 />
               {:else}
                 <span class="text-5xl font-bold text-white/90">
-                  {clubQuery.data?.name?.charAt(0).toUpperCase() || 'C'}
+                  {clubQuery.data?.name?.charAt(0).toUpperCase() || "C"}
                 </span>
               {/if}
             </div>

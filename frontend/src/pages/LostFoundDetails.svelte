@@ -392,7 +392,7 @@
               <img
                 src={item.images[activeImageIndex]?.imageUrl}
                 alt={item.title}
-                class="max-h-[340px] w-full object-contain bg-white"
+                class="max-h-85 w-full object-contain bg-white"
               />
             </div>
 
