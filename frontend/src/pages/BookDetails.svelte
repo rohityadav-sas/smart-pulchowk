@@ -249,9 +249,18 @@
     enabled:
       bookId > 0 &&
       !!$session.data?.user &&
-      (buyerPurchaseRequest?.status === "accepted" ||
-        bookQuery.data?.isOwner),
+      (buyerPurchaseRequest?.status === "accepted" || bookQuery.data?.isOwner),
   }));
+
+  const hasSellerContactInfo = $derived(
+    !!sellerContactQuery.data &&
+      (!!sellerContactQuery.data.whatsapp ||
+        !!sellerContactQuery.data.telegramUsername ||
+        !!sellerContactQuery.data.facebookMessenger ||
+        !!sellerContactQuery.data.email ||
+        !!sellerContactQuery.data.phoneNumber ||
+        !!sellerContactQuery.data.otherContactDetails),
+  );
 
   $effect(() => {
     const total = bookQuery.data?.images?.length || 0;
@@ -585,6 +594,31 @@
       unblockSubmitting = false;
     }
   }
+
+  async function copyAllContactInfo() {
+    const contact = sellerContactQuery.data;
+    if (!contact) return;
+
+    const lines = [];
+    if (contact.email) lines.push(`Email: ${contact.email}`);
+    if (contact.phoneNumber) lines.push(`Phone: ${contact.phoneNumber}`);
+    if (contact.whatsapp) lines.push(`WhatsApp: ${contact.whatsapp}`);
+    if (contact.telegramUsername)
+      lines.push(`Telegram: @${contact.telegramUsername}`);
+    if (contact.facebookMessenger)
+      lines.push(`Messenger: ${contact.facebookMessenger}`);
+    if (contact.otherContactDetails)
+      lines.push(`Other: ${contact.otherContactDetails}`);
+
+    if (lines.length === 0) return;
+
+    try {
+      await navigator.clipboard.writeText(lines.join("\n"));
+      showSuccess("All contact info copied!");
+    } catch (err) {
+      showError("Failed to copy contact info");
+    }
+  }
 </script>
 
 <div
@@ -854,11 +888,11 @@
             <!-- Price -->
             <div class="mt-3 flex items-baseline gap-3">
               <span class="text-3xl font-black text-emerald-600"
-                >₹{parseFloat(book.price).toLocaleString()}</span
+                >Rs. {parseFloat(book.price).toLocaleString()}</span
               >
               {#if book.price && parseFloat(book.price) > parseFloat(book.price)}
                 <span class="text-lg text-gray-400 line-through"
-                  >₹{parseFloat(book.price).toLocaleString()}</span
+                  >Rs. {parseFloat(book.price).toLocaleString()}</span
                 >
               {/if}
               {#if book.status === "sold"}
@@ -1303,15 +1337,342 @@
                 </div>
               {:else if reqStatus === "accepted"}
                 <div
-                  class="mt-6 p-5 rounded-xl border-2 border-emerald-100 bg-emerald-50/50"
+                  id="contact-info-block"
+                  class="mt-6 p-6 rounded-4xl border border-emerald-100 bg-emerald-50/30 space-y-6"
                 >
-                  <div class="flex items-start justify-between">
-                    <div class="flex items-center gap-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
                       <div
-                        class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center"
+                        class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center border border-emerald-200 shadow-sm"
                       >
                         <svg
-                          class="w-5 h-5 text-emerald-600"
+                          class="w-6 h-6 text-emerald-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2.5"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-black text-gray-900">
+                          {book.status === "sold"
+                            ? "Transaction Completed! 🎉"
+                            : "Request Accepted! 🎉"}
+                        </h3>
+                        <p class="text-sm text-gray-600 font-medium">
+                          {book.status === "sold"
+                            ? `You purchased this book from ${book.seller?.name || "the seller"}.`
+                            : `${book.seller?.name || "The seller"} has accepted your request.`}
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider border border-emerald-200"
+                    >
+                      Active
+                    </span>
+                  </div>
+
+                  <!-- Contact Seller Card -->
+                  {#if hasSellerContactInfo}
+                    <div
+                      class="bg-white rounded-3xl p-5 border border-emerald-100 shadow-sm space-y-4"
+                    >
+                      <div
+                        class="flex items-center gap-3 pb-2 border-b border-slate-50"
+                      >
+                        <div
+                          class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center"
+                        >
+                          <svg
+                            class="w-5 h-5 text-indigo-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 class="text-sm font-bold text-gray-900">
+                            Contact Seller
+                          </h4>
+                          <p class="text-[10px] text-gray-400 font-medium">
+                            Choose your preferred method
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="grid gap-2.5">
+                        {#if sellerContactQuery.data}
+                          {@const c = sellerContactQuery.data}
+
+                          {#if c.telegramUsername}
+                            <a
+                              href="https://t.me/{c.telegramUsername}"
+                              target="_blank"
+                              class="group flex items-center justify-between p-3 rounded-2xl bg-indigo-50/50 hover:bg-indigo-50 border border-indigo-100/50 transition-all active:scale-[0.98]"
+                            >
+                              <div class="flex items-center gap-3">
+                                <div
+                                  class="w-10 h-10 rounded-xl bg-blue-500 shadow-lg shadow-blue-200 flex items-center justify-center text-white"
+                                >
+                                  <svg
+                                    class="w-6 h-6"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    ><path
+                                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.53-1.39.52-.45-.01-1.33-.26-1.98-.47-.8-.26-1.42-.4-1.37-.85.03-.23.35-.47.97-.73 3.79-1.65 6.32-2.73 7.57-3.25 3.62-1.48 4.37-1.74 4.86-1.75.11 0 .35.03.5.16.13.13.17.3.18.43z"
+                                    /></svg
+                                  >
+                                </div>
+                                <div>
+                                  <p
+                                    class="text-[13px] font-black text-gray-900"
+                                  >
+                                    Telegram
+                                  </p>
+                                  <p class="text-[11px] text-gray-500">
+                                    @{c.telegramUsername}
+                                  </p>
+                                </div>
+                              </div>
+                              <svg
+                                class="w-4 h-4 text-indigo-300 group-hover:text-indigo-500 transition-colors"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2.5"
+                                  d="M9 5l7 7-7 7"
+                                /></svg
+                              >
+                            </a>
+                          {/if}
+
+                          {#if c.whatsapp}
+                            <a
+                              href="https://wa.me/{c.whatsapp.replace(
+                                /[^0-9]/g,
+                                '',
+                              )}"
+                              target="_blank"
+                              class="group flex items-center justify-between p-3 rounded-2xl bg-emerald-50/50 hover:bg-emerald-50 border border-emerald-100/50 transition-all active:scale-[0.98]"
+                            >
+                              <div class="flex items-center gap-3">
+                                <div
+                                  class="w-10 h-10 rounded-xl bg-emerald-500 shadow-lg shadow-emerald-200 flex items-center justify-center text-white"
+                                >
+                                  <svg
+                                    class="w-6 h-6"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    ><path
+                                      d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zM6.07 17.1l-.33-.52c-.76-1.21-1.16-2.61-1.16-4.05 0-4.32 3.51-7.84 7.84-7.84 2.09 0 4.07.81 5.55 2.29a7.71 7.71 0 012.29 5.55c0 4.32-3.51 7.84-7.84 7.84-1.39 0-2.75-.37-3.95-1.07l-.42-.24-2.93.77.77-2.86zM15.22 13c-.18-.09-1.09-.54-1.26-.6-.17-.06-.29-.09-.41.09s-.47.6-.58.72c-.11.12-.22.13-.4.04-.18-.09-.77-.28-1.46-.9-.54-.48-.9-.67-.3-.67s.17-.04.26-.13c.09-.09.04-.18-.01-.27-.05-.09-.41-1-.56-1.37-.15-.35-.29-.3-.41-.31h-.35c-.12 0-.32.04-.49.22-.17.18-.64.63-.64 1.53s.66 1.77.75 1.89c.09.12 1.29 1.97 3.13 2.76.44.19.78.3 1.05.39.44.14.84.12 1.15.07.35-.05 1.09-.45 1.24-.88s.15-.79.1-.88c-.05-.08-.18-.12-.36-.21z"
+                                    /></svg
+                                  >
+                                </div>
+                                <div>
+                                  <p
+                                    class="text-[13px] font-black text-gray-900"
+                                  >
+                                    WhatsApp
+                                  </p>
+                                  <p class="text-[11px] text-gray-500">
+                                    {c.whatsapp}
+                                  </p>
+                                </div>
+                              </div>
+                              <svg
+                                class="w-4 h-4 text-emerald-300 group-hover:text-emerald-500 transition-colors"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2.5"
+                                  d="M9 5l7 7-7 7"
+                                /></svg
+                              >
+                            </a>
+                          {/if}
+
+                          {#if c.facebookMessenger}
+                            <a
+                              href="https://m.me/{c.facebookMessenger}"
+                              target="_blank"
+                              class="group flex items-center justify-between p-3 rounded-2xl bg-purple-50/50 hover:bg-purple-50 border border-purple-100/50 transition-all active:scale-[0.98]"
+                            >
+                              <div class="flex items-center gap-3">
+                                <div
+                                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-lg shadow-purple-200 flex items-center justify-center text-white"
+                                >
+                                  <svg
+                                    class="w-6 h-6"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    ><path
+                                      d="M12 2C6.48 2 2 6.134 2 11.235c0 2.908 1.387 5.503 3.546 7.222.186.148.293.377.293.62v1.921c0 .487.525.8.966.577l2.148-1.085a.837.837 0 01.374-.089c.218 0 .43.04.63.111C10.634 20.846 11.31 21 12 21c5.523 0 10-4.134 10-9.235S17.523 2 12 2zm.8 11.727l-2.03-2.162-3.954 2.162 4.349-4.615 2.03 2.162 3.954-2.162-4.349 4.615z"
+                                    /></svg
+                                  >
+                                </div>
+                                <div>
+                                  <p
+                                    class="text-[13px] font-black text-gray-900"
+                                  >
+                                    Messenger
+                                  </p>
+                                  <p class="text-[11px] text-gray-500">
+                                    {c.facebookMessenger}
+                                  </p>
+                                </div>
+                              </div>
+                              <svg
+                                class="w-4 h-4 text-purple-300 group-hover:text-purple-500 transition-colors"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2.5"
+                                  d="M9 5l7 7-7 7"
+                                /></svg
+                              >
+                            </a>
+                          {/if}
+
+                          {#if c.email}
+                            <a
+                              href="mailto:{c.email}"
+                              class="group flex items-center justify-between p-3 rounded-2xl bg-slate-50/50 hover:bg-slate-50 border border-slate-100 transition-all active:scale-[0.98]"
+                            >
+                              <div class="flex items-center gap-3">
+                                <div
+                                  class="w-10 h-10 rounded-xl bg-slate-700 shadow-lg shadow-slate-200 flex items-center justify-center text-white"
+                                >
+                                  <svg
+                                    class="w-6 h-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    ><path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                    /></svg
+                                  >
+                                </div>
+                                <div>
+                                  <p
+                                    class="text-[13px] font-black text-gray-900"
+                                  >
+                                    Email
+                                  </p>
+                                  <p
+                                    class="text-[11px] text-gray-500 truncate max-w-[180px]"
+                                  >
+                                    {c.email}
+                                  </p>
+                                </div>
+                              </div>
+                              <svg
+                                class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2.5"
+                                  d="M9 5l7 7-7 7"
+                                /></svg
+                              >
+                            </a>
+                          {/if}
+
+                          {#if c.phoneNumber}
+                            <a
+                              href="tel:{c.phoneNumber}"
+                              class="group flex items-center justify-between p-3 rounded-2xl bg-blue-50/50 hover:bg-blue-50 border border-blue-100 transition-all active:scale-[0.98]"
+                            >
+                              <div class="flex items-center gap-3">
+                                <div
+                                  class="w-10 h-10 rounded-xl bg-blue-600 shadow-lg shadow-blue-200 flex items-center justify-center text-white"
+                                >
+                                  <svg
+                                    class="w-6 h-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    ><path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                    /></svg
+                                  >
+                                </div>
+                                <div>
+                                  <p
+                                    class="text-[13px] font-black text-gray-900"
+                                  >
+                                    Phone Call
+                                  </p>
+                                  <p class="text-[11px] text-gray-500">
+                                    {c.phoneNumber}
+                                  </p>
+                                </div>
+                              </div>
+                              <svg
+                                class="w-4 h-4 text-blue-300 group-hover:text-blue-500 transition-colors"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2.5"
+                                  d="M9 5l7 7-7 7"
+                                /></svg
+                              >
+                            </a>
+                          {/if}
+                        {:else if sellerContactQuery.isLoading}
+                          <div
+                            class="py-10 flex flex-col items-center justify-center gap-3"
+                          >
+                            <LoadingSpinner size="sm" />
+                            <p
+                              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                            >
+                              Fetching contact info...
+                            </p>
+                          </div>
+                        {/if}
+                      </div>
+
+                      <button
+                        onclick={copyAllContactInfo}
+                        class="w-full mt-2 py-3 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold text-xs transition-all flex items-center justify-center gap-2 border border-slate-100"
+                      >
+                        <svg
+                          class="w-4 h-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1319,74 +1680,89 @@
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                           /></svg
                         >
-                      </div>
-                      <div>
-                        <h3 class="font-bold text-gray-900">
-                          {book.status === "sold"
-                            ? "Transaction Completed! 🎉"
-                            : "Request Accepted! 🎉"}
-                        </h3>
-                        <p class="text-sm text-gray-500">
-                          {book.status === "sold"
-                            ? `You purchased this book on ${formatDate(new Date().toISOString())}`
-                            : `${book.seller?.name} has accepted your request. You can now message them to arrange pickup and payment.`}
-                        </p>
-                      </div>
-                    </div>
-                    {#if book.status !== "sold"}
-                      <span
-                        class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-200 whitespace-nowrap"
-                        >Active</span
-                      >
-                    {/if}
-                  </div>
-                  {#if book.status === "sold"}
-                    <div class="mt-3">
-                      <p class="text-sm font-bold text-gray-900">
-                        How was your experience?
-                      </p>
-                      <p class="text-xs text-emerald-600 mt-0.5">
-                        Your review helps other students make informed decisions
-                      </p>
-                    </div>
-                  {:else}
-                    <div
-                      class="mt-4 p-3 rounded-lg bg-white border border-emerald-100"
-                    >
-                      <p class="text-sm font-bold text-gray-900 mb-2">
-                        Next Steps:
-                      </p>
-                      <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="w-5 h-5 rounded-md bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center"
-                            >1</span
-                          ><span class="text-sm text-gray-600"
-                            >Message the seller to arrange meetup location</span
-                          >
-                        </div>
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="w-5 h-5 rounded-md bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center"
-                            >2</span
-                          ><span class="text-sm text-gray-600"
-                            >Inspect the book before payment</span
-                          >
-                        </div>
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="w-5 h-5 rounded-md bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center"
-                            >3</span
-                          ><span class="text-sm text-gray-600"
-                            >Rate your experience once done</span
-                          >
-                        </div>
-                      </div>
+                        Copy All Contact Info
+                      </button>
                     </div>
                   {/if}
+
+                  <div class="flex flex-col gap-4">
+                    <div
+                      class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm"
+                    >
+                      <h4 class="text-sm font-bold text-gray-900 mb-3">
+                        Next Steps:
+                      </h4>
+                      <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 text-[13px] font-black flex items-center justify-center border border-blue-100"
+                            >1</span
+                          >
+                          <p class="text-[13px] text-gray-600 font-medium">
+                            Contact seller using any method above to arrange
+                            meetup
+                          </p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 text-[13px] font-black flex items-center justify-center border border-blue-100"
+                            >2</span
+                          >
+                          <p class="text-[13px] text-gray-600 font-medium">
+                            Inspect the book before payment
+                          </p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 text-[13px] font-black flex items-center justify-center border border-blue-100"
+                            >3</span
+                          >
+                          <p class="text-[13px] text-gray-600 font-medium">
+                            Mark as complete and rate your experience
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="bg-amber-50/50 rounded-3xl p-5 border border-amber-200"
+                    >
+                      <div class="flex items-center gap-2 mb-2">
+                        <svg
+                          class="w-4 h-4 text-amber-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          ><path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2.5"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                          /></svg
+                        >
+                        <h4
+                          class="text-sm font-bold text-amber-900 uppercase tracking-widest"
+                        >
+                          Safety Tips
+                        </h4>
+                      </div>
+                      <ul class="space-y-1.5 list-disc pl-4">
+                        <li class="text-xs text-amber-800 font-medium">
+                          Meet in safe, public places (campus library,
+                          cafeteria)
+                        </li>
+                        <li class="text-xs text-amber-800 font-medium">
+                          Inspect the book thoroughly before paying
+                        </li>
+                        <li class="text-xs text-amber-800 font-medium">
+                          Never share financial information via messaging apps
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
 
                 {#if book.status === "sold"}
@@ -2394,7 +2770,7 @@
                           </p>
                           <div class="mt-1 flex items-center gap-2">
                             <span class="text-xs font-black text-indigo-600"
-                              >₹{parseFloat(
+                              >Rs. {parseFloat(
                                 item.price || "0",
                               ).toLocaleString()}</span
                             >
@@ -2531,7 +2907,7 @@
           <p class="text-sm font-bold text-gray-900 truncate">{book?.title}</p>
           <div class="flex items-center gap-2">
             <span class="text-emerald-600 font-bold text-sm"
-              >₹{parseFloat(book?.price || "0").toLocaleString()}</span
+              >Rs. {parseFloat(book?.price || "0").toLocaleString()}</span
             >
             <span
               class="px-1.5 py-0.5 rounded-full bg-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-tight"
@@ -2559,12 +2935,67 @@
               >Cancel</button
             >
           {:else if reqStatus === "accepted"}
-            <a
-              href="/messages?listing={book?.id}"
-              class="px-6 py-2.5 rounded-xl text-white text-sm font-bold"
-              style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);"
-              >Message</a
+            <div
+              class="px-2.5 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-[11px] font-black uppercase tracking-wider border border-emerald-100 flex items-center gap-1.5"
             >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                /></svg
+              >
+              Accepted
+            </div>
+            {#if hasSellerContactInfo}
+              <button
+                onclick={() => {
+                  const el = document.getElementById("contact-info-block");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                class="px-5 py-2.5 rounded-xl text-white text-sm font-black flex items-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-100"
+                style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  /></svg
+                >
+                View Contact Info
+              </button>
+            {:else}
+              <a
+                href="/messages?listing={book?.id}"
+                class="px-6 py-2.5 rounded-xl text-white text-sm font-black flex items-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-100"
+                style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  /></svg
+                >
+                Message
+              </a>
+            {/if}
           {:else if reqStatus === "completed"}
             <button
               onclick={() => (rateModalOpen = true)}
