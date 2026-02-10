@@ -300,7 +300,7 @@
                   {/each}
                 </select>
                 <svg
-                  class="pointer-events-none absolute right-3 top-[33px] h-4 w-4 text-slate-500"
+                  class="pointer-events-none absolute right-3 top-8.25 h-4 w-4 text-slate-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -330,7 +330,7 @@
                   {/each}
                 </select>
                 <svg
-                  class="pointer-events-none absolute right-3 top-[33px] h-4 w-4 text-slate-500"
+                  class="pointer-events-none absolute right-3 top-8.25 h-4 w-4 text-slate-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -367,7 +367,6 @@
             Found
           </button>
         </div>
-
       </div>
     </div>
 
@@ -377,7 +376,7 @@
       </div>
     {:else if listQuery.error}
       <div
-        class="mx-auto max-w-md rounded-[2rem] border border-rose-100 bg-white p-10 text-center shadow-2xl"
+        class="mx-auto max-w-md rounded-4xl border border-rose-100 bg-white p-10 text-center shadow-2xl"
       >
         <div
           class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-rose-50 shadow-inner"
@@ -440,12 +439,27 @@
 
         {#if items.length === 0}
           <div
-            class="mx-auto max-w-2xl rounded-[3rem] border border-slate-50 bg-white p-12 text-center shadow-xl"
+            class="mx-auto mt-4 max-w-xl rounded-2xl border border-slate-100 bg-white px-6 py-8 text-center shadow-sm"
           >
-            <p class="text-3xl font-black tracking-tight text-slate-900">
+            <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            <p class="text-xl font-extrabold tracking-tight text-slate-900">
               No items found
             </p>
-            <p class="mt-3 text-slate-500">
+            <p class="mt-1.5 text-sm text-slate-500">
               Try changing filters or search terms.
             </p>
           </div>

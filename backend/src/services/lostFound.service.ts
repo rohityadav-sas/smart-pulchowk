@@ -16,6 +16,7 @@ import {
   lostFoundItems,
   type LostFoundClaim,
 } from "../models/lost-found-schema.js";
+import { user } from "../models/auth-schema.js";
 import { createInAppNotificationForUser } from "./inAppNotification.service.js";
 
 type ItemType = "lost" | "found";
@@ -59,6 +60,17 @@ function decodeCursor(cursor?: string | null): CursorPayload | null {
 function isNonGuestRole(role?: string) {
   if (!role) return false;
   return role !== "guest";
+}
+
+async function safeCreateNotification(
+  context: string,
+  run: () => Promise<unknown>,
+) {
+  try {
+    await run();
+  } catch (error) {
+    console.error(`LostFound notification error (${context}):`, error);
+  }
 }
 
 function normalizeLimit(limit?: number) {
@@ -411,6 +423,12 @@ export async function createClaimRequest(
   if (item.ownerId === requesterId) {
     return { success: false, message: "You cannot claim your own item." };
   }
+  if (item.itemType !== "found") {
+    return {
+      success: false,
+      message: "Claim requests are only available for found items.",
+    };
+  }
   if (item.status === "resolved" || item.status === "closed") {
     return { success: false, message: "This item is no longer accepting claims." };
   }
@@ -453,19 +471,35 @@ export async function createClaimRequest(
     created = inserted;
   }
 
-  await createInAppNotificationForUser({
-    userId: item.ownerId,
-    type: "lost_found_claim_received",
-    title: "New claim request",
-    body: `Someone requested your ${item.itemType} item: ${item.title}.`,
-    data: {
-      itemId: item.id,
-      claimId: created.id,
-      itemType: item.itemType,
-      iconKey: "lost_found",
-      thumbnailUrl: item.images[0]?.imageUrl || null,
-    },
+  const requester = await db.query.user.findFirst({
+    where: eq(user.id, requesterId),
+    columns: { id: true, name: true, image: true },
   });
+  const requesterName = requester?.name?.trim() || "Someone";
+  const actionText =
+    item.itemType === "found"
+      ? "claimed your found item"
+      : "has a comment on your lost item";
+
+  await safeCreateNotification("claim_received", () =>
+    createInAppNotificationForUser({
+      userId: item.ownerId,
+      type: "lost_found_claim_received",
+      title: "New claim request",
+      body: `${requesterName} ${actionText}: ${item.title}.`,
+      data: {
+        itemId: item.id,
+        claimId: created.id,
+        itemType: item.itemType,
+        itemTitle: item.title,
+        actorId: requester?.id || requesterId,
+        actorName: requesterName,
+        actorAvatarUrl: requester?.image || null,
+        iconKey: "lost_found",
+        thumbnailUrl: item.images[0]?.imageUrl || null,
+      },
+    }),
+  );
 
   return { success: true, data: created, message: "Claim request sent." };
 }
@@ -524,63 +558,68 @@ export async function setClaimStatus(
     return { success: false, message: "Only pending claims can be updated." };
   }
 
-  let updatedClaim: LostFoundClaim | null = null;
-  await db.transaction(async (tx) => {
-    const [updated] = await tx
-      .update(lostFoundClaims)
-      .set({ status: nextStatus, updatedAt: new Date() })
-      .where(eq(lostFoundClaims.id, claimId))
-      .returning();
-    updatedClaim = updated ?? null;
-
-    if (nextStatus === "accepted") {
-      await tx
-        .update(lostFoundClaims)
-        .set({ status: "rejected", updatedAt: new Date() })
-        .where(
-          and(
-            eq(lostFoundClaims.itemId, itemId),
-            ne(lostFoundClaims.id, claimId),
-            eq(lostFoundClaims.status, "pending"),
-          ),
-        );
-      await tx
-        .update(lostFoundItems)
-        .set({ status: "claimed", updatedAt: new Date() })
-        .where(eq(lostFoundItems.id, itemId));
-    }
-  });
+  const [updatedClaim] = await db
+    .update(lostFoundClaims)
+    .set({ status: nextStatus, updatedAt: new Date() })
+    .where(
+      and(
+        eq(lostFoundClaims.id, claimId),
+        eq(lostFoundClaims.itemId, itemId),
+        eq(lostFoundClaims.status, "pending"),
+      ),
+    )
+    .returning();
 
   if (!updatedClaim) return { success: false, message: "Failed to update claim." };
 
-  await createInAppNotificationForUser({
-    userId: updatedClaim.requesterId,
-    type:
-      nextStatus === "accepted"
-        ? "lost_found_claim_accepted"
-        : nextStatus === "rejected"
-          ? "lost_found_claim_rejected"
-          : "lost_found_claim_cancelled",
-    title:
-      nextStatus === "accepted"
-        ? "Claim accepted"
-        : nextStatus === "rejected"
-          ? "Claim rejected"
-          : "Claim cancelled",
-    body:
-      nextStatus === "accepted"
-        ? `Your claim for "${item.title}" was accepted.`
-        : nextStatus === "rejected"
-          ? `Your claim for "${item.title}" was rejected.`
-          : `Your claim for "${item.title}" was cancelled.`,
-    data: {
-      itemId: item.id,
-      claimId: updatedClaim.id,
-      itemType: item.itemType,
-      iconKey: "lost_found",
-      thumbnailUrl: item.images[0]?.imageUrl || null,
-    },
-  });
+  if (nextStatus === "accepted") {
+    await db
+      .update(lostFoundClaims)
+      .set({ status: "rejected", updatedAt: new Date() })
+      .where(
+        and(
+          eq(lostFoundClaims.itemId, itemId),
+          ne(lostFoundClaims.id, claimId),
+          eq(lostFoundClaims.status, "pending"),
+        ),
+      );
+    await db
+      .update(lostFoundItems)
+      .set({ status: "resolved", updatedAt: new Date() })
+      .where(eq(lostFoundItems.id, itemId));
+  }
+
+  await safeCreateNotification("claim_status_updated", () =>
+    createInAppNotificationForUser({
+      userId: updatedClaim.requesterId,
+      type:
+        nextStatus === "accepted"
+          ? "lost_found_claim_accepted"
+          : nextStatus === "rejected"
+            ? "lost_found_claim_rejected"
+            : "lost_found_claim_cancelled",
+      title:
+        nextStatus === "accepted"
+          ? "Claim accepted"
+          : nextStatus === "rejected"
+            ? "Claim rejected"
+            : "Claim cancelled",
+      body:
+        nextStatus === "accepted"
+          ? `Your claim for "${item.title}" was accepted.`
+          : nextStatus === "rejected"
+            ? `Your claim for "${item.title}" was rejected.`
+            : `Your claim for "${item.title}" was cancelled.`,
+      data: {
+        itemId: item.id,
+        claimId: updatedClaim.id,
+        itemType: item.itemType,
+        itemTitle: item.title,
+        iconKey: "lost_found",
+        thumbnailUrl: item.images[0]?.imageUrl || null,
+      },
+    }),
+  );
 
   return { success: true, data: updatedClaim, message: "Claim status updated." };
 }
@@ -621,18 +660,21 @@ export async function markItemStatus(
 
     await Promise.all(
       acceptedClaims.map((claim) =>
-        createInAppNotificationForUser({
-          userId: claim.requesterId,
-          type: "lost_found_resolved",
-          title: "Item marked as resolved",
-          body: `The owner marked "${item.title}" as resolved.`,
-          data: {
-            itemId: item.id,
-            itemType: item.itemType,
-            iconKey: "lost_found",
-            thumbnailUrl: item.images[0]?.imageUrl || null,
-          },
-        }),
+        safeCreateNotification("item_resolved", () =>
+          createInAppNotificationForUser({
+            userId: claim.requesterId,
+            type: "lost_found_resolved",
+            title: "Item marked as resolved",
+            body: `The owner marked "${item.title}" as resolved.`,
+            data: {
+              itemId: item.id,
+              itemType: item.itemType,
+              itemTitle: item.title,
+              iconKey: "lost_found",
+              thumbnailUrl: item.images[0]?.imageUrl || null,
+            },
+          }),
+        ),
       ),
     );
   }
