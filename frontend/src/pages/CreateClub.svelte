@@ -215,11 +215,11 @@
   class="create-club-compact min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8"
 >
   <div
-    class="max-w-6xl w-full bg-white rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] border border-white overflow-hidden flex flex-col lg:flex-row min-h-[750px]"
+    class="max-w-6xl w-full bg-white rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] border border-white overflow-hidden flex flex-col lg:flex-row min-h-187.5"
   >
     <!-- Sidebar Left: Vertical Stepper -->
     <aside
-      class="w-full lg:w-[400px] bg-blue-50/30 p-10 lg:p-12 border-r border-gray-100 flex flex-col justify-between"
+      class="w-full lg:w-100 bg-blue-50/30 p-10 lg:p-12 border-r border-gray-100 flex flex-col justify-between"
     >
       <div>
         <nav class="flex items-center gap-2 text-sm text-gray-500 mb-8" in:fade>
@@ -243,7 +243,7 @@
         <div class="space-y-8 relative">
           <!-- Connector Line -->
           <div
-            class="absolute left-6 top-2 bottom-2 w-0.5 bg-gray-100 -z-0"
+            class="absolute left-6 top-2 bottom-2 w-0.5 bg-gray-100 z-0"
           ></div>
 
           {#each stepTitles as title, i}
@@ -307,7 +307,7 @@
 
       <!-- Pro-Tip Box -->
       <div
-        class="mt-12 p-8 bg-blue-600 rounded-[2rem] text-white shadow-2xl shadow-blue-500/20 relative overflow-hidden group"
+        class="mt-12 p-8 bg-blue-600 rounded-4xl text-white shadow-2xl shadow-blue-500/20 relative overflow-hidden group"
       >
         <svg
           class="absolute -right-4 -bottom-4 w-32 h-32 opacity-10 group-hover:scale-110 transition-transform duration-700"
@@ -438,22 +438,21 @@
                         type="email"
                         bind:value={email}
                         placeholder="club@pcampus.edu.np"
-                        class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
+                        class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
                         required
                       />
                     </div>
                     <div class="space-y-2">
                       <label
                         class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                        for="club-tagline"
-                        >Punchline / Tagline</label
+                        for="club-tagline">Punchline / Tagline</label
                       >
                       <textarea
                         id="club-tagline"
                         bind:value={description}
                         placeholder="Wait... how would you summarize your club in one line?"
                         rows="3"
-                        class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
+                        class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
                       ></textarea>
                     </div>
                   </div>
@@ -468,87 +467,81 @@
                       <div class="space-y-2">
                         <label
                           class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                          for="club-mission"
-                          >Mission</label
+                          for="club-mission">Mission</label
                         >
                         <textarea
                           id="club-mission"
                           bind:value={mission}
                           placeholder="Your core purpose..."
                           rows="4"
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
                         ></textarea>
                       </div>
                       <div class="space-y-2">
                         <label
                           class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                          for="club-vision"
-                          >Vision</label
+                          for="club-vision">Vision</label
                         >
                         <textarea
                           id="club-vision"
                           bind:value={vision}
                           placeholder="Where are you heading?"
                           rows="4"
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
                         ></textarea>
                       </div>
                     </div>
                     <div class="space-y-2">
                       <label
                         class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                        for="club-about"
-                        >About Club</label
+                        for="club-about">About Club</label
                       >
                       <textarea
                         id="club-about"
                         bind:value={aboutClub}
                         placeholder="Brief introduction about your club..."
                         rows="4"
-                        class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
+                        class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
                       ></textarea>
                     </div>
                     <div class="grid sm:grid-cols-2 gap-6">
                       <div class="space-y-2">
                         <label
                           class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                          for="club-benefits"
-                          >Member Benefits</label
+                          for="club-benefits">Member Benefits</label
                         >
                         <textarea
                           id="club-benefits"
                           bind:value={benefits}
                           placeholder="Why join?"
                           rows="3"
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
                         ></textarea>
                       </div>
                       <div class="space-y-2">
                         <label
                           class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                          for="club-achievements"
-                          >Achievements</label
+                          for="club-achievements">Achievements</label
                         >
                         <textarea
                           id="club-achievements"
                           bind:value={achievements}
                           placeholder="What have you achieved?"
                           rows="3"
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-gray-400/50 shadow-sm"
                         ></textarea>
                       </div>
                       <div class="space-y-2">
                         <label
                           class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                          for="club-est-year"
-                          >Est. Year</label
+                          for="club-est-year">Est. Year</label
                         >
                         <input
                           id="club-est-year"
                           type="number"
                           bind:value={establishedYear}
                           placeholder="2024"
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
                         />
                       </div>
                     </div>
@@ -640,29 +633,27 @@
                       <div class="space-y-2">
                         <label
                           class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                          for="club-website"
-                          >Website</label
+                          for="club-website">Website</label
                         >
                         <input
                           id="club-website"
                           type="url"
                           bind:value={websiteUrl}
                           placeholder="https://yourclub.com"
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
                         />
                       </div>
                       <div class="space-y-2">
                         <label
                           class="block text-sm font-black text-gray-700 uppercase tracking-widest px-1"
-                          for="club-phone"
-                          >Phone</label
+                          for="club-phone">Phone</label
                         >
                         <input
                           id="club-phone"
                           type="tel"
                           bind:value={contactPhone}
                           placeholder="+977 98..."
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
                         />
                       </div>
                     </div>
@@ -746,7 +737,7 @@
                           type="url"
                           bind:value={logoUrl}
                           placeholder="https://..."
-                          class="w-full bg-gray-50 border-none rounded-[1.5rem] py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
+                          class="w-full bg-gray-50 border-none rounded-3xl py-5 px-6 font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-400/50 shadow-sm"
                         />
                       {/if}
                     </div>

@@ -108,7 +108,6 @@
       );
   });
 
-
   const currentPath = $derived(activePath);
 
   const isMapRoute = $derived(currentPath === "/map");
@@ -236,9 +235,15 @@
     if (normalized === "/create-club" || normalized.startsWith("/create-club/"))
       return false;
     if (/^\/clubs\/\d+\/events\/create(?:\/|$)/.test(normalized)) return false;
-    if (normalized === "/lost-found/report" || normalized.startsWith("/lost-found/report/"))
+    if (
+      normalized === "/lost-found/report" ||
+      normalized.startsWith("/lost-found/report/")
+    )
       return false;
-    if (normalized === "/lost-found/my" || normalized.startsWith("/lost-found/my/"))
+    if (
+      normalized === "/lost-found/my" ||
+      normalized.startsWith("/lost-found/my/")
+    )
       return false;
     return true;
   }
@@ -658,7 +663,11 @@
                     Books
                   </a>
                 {/if}
-                <a use:route href="/lost-found" class={navPillClass("/lost-found")}>
+                <a
+                  use:route
+                  href="/lost-found"
+                  class={navPillClass("/lost-found")}
+                >
                   <svg
                     class="w-4 h-4"
                     fill="none"

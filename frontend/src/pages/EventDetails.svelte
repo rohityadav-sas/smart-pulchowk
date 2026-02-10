@@ -640,9 +640,11 @@
   }
 </script>
 
-<div class="event-details-compact min-h-[calc(100vh-4rem)] bg-gray-50/30 px-4 py-8 sm:px-6 lg:px-8 {highlightEvent
-  ? 'ring-2 ring-cyan-400 ring-offset-2 bg-cyan-50/20 notif-highlight-blink'
-  : ''}">
+<div
+  class="event-details-compact min-h-[calc(100vh-4rem)] bg-gray-50/30 px-4 py-8 sm:px-6 lg:px-8 {highlightEvent
+    ? 'ring-2 ring-cyan-400 ring-offset-2 bg-cyan-50/20 notif-highlight-blink'
+    : ''}"
+>
   <div class="max-w-5xl mx-auto">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-8" in:fade>
@@ -1227,7 +1229,6 @@
                         class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
                       >
                         <div class="p-2 space-y-1">
-
                           <button
                             onclick={() => exportParticipants("pdf")}
                             class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors group"
@@ -2226,4 +2227,3 @@
     border-radius: 0.78rem !important;
   }
 </style>
-

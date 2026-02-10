@@ -81,6 +81,11 @@ function isTypeAllowedByPreferences(
     lower === "role_changed" ||
     lower === "security_alert" ||
     lower === "system_announcement";
+  const isLostFoundType =
+    lower.startsWith("lost_") ||
+    lower.startsWith("found_") ||
+    lower.startsWith("lostfound_") ||
+    icon === "search";
 
   if (isEventType && !preferences.eventReminders) return false;
   if (isNoticeType && !preferences.noticeUpdates) return false;
@@ -88,6 +93,7 @@ function isTypeAllowedByPreferences(
   if (isClassroomType && !preferences.classroomAlerts) return false;
   if (isChatType && !preferences.chatAlerts) return false;
   if (isAdminType && !preferences.adminAlerts) return false;
+  if (isLostFoundType && !preferences.lostAndFoundAlerts) return false;
   return true;
 }
 
@@ -120,6 +126,18 @@ export const sendToTopic = async (
         title: derivedTitle,
         body: derivedBody,
         data: { iconKey: "book", ...payload.data },
+      }).catch((error) =>
+        console.error("Failed to create in-app audience notification:", error),
+      );
+    }
+
+    if (topic === "lost_found") {
+      createInAppNotificationForAudience({
+        audience: "all",
+        type: "lost_found_published",
+        title: derivedTitle,
+        body: derivedBody,
+        data: { iconKey: "search", ...payload.data },
       }).catch((error) =>
         console.error("Failed to create in-app audience notification:", error),
       );

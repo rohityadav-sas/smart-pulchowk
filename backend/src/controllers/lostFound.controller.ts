@@ -15,6 +15,7 @@ import {
   updateLostFoundItem,
 } from "../services/lostFound.service.js";
 import { deleteImage, uploadImage } from "../services/cloudinary.service.js";
+import { sendToTopic } from "../services/notification.service.js";
 
 function getAuth(req: Request) {
   const authUser = (req as any).user as { id: string; role?: string } | undefined;
@@ -65,6 +66,20 @@ export async function CreateLostFoundItem(req: Request, res: Response) {
 
     const result = await createLostFoundItem(userId, role, req.body || {});
     if (!result.success) return res.status(400).json(result);
+
+    if (result.data) {
+      sendToTopic("lost_found", {
+        title: `New ${result.data.itemType} item: ${result.data.title}`,
+        body: `A new ${result.data.category} item was reported as ${result.data.itemType}.`,
+        data: {
+          type: "lost_found_published",
+          itemId: result.data.id.toString(),
+          itemType: result.data.itemType,
+          iconKey: "search",
+        },
+      });
+    }
+
     return res.status(201).json(result);
   } catch (error) {
     console.error("Error in CreateLostFoundItem controller:", error);

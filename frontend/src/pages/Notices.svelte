@@ -1,8 +1,5 @@
 ﻿<script lang="ts">
-  import {
-    goto,
-    query as routeQuery,
-  } from "@mateothegreat/svelte5-router";
+  import { goto, query as routeQuery } from "@mateothegreat/svelte5-router";
   import { onMount } from "svelte";
   import { authClient } from "../lib/auth-client";
   import { fade } from "svelte/transition";
@@ -34,7 +31,9 @@
     | "exam_centers"
     | "general";
 
-  function asNoticeCategory(value: string | null | undefined): NoticeCategory | null {
+  function asNoticeCategory(
+    value: string | null | undefined,
+  ): NoticeCategory | null {
     const normalized = (value || "").trim();
     if (
       normalized === "results" ||
@@ -176,12 +175,7 @@
   }
 
   const noticesQuery = createQuery(() => ({
-    queryKey: [
-      "notices",
-      activeCategory,
-      debouncedSearchQuery,
-      noticesOffset,
-    ],
+    queryKey: ["notices", activeCategory, debouncedSearchQuery, noticesOffset],
     queryFn: async () => {
       const result = await getNotices({
         category: activeCategory,
@@ -247,7 +241,9 @@
   }
 
   function sortNoticesLatestFirst(list: Notice[]) {
-    return [...list].sort((a, b) => getNoticeSortTime(b) - getNoticeSortTime(a));
+    return [...list].sort(
+      (a, b) => getNoticeSortTime(b) - getNoticeSortTime(a),
+    );
   }
 
   const filteredNotices = $derived(sortNoticesLatestFirst(loadedNotices));
@@ -1113,7 +1109,10 @@
                             </div>
                           {/if}
                           <img
-                            src={optimizeCloudinaryUrl(notice.attachmentUrl, 800)}
+                            src={optimizeCloudinaryUrl(
+                              notice.attachmentUrl,
+                              800,
+                            )}
                             alt={notice.title}
                             class="max-h-64 mx-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity {imagesLoaded[
                               notice.id
@@ -1581,4 +1580,3 @@
     overflow: hidden;
   }
 </style>
-

@@ -3,7 +3,7 @@
     route as routeAction,
     goto,
     query as routeQuery,
-  } from '@mateothegreat/svelte5-router'
+  } from "@mateothegreat/svelte5-router";
   import {
     getMyBookListings,
     getSavedBooks,
@@ -18,303 +18,308 @@
     getConversations,
     type BlockedUser,
     type MarketplaceReport,
-  } from '../lib/api'
-  import LoadingSpinner from '../components/LoadingSpinner.svelte'
-  import ChatInterface from '../components/ChatInterface.svelte'
-  import { fade, fly } from 'svelte/transition'
-  import { authClient } from '../lib/auth-client'
-  import { createQuery, useQueryClient } from '@tanstack/svelte-query'
-  import { untrack } from 'svelte'
+  } from "../lib/api";
+  import LoadingSpinner from "../components/LoadingSpinner.svelte";
+  import ChatInterface from "../components/ChatInterface.svelte";
+  import { fade, fly } from "svelte/transition";
+  import { authClient } from "../lib/auth-client";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { untrack } from "svelte";
 
-  const session = authClient.useSession()
-  const queryClient = useQueryClient()
+  const session = authClient.useSession();
+  const queryClient = useQueryClient();
 
   type MyBooksTab =
-    | 'listings'
-    | 'saved'
-    | 'requests'
-    | 'messages'
-    | 'reports'
-    | 'blocks'
+    | "listings"
+    | "saved"
+    | "requests"
+    | "messages"
+    | "reports"
+    | "blocks";
   const VALID_TABS: MyBooksTab[] = [
-    'listings',
-    'saved',
-    'requests',
-    'messages',
-    'reports',
-    'blocks',
-  ]
+    "listings",
+    "saved",
+    "requests",
+    "messages",
+    "reports",
+    "blocks",
+  ];
   function parseTab(value: string | null | undefined): MyBooksTab | null {
-    if (!value) return null
+    if (!value) return null;
     return VALID_TABS.includes(value as MyBooksTab)
       ? (value as MyBooksTab)
-      : null
+      : null;
   }
   function getTabFromUrl(): MyBooksTab {
-    const highlightTabParam = parseTab(routeQuery('highlightTab'))
-    const tabParam = parseTab(routeQuery('tab'))
-    return highlightTabParam || tabParam || 'listings'
+    const highlightTabParam = parseTab(routeQuery("highlightTab"));
+    const tabParam = parseTab(routeQuery("tab"));
+    return highlightTabParam || tabParam || "listings";
   }
 
   const highlightedListingIdParam = Number(
-    routeQuery('highlightListingId') || routeQuery('listingId') || 0,
-  )
+    routeQuery("highlightListingId") || routeQuery("listingId") || 0,
+  );
   const highlightedRequestIdParam = Number(
-    routeQuery('highlightRequestId') || routeQuery('requestId') || 0,
-  )
-  let activeTab = $state<MyBooksTab>(getTabFromUrl())
+    routeQuery("highlightRequestId") || routeQuery("requestId") || 0,
+  );
+  let activeTab = $state<MyBooksTab>(getTabFromUrl());
   let highlightedListingId = $state<number | null>(
     highlightedListingIdParam > 0 ? highlightedListingIdParam : null,
-  )
+  );
   let highlightedRequestId = $state<number | null>(
     highlightedRequestIdParam > 0 ? highlightedRequestIdParam : null,
-  )
-  let listingHighlightApplied = $state(false)
-  let requestHighlightApplied = $state(false)
-  let hasRedirectedToLogin = $state(false)
-  let unblockingId = $state<string | null>(null)
+  );
+  let listingHighlightApplied = $state(false);
+  let requestHighlightApplied = $state(false);
+  let hasRedirectedToLogin = $state(false);
+  let unblockingId = $state<string | null>(null);
 
   function syncTabFromUrl() {
-    const nextTab = getTabFromUrl()
+    const nextTab = getTabFromUrl();
     if (activeTab !== nextTab) {
-      activeTab = nextTab
+      activeTab = nextTab;
     }
   }
 
   function setActiveTab(nextTab: MyBooksTab) {
     if (activeTab !== nextTab) {
-      activeTab = nextTab
+      activeTab = nextTab;
     }
 
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return;
 
-    const url = new URL(window.location.href)
-    url.searchParams.set('tab', nextTab)
-    url.searchParams.delete('highlightTab')
-    const nextHref = `${url.pathname}${url.search}`
-    const currentHref = `${window.location.pathname}${window.location.search}`
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", nextTab);
+    url.searchParams.delete("highlightTab");
+    const nextHref = `${url.pathname}${url.search}`;
+    const currentHref = `${window.location.pathname}${window.location.search}`;
     if (nextHref !== currentHref) {
-      goto(nextHref)
+      goto(nextHref);
     }
   }
 
   $effect(() => {
-    if (hasRedirectedToLogin) return
+    if (hasRedirectedToLogin) return;
 
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      hasRedirectedToLogin = true
+      hasRedirectedToLogin = true;
       untrack(() => {
-        goto('/register?message=login_required')
-      })
+        goto("/register?message=login_required");
+      });
     }
-  })
+  });
 
   $effect(() => {
-    syncTabFromUrl()
-  })
+    syncTabFromUrl();
+  });
 
   $effect(() => {
-    if (typeof window === 'undefined') return
-    window.addEventListener('pushState', syncTabFromUrl)
-    window.addEventListener('replaceState', syncTabFromUrl)
-    window.addEventListener('popstate', syncTabFromUrl)
+    if (typeof window === "undefined") return;
+    window.addEventListener("pushState", syncTabFromUrl);
+    window.addEventListener("replaceState", syncTabFromUrl);
+    window.addEventListener("popstate", syncTabFromUrl);
     return () => {
-      window.removeEventListener('pushState', syncTabFromUrl)
-      window.removeEventListener('replaceState', syncTabFromUrl)
-      window.removeEventListener('popstate', syncTabFromUrl)
-    }
-  })
+      window.removeEventListener("pushState", syncTabFromUrl);
+      window.removeEventListener("replaceState", syncTabFromUrl);
+      window.removeEventListener("popstate", syncTabFromUrl);
+    };
+  });
 
   const myListingsQuery = createQuery(() => ({
-    queryKey: ['my-book-listings'],
+    queryKey: ["my-book-listings"],
     queryFn: async () => {
-      const result = await getMyBookListings()
+      const result = await getMyBookListings();
       if (result.success && result.data) {
-        return result.data
+        return result.data;
       }
-      throw new Error(result.message || 'Failed to load listings')
+      throw new Error(result.message || "Failed to load listings");
     },
     enabled: !!$session.data?.user,
-  }))
+  }));
 
   const savedBooksQuery = createQuery(() => ({
-    queryKey: ['saved-books'],
+    queryKey: ["saved-books"],
     queryFn: async () => {
-      const result = await getSavedBooks()
+      const result = await getSavedBooks();
       if (result.success && result.data) {
-        return result.data
+        return result.data;
       }
-      throw new Error(result.message || 'Failed to load saved books')
+      throw new Error(result.message || "Failed to load saved books");
     },
     enabled: !!$session.data?.user,
-  }))
+  }));
 
   const myRequestsQuery = createQuery(() => ({
-    queryKey: ['my-purchase-requests'],
+    queryKey: ["my-purchase-requests"],
     queryFn: async () => {
-      const result = await getMyPurchaseRequests()
+      const result = await getMyPurchaseRequests();
       if (result.success && result.data) {
-        return result.data
+        return result.data;
       }
-      throw new Error(result.message || 'Failed to load requests')
+      throw new Error(result.message || "Failed to load requests");
     },
     enabled: !!$session.data?.user,
-  }))
+  }));
 
   const conversationsQuery = createQuery(() => ({
-    queryKey: ['chat-conversations'],
+    queryKey: ["chat-conversations"],
     queryFn: async () => {
-      const result = await getConversations()
-      return result.success ? result.data || [] : []
+      const result = await getConversations();
+      return result.success ? result.data || [] : [];
     },
     enabled: !!$session.data?.user,
-  }))
+  }));
 
   const reportsQuery = createQuery(() => ({
-    queryKey: ['my-marketplace-reports'],
+    queryKey: ["my-marketplace-reports"],
     queryFn: async () => {
-      const result = await getMyMarketplaceReports()
-      if (result.success && result.data) return result.data
-      throw new Error(result.message || 'Failed to load reports')
+      const result = await getMyMarketplaceReports();
+      if (result.success && result.data) return result.data;
+      throw new Error(result.message || "Failed to load reports");
     },
     enabled: !!$session.data?.user,
-  }))
+  }));
 
   const blockedUsersQuery = createQuery(() => ({
-    queryKey: ['my-blocked-users'],
+    queryKey: ["my-blocked-users"],
     queryFn: async () => {
-      const result = await getBlockedMarketplaceUsers()
-      if (result.success && result.data) return result.data
-      throw new Error(result.message || 'Failed to load blocked users')
+      const result = await getBlockedMarketplaceUsers();
+      if (result.success && result.data) return result.data;
+      throw new Error(result.message || "Failed to load blocked users");
     },
     enabled: !!$session.data?.user,
-  }))
+  }));
 
   const conditionLabels: Record<string, string> = {
-    new: 'New',
-    like_new: 'Like New',
-    good: 'Good',
-    fair: 'Fair',
-    poor: 'Poor',
-  }
+    new: "New",
+    like_new: "Like New",
+    good: "Good",
+    fair: "Fair",
+    poor: "Poor",
+  };
 
   const conditionColors: Record<string, string> = {
-    new: 'bg-emerald-100 text-emerald-700',
-    like_new: 'bg-blue-100 text-blue-700',
-    good: 'bg-amber-100 text-amber-700',
-    fair: 'bg-orange-100 text-orange-700',
-    poor: 'bg-red-100 text-red-700',
-  }
+    new: "bg-emerald-100 text-emerald-700",
+    like_new: "bg-blue-100 text-blue-700",
+    good: "bg-amber-100 text-amber-700",
+    fair: "bg-orange-100 text-orange-700",
+    poor: "bg-red-100 text-red-700",
+  };
 
   const statusColors: Record<string, string> = {
-    available: 'bg-green-100 text-green-700',
-    pending: 'bg-yellow-100 text-yellow-700',
-    sold: 'bg-gray-100 text-gray-700',
-    removed: 'bg-red-100 text-red-700',
-  }
+    available: "bg-green-100 text-green-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    sold: "bg-gray-100 text-gray-700",
+    removed: "bg-red-100 text-red-700",
+  };
 
-  const reportStatusColors: Record<
-    MarketplaceReport['status'],
-    string
-  > = {
-    open: 'bg-amber-100 text-amber-700 border-amber-200',
-    in_review: 'bg-blue-100 text-blue-700 border-blue-200',
-    resolved: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    rejected: 'bg-slate-100 text-slate-600 border-slate-200',
-  }
+  const reportStatusColors: Record<MarketplaceReport["status"], string> = {
+    open: "bg-amber-100 text-amber-700 border-amber-200",
+    in_review: "bg-blue-100 text-blue-700 border-blue-200",
+    resolved: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    rejected: "bg-slate-100 text-slate-600 border-slate-200",
+  };
 
   function formatPrice(price: string) {
-    return `Rs. ${parseFloat(price).toLocaleString()}`
+    return `Rs. ${parseFloat(price).toLocaleString()}`;
   }
 
   function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   }
 
   async function handleDelete(id: number) {
-    if (!confirm('Are you sure you want to delete this listing?')) return
-    const result = await deleteBookListing(id)
+    if (!confirm("Are you sure you want to delete this listing?")) return;
+    const result = await deleteBookListing(id);
     if (result.success) {
-      queryClient.invalidateQueries({ queryKey: ['my-book-listings'] })
+      queryClient.invalidateQueries({ queryKey: ["my-book-listings"] });
     }
   }
 
   async function handleMarkSold(id: number) {
-    if (!confirm('Mark this book as sold?')) return
-    const result = await markBookAsSold(id)
+    if (!confirm("Mark this book as sold?")) return;
+    const result = await markBookAsSold(id);
     if (result.success) {
-      queryClient.invalidateQueries({ queryKey: ['my-book-listings'] })
+      queryClient.invalidateQueries({ queryKey: ["my-book-listings"] });
     }
   }
 
   async function handleUnsave(listingId: number) {
-    const result = await unsaveBook(listingId)
+    const result = await unsaveBook(listingId);
     if (result.success) {
-      queryClient.invalidateQueries({ queryKey: ['saved-books'] })
+      queryClient.invalidateQueries({ queryKey: ["saved-books"] });
     }
   }
 
   async function handleDeleteRequest(requestId: number) {
-    if (!confirm('Remove this request from your history?')) return
-    const result = await deletePurchaseRequest(requestId)
+    if (!confirm("Remove this request from your history?")) return;
+    const result = await deletePurchaseRequest(requestId);
     if (result.success) {
       queryClient.invalidateQueries({
-        queryKey: ['my-purchase-requests'],
-      })
+        queryKey: ["my-purchase-requests"],
+      });
     }
   }
 
   async function handleUnblock(user: BlockedUser) {
-    unblockingId = user.blockedUserId
+    unblockingId = user.blockedUserId;
     try {
-      const result = await unblockMarketplaceUser(user.blockedUserId)
+      const result = await unblockMarketplaceUser(user.blockedUserId);
       if (result.success) {
         await queryClient.invalidateQueries({
-          queryKey: ['my-blocked-users'],
-        })
+          queryKey: ["my-blocked-users"],
+        });
       } else {
-        alert(result.message || 'Failed to unblock user')
+        alert(result.message || "Failed to unblock user");
       }
     } catch (error) {
-      console.error('Unblock error:', error)
+      console.error("Unblock error:", error);
     } finally {
-      unblockingId = null
+      unblockingId = null;
     }
   }
 
   $effect(() => {
-    if (listingHighlightApplied || !highlightedListingId) return
-    if (activeTab !== 'listings') return
+    if (listingHighlightApplied || !highlightedListingId) return;
+    if (activeTab !== "listings") return;
     if (!myListingsQuery.data?.some((book) => book.id === highlightedListingId))
-      return
+      return;
 
-    listingHighlightApplied = true
+    listingHighlightApplied = true;
     requestAnimationFrame(() => {
-      const element = document.getElementById(`listing-${highlightedListingId}`)
+      const element = document.getElementById(
+        `listing-${highlightedListingId}`,
+      );
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
       }
-    })
-  })
+    });
+  });
 
   $effect(() => {
-    if (requestHighlightApplied || !highlightedRequestId) return
-    if (activeTab !== 'requests') return
-    if (!myRequestsQuery.data?.some((request) => request.id === highlightedRequestId))
-      return
+    if (requestHighlightApplied || !highlightedRequestId) return;
+    if (activeTab !== "requests") return;
+    if (
+      !myRequestsQuery.data?.some(
+        (request) => request.id === highlightedRequestId,
+      )
+    )
+      return;
 
-    requestHighlightApplied = true
+    requestHighlightApplied = true;
     requestAnimationFrame(() => {
-      const element = document.getElementById(`request-${highlightedRequestId}`)
+      const element = document.getElementById(
+        `request-${highlightedRequestId}`,
+      );
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
       }
-    })
-  })
+    });
+  });
 </script>
 
 <div class="min-h-[calc(100vh-4rem)] bg-gray-50/50 px-3 py-4 sm:px-5 lg:px-6">
@@ -382,7 +387,7 @@
       class="flex gap-1 mb-3 bg-white p-1 rounded-lg border border-gray-100 w-fit"
     >
       <button
-        onclick={() => setActiveTab('listings')}
+        onclick={() => setActiveTab("listings")}
         class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {activeTab ===
         'listings'
           ? 'bg-blue-600 text-white shadow-sm'
@@ -401,7 +406,7 @@
         {/if}
       </button>
       <button
-        onclick={() => setActiveTab('saved')}
+        onclick={() => setActiveTab("saved")}
         class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {activeTab ===
         'saved'
           ? 'bg-blue-600 text-white shadow-sm'
@@ -410,7 +415,8 @@
         Saved Books
         {#if savedBooksQuery.data}
           <span
-            class="ml-1.5 px-1.5 py-0.5 text-[10px] rounded-full {activeTab === 'saved'
+            class="ml-1.5 px-1.5 py-0.5 text-[10px] rounded-full {activeTab ===
+            'saved'
               ? 'bg-blue-500'
               : 'bg-gray-100'}"
           >
@@ -419,7 +425,7 @@
         {/if}
       </button>
       <button
-        onclick={() => setActiveTab('requests')}
+        onclick={() => setActiveTab("requests")}
         class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {activeTab ===
         'requests'
           ? 'bg-blue-600 text-white shadow-sm'
@@ -438,7 +444,7 @@
         {/if}
       </button>
       <button
-        onclick={() => setActiveTab('messages')}
+        onclick={() => setActiveTab("messages")}
         class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {activeTab ===
         'messages'
           ? 'bg-blue-600 text-white shadow-sm'
@@ -457,7 +463,7 @@
         {/if}
       </button>
       <button
-        onclick={() => setActiveTab('reports')}
+        onclick={() => setActiveTab("reports")}
         class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {activeTab ===
         'reports'
           ? 'bg-blue-600 text-white shadow-sm'
@@ -476,7 +482,7 @@
         {/if}
       </button>
       <button
-        onclick={() => setActiveTab('blocks')}
+        onclick={() => setActiveTab("blocks")}
         class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all {activeTab ===
         'blocks'
           ? 'bg-blue-600 text-white shadow-sm'
@@ -497,7 +503,7 @@
     </div>
 
     <!-- My Listings Tab -->
-    {#if activeTab === 'listings'}
+    {#if activeTab === "listings"}
       {#if myListingsQuery.isLoading}
         <div class="flex items-center justify-center py-10" in:fade>
           <LoadingSpinner size="lg" text="Loading your listings..." />
@@ -561,7 +567,7 @@
               <div class="flex gap-2.5">
                 <!-- Image -->
                 <a href="/books/{book.id}" use:routeAction class="shrink-0">
-                  <div class="w-14 h-[4.5rem] rounded-md overflow-hidden bg-gray-100">
+                  <div class="w-14 h-18 rounded-md overflow-hidden bg-gray-100">
                     {#if book.images && book.images.length > 0}
                       <img
                         src={book.images[0].imageUrl}
@@ -636,7 +642,7 @@
                     <div
                       class="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-slate-50"
                     >
-                      {#if book.status === 'available'}
+                      {#if book.status === "available"}
                         <button
                           onclick={() => handleMarkSold(book.id)}
                           class="inline-flex shrink-0 items-center justify-center gap-1 px-2.5 py-1 text-[10px] font-bold text-white bg-emerald-500 hover:bg-emerald-600 rounded-lg transition-all shadow-sm shadow-emerald-200 hover:shadow-md active:scale-95 whitespace-nowrap"
@@ -650,7 +656,7 @@
                         >
                           Edit
                         </a>
-                      {:else if book.status === 'sold'}
+                      {:else if book.status === "sold"}
                         <div
                           class="flex-1 flex items-center gap-1.5 px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100"
                         >
@@ -706,7 +712,7 @@
     {/if}
 
     <!-- Saved Books Tab -->
-    {#if activeTab === 'saved'}
+    {#if activeTab === "saved"}
       {#if savedBooksQuery.isLoading}
         <div class="flex items-center justify-center py-10" in:fade>
           <LoadingSpinner size="lg" text="Loading saved books..." />
@@ -837,7 +843,7 @@
     {/if}
 
     <!-- My Requests Tab -->
-    {#if activeTab === 'requests'}
+    {#if activeTab === "requests"}
       {#if myRequestsQuery.isLoading}
         <div class="flex items-center justify-center py-10" in:fade>
           <LoadingSpinner size="lg" text="Loading your requests..." />
@@ -902,13 +908,9 @@
               >
                 <div class="flex gap-2.5">
                   <!-- Image -->
-                  <a
-                    href="/books/{book.id}"
-                    use:routeAction
-                    class="flex-shrink-0"
-                  >
+                  <a href="/books/{book.id}" use:routeAction class="shrink-0">
                     <div
-                      class="w-14 h-[4.5rem] rounded-md overflow-hidden bg-gray-100 relative"
+                      class="w-14 h-18 rounded-md overflow-hidden bg-gray-100 relative"
                     >
                       {#if book.images && book.images.length > 0}
                         <img
@@ -936,7 +938,7 @@
                         </div>
                       {/if}
 
-                      {#if book.status === 'sold'}
+                      {#if book.status === "sold"}
                         <div
                           class="absolute inset-0 bg-gray-900/40 flex items-center justify-center"
                         >
@@ -966,7 +968,7 @@
                       </div>
 
                       <div class="flex flex-col items-end gap-1">
-                        {#if request.status === 'requested'}
+                        {#if request.status === "requested"}
                           <span
                             class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-100 flex items-center gap-1"
                           >
@@ -975,7 +977,7 @@
                             ></span>
                             Pending
                           </span>
-                        {:else if request.status === 'accepted'}
+                        {:else if request.status === "accepted"}
                           <span
                             class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center gap-1"
                           >
@@ -993,7 +995,7 @@
                             >
                             Accepted
                           </span>
-                        {:else if request.status === 'rejected'}
+                        {:else if request.status === "rejected"}
                           <span
                             class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-100"
                           >
@@ -1033,7 +1035,7 @@
                     {/if}
 
                     <div class="flex items-center justify-between mt-2">
-                      {#if request.status === 'accepted'}
+                      {#if request.status === "accepted"}
                         <a
                           href="/books/{book.id}"
                           use:routeAction
@@ -1086,13 +1088,13 @@
     {/if}
 
     <!-- Messages Tab -->
-    {#if activeTab === 'messages'}
+    {#if activeTab === "messages"}
       <div in:fade={{ duration: 200 }}>
         <ChatInterface />
       </div>
     {/if}
 
-    {#if activeTab === 'reports'}
+    {#if activeTab === "reports"}
       {#if reportsQuery.isLoading}
         <div class="flex items-center justify-center py-10" in:fade>
           <LoadingSpinner size="lg" text="Loading reports..." />
@@ -1133,7 +1135,7 @@
                     report.status
                   ]}"
                 >
-                  {report.status.replace('_', ' ')}
+                  {report.status.replace("_", " ")}
                 </span>
                 <span class="text-[10px] text-gray-400">
                   {formatDate(report.createdAt)}
@@ -1158,7 +1160,7 @@
       {/if}
     {/if}
 
-    {#if activeTab === 'blocks'}
+    {#if activeTab === "blocks"}
       {#if blockedUsersQuery.isLoading}
         <div class="flex items-center justify-center py-10" in:fade>
           <LoadingSpinner size="lg" text="Loading blocked users..." />
@@ -1227,7 +1229,9 @@
                 disabled={unblockingId === block.blockedUserId}
                 class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-xs font-bold border border-rose-100 hover:bg-rose-600 hover:text-white transition-all disabled:opacity-50 whitespace-nowrap"
               >
-                {unblockingId === block.blockedUserId ? 'Unblocking...' : 'Unblock'}
+                {unblockingId === block.blockedUserId
+                  ? "Unblocking..."
+                  : "Unblock"}
               </button>
             </div>
           {/each}
@@ -1246,5 +1250,3 @@
     overflow: hidden;
   }
 </style>
-
-

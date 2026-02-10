@@ -21,6 +21,7 @@ import {
   bookListings,
   bookPurchaseRequests,
 } from "../models/book_buy_sell-schema.js";
+import { lostFoundClaims, lostFoundItems } from "../models/lost-found-schema.js";
 import { user } from "../models/auth-schema.js";
 import {
   DEFAULT_NOTIFICATION_PREFERENCES,
@@ -68,6 +69,7 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
   const noticeIds = new Set<number>();
   const listingIds = new Set<number>();
   const requestIds = new Set<number>();
+  const claimIds = new Set<number>();
   const actorUserIds = new Set<string>();
 
   for (const row of rows) {
@@ -76,6 +78,7 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
     const noticeId = parseNumericId(data.noticeId);
     const listingId = parseNumericId(data.listingId) ?? parseNumericId(data.bookId);
     const requestId = parseNumericId(data.requestId);
+    const claimId = parseNumericId(data.claimId);
     const actorIdCandidate = [
       parseString(data.actorId),
       parseString(data.senderId),
@@ -92,10 +95,12 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
     if (noticeId) noticeIds.add(noticeId);
     if (listingId) listingIds.add(listingId);
     if (requestId) requestIds.add(requestId);
+    if (claimId) claimIds.add(claimId);
     if (actorIdCandidate) actorUserIds.add(actorIdCandidate);
   }
 
-  const [eventRows, noticeRows, listingImageRows, requestRows, actorRows] = await Promise.all([
+  const [eventRows, noticeRows, listingImageRows, requestRows, claimRows, actorRows] =
+    await Promise.all([
     eventIds.size > 0
       ? db
           .select({ id: events.id, bannerUrl: events.bannerUrl, title: events.title })
@@ -137,6 +142,21 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
           .innerJoin(user, eq(user.id, bookPurchaseRequests.buyerId))
           .innerJoin(bookListings, eq(bookListings.id, bookPurchaseRequests.listingId))
           .where(inArray(bookPurchaseRequests.id, [...requestIds]))
+      : Promise.resolve([]),
+    claimIds.size > 0
+      ? db
+          .select({
+            id: lostFoundClaims.id,
+            requesterId: lostFoundClaims.requesterId,
+            requesterName: user.name,
+            requesterImage: user.image,
+            itemType: lostFoundItems.itemType,
+            itemTitle: lostFoundItems.title,
+          })
+          .from(lostFoundClaims)
+          .innerJoin(user, eq(user.id, lostFoundClaims.requesterId))
+          .innerJoin(lostFoundItems, eq(lostFoundItems.id, lostFoundClaims.itemId))
+          .where(inArray(lostFoundClaims.id, [...claimIds]))
       : Promise.resolve([]),
     actorUserIds.size > 0
       ? db
@@ -192,6 +212,27 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
         buyerName: row.buyerName ?? null,
         buyerImage: row.buyerImage ?? null,
         listingTitle: row.listingTitle ?? null,
+      },
+    ]),
+  );
+  const claimMap = new Map<
+    number,
+    {
+      requesterId: string;
+      requesterName: string | null;
+      requesterImage: string | null;
+      itemType: "lost" | "found";
+      itemTitle: string | null;
+    }
+  >(
+    claimRows.map((row) => [
+      row.id,
+      {
+        requesterId: row.requesterId,
+        requesterName: row.requesterName ?? null,
+        requesterImage: row.requesterImage ?? null,
+        itemType: row.itemType,
+        itemTitle: row.itemTitle ?? null,
       },
     ]),
   );
@@ -265,6 +306,32 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
       }
       if (!parseString(data.listingTitle) && requestMeta.listingTitle) {
         data.listingTitle = requestMeta.listingTitle;
+      }
+    }
+
+    const claimId = parseNumericId(data.claimId);
+    const claimMeta = claimId ? claimMap.get(claimId) : null;
+    if (claimMeta && row.type === "lost_found_claim_received") {
+      if (!parseString(data.actorId)) {
+        data.actorId = claimMeta.requesterId;
+      }
+      if (!parseString(data.actorName) && claimMeta.requesterName) {
+        data.actorName = claimMeta.requesterName;
+      }
+      if (!parseString(data.actorAvatarUrl) && claimMeta.requesterImage) {
+        data.actorAvatarUrl = claimMeta.requesterImage;
+      }
+      if (!parseString(data.requesterName) && claimMeta.requesterName) {
+        data.requesterName = claimMeta.requesterName;
+      }
+      if (!parseString(data.requesterAvatarUrl) && claimMeta.requesterImage) {
+        data.requesterAvatarUrl = claimMeta.requesterImage;
+      }
+      if (!parseString(data.itemType)) {
+        data.itemType = claimMeta.itemType;
+      }
+      if (!parseString(data.itemTitle) && claimMeta.itemTitle) {
+        data.itemTitle = claimMeta.itemTitle;
       }
     }
 

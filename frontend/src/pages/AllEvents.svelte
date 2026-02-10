@@ -1,99 +1,105 @@
 ﻿<script lang="ts">
   import { query as routeQuery } from "@mateothegreat/svelte5-router";
-  import { getAllEvents, type ClubEvent } from '../lib/api'
-  import LoadingSpinner from '../components/LoadingSpinner.svelte'
-  import EventCard from '../components/EventCard.svelte'
-  import { fade } from 'svelte/transition'
-  import { authClient } from '../lib/auth-client'
-  import { goto } from '@mateothegreat/svelte5-router'
-  import { createQuery } from '@tanstack/svelte-query'
-  import { getEventTimeMs, parseEventDateTime } from '../lib/event-dates'
-  import { untrack } from 'svelte'
+  import { getAllEvents, type ClubEvent } from "../lib/api";
+  import LoadingSpinner from "../components/LoadingSpinner.svelte";
+  import EventCard from "../components/EventCard.svelte";
+  import { fade } from "svelte/transition";
+  import { authClient } from "../lib/auth-client";
+  import { goto } from "@mateothegreat/svelte5-router";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { getEventTimeMs, parseEventDateTime } from "../lib/event-dates";
+  import { untrack } from "svelte";
 
-  const session = authClient.useSession()
-  let hasRedirectedToLogin = $state(false)
+  const session = authClient.useSession();
+  let hasRedirectedToLogin = $state(false);
   const highlightedEventIdParam = Number(routeQuery("highlightEventId") || 0);
   let highlightedEventId = $state<number | null>(
     highlightedEventIdParam > 0 ? highlightedEventIdParam : null,
-  )
-  let hasAppliedEventHighlight = $state(false)
+  );
+  let hasAppliedEventHighlight = $state(false);
 
   const query = createQuery(() => ({
-    queryKey: ['events'],
+    queryKey: ["events"],
     queryFn: async () => {
-      const result = await getAllEvents()
+      const result = await getAllEvents();
       if (!result.success || !result.allEvents) {
-        throw new Error(result.message || 'Failed to load events')
+        throw new Error(result.message || "Failed to load events");
       }
-      return result.allEvents
+      return result.allEvents;
     },
-  }))
+  }));
 
   $effect(() => {
-    if (hasRedirectedToLogin) return
+    if (hasRedirectedToLogin) return;
 
     if (!$session.isPending && !$session.error && !$session.data?.user) {
-      hasRedirectedToLogin = true
+      hasRedirectedToLogin = true;
       untrack(() => {
-        goto('/register?message=login_required')
-      })
+        goto("/register?message=login_required");
+      });
     }
-  })
+  });
 
   const categorizedEvents = $derived.by(
     (): {
-      ongoing: ClubEvent[]
-      upcoming: ClubEvent[]
-      completed: ClubEvent[]
+      ongoing: ClubEvent[];
+      upcoming: ClubEvent[];
+      completed: ClubEvent[];
     } => {
       if (!query.data) {
-        return { ongoing: [], upcoming: [], completed: [] }
+        return { ongoing: [], upcoming: [], completed: [] };
       }
-      const now = new Date()
+      const now = new Date();
       const sorted: ClubEvent[] = [...query.data].sort(
         (a, b) =>
           getEventTimeMs(b.eventStartTime) - getEventTimeMs(a.eventStartTime),
-      )
+      );
 
       return {
         ongoing: sorted.filter((e) => {
-          const start = parseEventDateTime(e.eventStartTime)
-          const end = parseEventDateTime(e.eventEndTime)
+          const start = parseEventDateTime(e.eventStartTime);
+          const end = parseEventDateTime(e.eventEndTime);
           return (
-            (e.status === 'ongoing' || (start <= now && end >= now)) &&
-            e.status !== 'draft' &&
-            e.status !== 'completed' &&
-            e.status !== 'cancelled'
-          )
+            (e.status === "ongoing" || (start <= now && end >= now)) &&
+            e.status !== "draft" &&
+            e.status !== "completed" &&
+            e.status !== "cancelled"
+          );
         }),
         upcoming: sorted.filter((e) => {
-          const start = parseEventDateTime(e.eventStartTime)
+          const start = parseEventDateTime(e.eventStartTime);
           return (
             start > now &&
-            e.status !== 'draft' &&
-            e.status !== 'completed' &&
-            e.status !== 'cancelled' &&
-            e.status !== 'ongoing'
-          )
+            e.status !== "draft" &&
+            e.status !== "completed" &&
+            e.status !== "cancelled" &&
+            e.status !== "ongoing"
+          );
         }),
         completed: sorted.filter((e) => {
-          const end = parseEventDateTime(e.eventEndTime)
+          const end = parseEventDateTime(e.eventEndTime);
           return (
-            e.status !== 'draft' &&
-            (e.status === 'completed' || end < now || e.status === 'cancelled')
-          )
+            e.status !== "draft" &&
+            (e.status === "completed" || end < now || e.status === "cancelled")
+          );
         }),
-      }
+      };
     },
-  )
+  );
 
   $effect(() => {
     if (hasAppliedEventHighlight || !highlightedEventId) return;
 
     const exists =
-      categorizedEvents.ongoing.some((event) => event.id === highlightedEventId) ||
-      categorizedEvents.upcoming.some((event) => event.id === highlightedEventId) ||
-      categorizedEvents.completed.some((event) => event.id === highlightedEventId);
+      categorizedEvents.ongoing.some(
+        (event) => event.id === highlightedEventId,
+      ) ||
+      categorizedEvents.upcoming.some(
+        (event) => event.id === highlightedEventId,
+      ) ||
+      categorizedEvents.completed.some(
+        (event) => event.id === highlightedEventId,
+      );
 
     if (!exists) return;
 
@@ -194,7 +200,11 @@
                     ? "rounded-2xl ring-2 ring-cyan-400 ring-offset-2 notif-highlight-blink"
                     : ""}
                 >
-                  <EventCard {event} clubId={event.clubId.toString()} index={i} />
+                  <EventCard
+                    {event}
+                    clubId={event.clubId.toString()}
+                    index={i}
+                  />
                 </div>
               {/each}
             </div>
@@ -235,4 +245,3 @@
     {/if}
   </div>
 </div>
-

@@ -385,7 +385,7 @@
 
       <!-- Main Content Tabs -->
       <div
-        class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden min-h-[500px]"
+        class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden min-h-125"
       >
         <div class="flex border-b border-slate-100">
           <button
@@ -520,12 +520,12 @@
                                 </div>
                                 <div class="min-w-0">
                                   <div
-                                    class="font-medium text-slate-900 truncate max-w-[150px]"
+                                    class="font-medium text-slate-900 truncate max-w-37.5"
                                   >
                                     {user.name}
                                   </div>
                                   <div
-                                    class="text-[10px] text-slate-500 truncate max-w-[150px]"
+                                    class="text-[10px] text-slate-500 truncate max-w-37.5"
                                   >
                                     {user.email}
                                   </div>

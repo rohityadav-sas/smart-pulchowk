@@ -435,7 +435,10 @@
       string,
       string | number | boolean | null
     >;
-    const value = data.actorAvatarUrl as string | undefined;
+    const value =
+      (data.actorAvatarUrl as string | undefined) ||
+      (data.requestedByAvatarUrl as string | undefined) ||
+      (data.requesterAvatarUrl as string | undefined);
     return typeof value === "string" && value.trim().length > 0 ? value : null;
   }
 
@@ -460,10 +463,49 @@
     const actor =
       (data.buyerName as string | undefined) ||
       (data.actorName as string | undefined) ||
+      (data.requesterName as string | undefined) ||
       (data.requestedByName as string | undefined);
     return typeof actor === "string" && actor.trim().length > 0
       ? actor.trim()
       : null;
+  }
+
+  function getLostFoundTitle(notification: InAppNotification) {
+    const data = (notification.data || {}) as Record<
+      string,
+      string | number | boolean | null
+    >;
+    const itemTitle =
+      typeof data.itemTitle === "string" ? data.itemTitle.trim() : "";
+    if (itemTitle) return itemTitle;
+
+    const bodyTitle = extractQuotedText(notification.body);
+    if (bodyTitle) return bodyTitle;
+
+    const marker = " item:";
+    const idx = notification.body.toLowerCase().indexOf(marker);
+    if (idx >= 0) {
+      const raw = notification.body.slice(idx + marker.length).trim();
+      if (raw) return raw.replace(/\.$/, "");
+    }
+    return null;
+  }
+
+  function getLostFoundItemType(notification: InAppNotification) {
+    const data = (notification.data || {}) as Record<
+      string,
+      string | number | boolean | null
+    >;
+    const itemTypeRaw =
+      typeof data.itemType === "string"
+        ? data.itemType.trim().toLowerCase()
+        : "";
+    if (itemTypeRaw === "lost" || itemTypeRaw === "found") return itemTypeRaw;
+    if (notification.body.toLowerCase().includes(" your lost item"))
+      return "lost";
+    if (notification.body.toLowerCase().includes(" your found item"))
+      return "found";
+    return null;
   }
 
   function getSenderName(notification: InAppNotification) {
@@ -581,6 +623,8 @@
     const eventTitle = getEventTitle(notification);
     const noticeTitle = getNoticeTitle(notification);
     const assignmentTitle = getAssignmentTitle(notification);
+    const lostFoundTitle = getLostFoundTitle(notification);
+    const lostFoundItemType = getLostFoundItemType(notification);
 
     if (notification.type === "purchase_request") {
       return {
@@ -696,6 +740,38 @@
         action: "registration closes soon for event:",
         subject: eventTitle,
         suffix: eventTitle ? "." : "",
+      };
+    }
+
+    if (notification.type === "lost_found_claim_received") {
+      const actionText =
+        lostFoundItemType === "found"
+          ? "claimed your found item:"
+          : "has a comment on your lost item:";
+      return {
+        actor: actor || "Someone",
+        action: actionText,
+        subject: lostFoundTitle,
+        suffix: lostFoundTitle ? "." : "",
+      };
+    }
+
+    if (
+      notification.type === "lost_found_claim_accepted" ||
+      notification.type === "lost_found_claim_rejected" ||
+      notification.type === "lost_found_claim_cancelled"
+    ) {
+      const statusText =
+        notification.type === "lost_found_claim_accepted"
+          ? "was accepted"
+          : notification.type === "lost_found_claim_rejected"
+            ? "was rejected"
+            : "was cancelled";
+      return {
+        actor: null,
+        action: "Your claim for",
+        subject: lostFoundTitle,
+        suffix: `${lostFoundTitle ? " " : ""}${statusText}.`,
       };
     }
 

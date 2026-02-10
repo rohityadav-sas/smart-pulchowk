@@ -82,15 +82,11 @@
   );
 
   const eventEndTime = $derived(
-    endDate && endTime
-      ? `${toLocalDateString(endDate)}T${endTime}`
-      : "",
+    endDate && endTime ? `${toLocalDateString(endDate)}T${endTime}` : "",
   );
 
   const registrationDeadline = $derived(
-    regDate && regTime
-      ? `${toLocalDateString(regDate)}T${regTime}`
-      : "",
+    regDate && regTime ? `${toLocalDateString(regDate)}T${regTime}` : "",
   );
 
   const eventTypes = [
@@ -245,24 +241,21 @@
     try {
       let initialBannerUrl = bannerSource === "url" ? bannerUrl : undefined;
 
-      const result = await createEvent(
-        parseInt(clubId),
-        {
-          title,
-          description,
-          eventType,
-          venue,
-          maxParticipants: maxParticipants || 0,
-          registrationDeadline: registrationDeadline,
-          eventStartTime: eventStartTime,
-          eventEndTime: eventEndTime,
-          bannerUrl: initialBannerUrl || undefined,
-          externalRegistrationLink:
-            registrationMethod === "external"
-              ? externalRegistrationLink
-              : undefined,
-        },
-      );
+      const result = await createEvent(parseInt(clubId), {
+        title,
+        description,
+        eventType,
+        venue,
+        maxParticipants: maxParticipants || 0,
+        registrationDeadline: registrationDeadline,
+        eventStartTime: eventStartTime,
+        eventEndTime: eventEndTime,
+        bannerUrl: initialBannerUrl || undefined,
+        externalRegistrationLink:
+          registrationMethod === "external"
+            ? externalRegistrationLink
+            : undefined,
+      });
 
       if (result.success && result.event) {
         createdEventId = result.event.id;
@@ -356,7 +349,7 @@
 </script>
 
 <div
-  class="create-event-compact min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50 via-white to-purple-50 px-4 py-8 sm:px-6 lg:px-8"
+  class="create-event-compact min-h-screen bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-blue-50 via-white to-purple-50 px-4 py-8 sm:px-6 lg:px-8"
 >
   <div class="max-w-6xl mx-auto">
     <!-- Breadcrumb -->
@@ -387,7 +380,7 @@
       </div>
     {:else if !isAuthorized}
       <div
-        class="max-w-md mx-auto p-12 bg-white/80 backdrop-blur-xl border border-white shadow-2xl rounded-[2rem] text-center"
+        class="max-w-md mx-auto p-12 bg-white/80 backdrop-blur-xl border border-white shadow-2xl rounded-4xl text-center"
         in:fly={{ y: 20, duration: 600 }}
       >
         <div
@@ -488,8 +481,9 @@
             <form onsubmit={handleExtraDetailsSubmit} class="space-y-6">
               <div class="grid md:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                  <label class="block text-black font-bold mb-2" for="full-description"
-                    >Full Description</label
+                  <label
+                    class="block text-black font-bold mb-2"
+                    for="full-description">Full Description</label
                   >
                   <textarea
                     id="full-description"
@@ -500,8 +494,9 @@
                   ></textarea>
                 </div>
                 <div class="space-y-2">
-                  <label class="block text-black font-bold mb-2" for="objectives"
-                    >Objectives</label
+                  <label
+                    class="block text-black font-bold mb-2"
+                    for="objectives">Objectives</label
                   >
                   <textarea
                     id="objectives"
@@ -515,8 +510,9 @@
 
               <div class="grid md:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                  <label class="block text-black font-bold mb-2" for="target-audience"
-                    >Target Audience</label
+                  <label
+                    class="block text-black font-bold mb-2"
+                    for="target-audience">Target Audience</label
                   >
                   <textarea
                     id="target-audience"
@@ -527,8 +523,9 @@
                   ></textarea>
                 </div>
                 <div class="space-y-2">
-                  <label class="block text-black font-bold mb-2" for="prerequisites"
-                    >Prerequisites</label
+                  <label
+                    class="block text-black font-bold mb-2"
+                    for="prerequisites">Prerequisites</label
                   >
                   <textarea
                     id="prerequisites"
@@ -542,8 +539,9 @@
 
               <div class="grid md:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                  <label class="block text-black font-bold mb-2" for="event-rules"
-                    >Event Rules</label
+                  <label
+                    class="block text-black font-bold mb-2"
+                    for="event-rules">Event Rules</label
                   >
                   <textarea
                     id="event-rules"
@@ -554,8 +552,9 @@
                   ></textarea>
                 </div>
                 <div class="space-y-2">
-                  <label class="block text-black font-bold mb-2" for="judging-criteria"
-                    >Judging Criteria</label
+                  <label
+                    class="block text-black font-bold mb-2"
+                    for="judging-criteria">Judging Criteria</label
                   >
                   <textarea
                     id="judging-criteria"
@@ -586,7 +585,7 @@
                 <button
                   type="submit"
                   disabled={extraSubmitting}
-                  class="px-10 py-4 bg-gray-900 text-white font-black rounded-2xl hover:bg-black shadow-2xl active:scale-95 transition-all disabled:opacity-50 min-w-[180px]"
+                  class="px-10 py-4 bg-gray-900 text-white font-black rounded-2xl hover:bg-black shadow-2xl active:scale-95 transition-all disabled:opacity-50 min-w-45"
                 >
                   {#if extraSubmitting}
                     <div class="flex items-center gap-2">
@@ -646,10 +645,9 @@
       <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
         <!-- Main Form Area -->
         <div
-          class="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white/50  relative"
+          class="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white/50 relative"
           in:fly={{ x: -20, duration: 800 }}
         >
- 
           <!-- Stepper Header -->
           <div class="px-8 pt-10 pb-6 border-b border-gray-100 bg-white/50">
             <div class="flex justify-between items-center mb-8">
@@ -681,7 +679,7 @@
           </div>
 
           <form onsubmit={handleSubmit} class="p-8">
-            <div class="min-h-[400px] relative">
+            <div class="min-h-100 relative">
               {#if currentStep === 1}
                 <div
                   in:fly={{ x: 20, duration: 400, delay: 200 }}
@@ -689,7 +687,9 @@
                 >
                   <div class="space-y-6">
                     <div>
-                      <label class="block text-black font-bold mb-2" for="event-title"
+                      <label
+                        class="block text-black font-bold mb-2"
+                        for="event-title"
                         >Event Title <span class="text-red-500">*</span></label
                       >
                       <Input
@@ -701,7 +701,9 @@
                       />
                     </div>
                     <div>
-                      <label class="block text-black font-bold mb-2" for="event-category"
+                      <label
+                        class="block text-black font-bold mb-2"
+                        for="event-category"
                         >Event Category <span class="text-red-500">*</span
                         ></label
                       >
@@ -716,8 +718,9 @@
                       </select>
                     </div>
                     <div>
-                      <label class="block text-black font-bold mb-2" for="event-description"
-                        >Short Description</label
+                      <label
+                        class="block text-black font-bold mb-2"
+                        for="event-description">Short Description</label
                       >
                       <textarea
                         id="event-description"
@@ -737,54 +740,59 @@
                   <div class="space-y-8">
                     <div class="grid sm:grid-cols-2 gap-6">
                       <div class="space-y-2">
-                      <div class="block text-black font-bold mb-2">
-                        Start Schedule <span class="text-red-500">*</span>
-                      </div>
-                      <div class="flex gap-2">
-                        <Datepicker
-                          bind:value={startDate}
-                          aria-label="Start date"
-                          required
-                          class="rounded-2xl flex-1 shadow-sm"
-                        />
-                        <div class="w-36">
-                          <label class="sr-only" for="event-start-time">Start time</label>
-                          <Timepicker
-                            id="event-start-time"
-                            bind:value={startTime}
-                            required
-                            inputClass="w-full rounded-2xl border border-gray-200 bg-white/50 py-4 shadow-sm focus:ring-2 focus:ring-blue-500/20"
-                          />
+                        <div class="block text-black font-bold mb-2">
+                          Start Schedule <span class="text-red-500">*</span>
                         </div>
-                      </div>
+                        <div class="flex gap-2">
+                          <Datepicker
+                            bind:value={startDate}
+                            aria-label="Start date"
+                            required
+                            class="rounded-2xl flex-1 shadow-sm"
+                          />
+                          <div class="w-36">
+                            <label class="sr-only" for="event-start-time"
+                              >Start time</label
+                            >
+                            <Timepicker
+                              id="event-start-time"
+                              bind:value={startTime}
+                              required
+                              inputClass="w-full rounded-2xl border border-gray-200 bg-white/50 py-4 shadow-sm focus:ring-2 focus:ring-blue-500/20"
+                            />
+                          </div>
+                        </div>
                       </div>
                       <div class="space-y-2">
-                      <div class="block text-black font-bold mb-2">
-                        End Schedule <span class="text-red-500">*</span>
-                      </div>
-                      <div class="flex gap-2">
-                        <Datepicker
-                          bind:value={endDate}
-                          aria-label="End date"
-                          required
-                          class="rounded-2xl flex-1 shadow-sm"
-                        />
-                        <div class="w-36">
-                          <label class="sr-only" for="event-end-time">End time</label>
-                          <Timepicker
-                            id="event-end-time"
-                            bind:value={endTime}
-                            required
-                            inputClass="w-full rounded-2xl border border-gray-200 bg-white/50 py-4 shadow-sm focus:ring-2 focus:ring-blue-500/20"
-                          />
+                        <div class="block text-black font-bold mb-2">
+                          End Schedule <span class="text-red-500">*</span>
                         </div>
-                      </div>
+                        <div class="flex gap-2">
+                          <Datepicker
+                            bind:value={endDate}
+                            aria-label="End date"
+                            required
+                            class="rounded-2xl flex-1 shadow-sm"
+                          />
+                          <div class="w-36">
+                            <label class="sr-only" for="event-end-time"
+                              >End time</label
+                            >
+                            <Timepicker
+                              id="event-end-time"
+                              bind:value={endTime}
+                              required
+                              inputClass="w-full rounded-2xl border border-gray-200 bg-white/50 py-4 shadow-sm focus:ring-2 focus:ring-blue-500/20"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div class="grid sm:grid-cols-2 gap-6">
                       <div>
-                        <label class="block text-black font-bold mb-2" for="event-venue"
-                          >Location / Venue</label
+                        <label
+                          class="block text-black font-bold mb-2"
+                          for="event-venue">Location / Venue</label
                         >
                         <Input
                           id="event-venue"
@@ -794,8 +802,9 @@
                         />
                       </div>
                       <div>
-                        <label class="block text-black font-bold mb-2" for="event-capacity"
-                          >Capacity</label
+                        <label
+                          class="block text-black font-bold mb-2"
+                          for="event-capacity">Capacity</label
                         >
                         <Input
                           id="event-capacity"
@@ -895,7 +904,11 @@
                           'external'
                             ? 'border-blue-500 bg-blue-50 text-blue-600'
                             : 'border-gray-100 hover:border-gray-200 text-gray-400'}"
-                          onclick={() => (registrationMethod = registrationMethod === 'external' ? 'internal' : 'external')}
+                          onclick={() =>
+                            (registrationMethod =
+                              registrationMethod === "external"
+                                ? "internal"
+                                : "external")}
                         >
                           <svg
                             class="w-6 h-6"
@@ -916,7 +929,9 @@
 
                       {#if registrationMethod === "external"}
                         <div in:slide>
-                          <label class="block text-black font-bold mb-2" for="external-form-link"
+                          <label
+                            class="block text-black font-bold mb-2"
+                            for="external-form-link"
                             >Form Link <span class="text-red-500">*</span
                             ></label
                           >
@@ -938,7 +953,9 @@
 
                     <div>
                       <div class="block text-black font-bold mb-2">
-                        Registration Closes On <span class="text-red-500">*</span>
+                        Registration Closes On <span class="text-red-500"
+                          >*</span
+                        >
                       </div>
                       <div class="flex gap-2">
                         <Datepicker
@@ -1012,7 +1029,7 @@
                 <button
                   type="submit"
                   disabled={submitting || isUploadingBanner}
-                  class="px-10 py-4 bg-gray-900 text-white font-black rounded-2xl hover:bg-black shadow-2xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[180px]"
+                  class="px-10 py-4 bg-gray-900 text-white font-black rounded-2xl hover:bg-black shadow-2xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-45"
                 >
                   {#if submitting || isUploadingBanner}
                     <div class="flex items-center gap-2">
@@ -1043,7 +1060,7 @@
           </h3>
 
           <div
-            class="bg-white rounded-[2rem] shadow-2xl border border-white overflow-hidden group hover:shadow-blue-500/10 transition-all duration-500"
+            class="bg-white rounded-4xl shadow-2xl border border-white overflow-hidden group hover:shadow-blue-500/10 transition-all duration-500"
             style="transform: scale(1.02)"
           >
             <!-- Preview Banner -->
@@ -1152,7 +1169,7 @@
 
           <!-- Tips Card -->
           <div
-            class="bg-blue-600 rounded-[2rem] p-8 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden"
+            class="bg-blue-600 rounded-4xl p-8 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden"
           >
             <svg
               class="absolute -right-4 -bottom-4 w-32 h-32 opacity-10"

@@ -5,6 +5,7 @@ export type NotificationPreferences = {
   classroomAlerts: boolean;
   chatAlerts: boolean;
   adminAlerts: boolean;
+  lostAndFoundAlerts: boolean;
 };
 
 export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
@@ -14,6 +15,7 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
   classroomAlerts: true,
   chatAlerts: true,
   adminAlerts: true,
+  lostAndFoundAlerts: true,
 };
 
 export function normalizeNotificationPreferences(
@@ -50,6 +52,10 @@ export function normalizeNotificationPreferences(
       typeof source.adminAlerts === "boolean"
         ? source.adminAlerts
         : DEFAULT_NOTIFICATION_PREFERENCES.adminAlerts,
+    lostAndFoundAlerts:
+      typeof source.lostAndFoundAlerts === "boolean"
+        ? source.lostAndFoundAlerts
+        : DEFAULT_NOTIFICATION_PREFERENCES.lostAndFoundAlerts,
   };
 }
 

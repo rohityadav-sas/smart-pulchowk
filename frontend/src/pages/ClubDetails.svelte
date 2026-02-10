@@ -2609,15 +2609,33 @@
     gap: 0.45rem !important;
   }
 
-  :global(.club-details-compact .club-profile-card .space-y-8 > :not([hidden]) ~ :not([hidden])) {
+  :global(
+      .club-details-compact
+        .club-profile-card
+        .space-y-8
+        > :not([hidden])
+        ~ :not([hidden])
+    ) {
     margin-top: 0.8rem !important;
   }
 
-  :global(.club-details-compact .club-profile-card .space-y-6 > :not([hidden]) ~ :not([hidden])) {
+  :global(
+      .club-details-compact
+        .club-profile-card
+        .space-y-6
+        > :not([hidden])
+        ~ :not([hidden])
+    ) {
     margin-top: 0.6rem !important;
   }
 
-  :global(.club-details-compact .club-profile-card .space-y-3 > :not([hidden]) ~ :not([hidden])) {
+  :global(
+      .club-details-compact
+        .club-profile-card
+        .space-y-3
+        > :not([hidden])
+        ~ :not([hidden])
+    ) {
     margin-top: 0.35rem !important;
   }
 

@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
-  import { route, query as routeQuery } from '@mateothegreat/svelte5-router'
-  import { authClient } from '../lib/auth-client'
+  import { route, query as routeQuery } from "@mateothegreat/svelte5-router";
+  import { authClient } from "../lib/auth-client";
   import {
     getEnrollments,
     getMySubjects,
@@ -13,236 +13,236 @@
     type BookListing,
     type PurchaseRequest,
     type NoticeStats,
-  } from '../lib/api'
-  import { createQuery } from '@tanstack/svelte-query'
-  import { formatEventDate, formatEventTime } from '../lib/event-dates'
+  } from "../lib/api";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { formatEventDate, formatEventTime } from "../lib/event-dates";
 
-  let loading = $state(false)
-  let error = $state<string | null>(null)
-  const session = authClient.useSession()
+  let loading = $state(false);
+  let error = $state<string | null>(null);
+  const session = authClient.useSession();
   const sessionUser = $derived(
     $session.data?.user as
       | { role?: string; name?: string; email?: string; image?: string }
       | undefined,
-  )
-  const userRole = $derived(sessionUser?.role || 'student')
+  );
+  const userRole = $derived(sessionUser?.role || "student");
 
   // Enrollments query
   const enrollmentsQuery = createQuery(() => ({
-    queryKey: ['dashboard-enrollments', $session.data?.user?.id],
+    queryKey: ["dashboard-enrollments", $session.data?.user?.id],
     queryFn: async () => {
-      if (!$session.data?.user?.id) return []
-      const result = await getEnrollments()
+      if (!$session.data?.user?.id) return [];
+      const result = await getEnrollments();
       return result.success && result.registrations
         ? (result.registrations as Registration[])
-        : []
+        : [];
     },
     enabled: !!$session.data?.user?.id,
     staleTime: 1000 * 60,
-  }))
+  }));
 
   // Subjects + assignments query (for students/teachers)
   const subjectsQuery = createQuery(() => ({
-    queryKey: ['dashboard-subjects', $session.data?.user?.id],
+    queryKey: ["dashboard-subjects", $session.data?.user?.id],
     queryFn: async () => {
-      if (!$session.data?.user?.id) return { subjects: [] }
-      const result = await getMySubjects()
+      if (!$session.data?.user?.id) return { subjects: [] };
+      const result = await getMySubjects();
       return result.success
         ? { subjects: result.subjects || [] }
-        : { subjects: [] }
+        : { subjects: [] };
     },
     enabled:
       !!$session.data?.user?.id &&
-      (userRole === 'student' || userRole === 'teacher'),
+      (userRole === "student" || userRole === "teacher"),
     staleTime: 1000 * 60,
-  }))
+  }));
 
   // Notice stats query
   const noticeStatsQuery = createQuery(() => ({
-    queryKey: ['dashboard-notice-stats'],
+    queryKey: ["dashboard-notice-stats"],
     queryFn: async () => {
-      const result = await getNoticeStats()
-      return result.success && result.data ? result.data : null
+      const result = await getNoticeStats();
+      return result.success && result.data ? result.data : null;
     },
     staleTime: 1000 * 60 * 5,
-  }))
+  }));
 
   // My book listings
   const myBooksQuery = createQuery(() => ({
-    queryKey: ['dashboard-my-books', $session.data?.user?.id],
+    queryKey: ["dashboard-my-books", $session.data?.user?.id],
     queryFn: async () => {
-      if (!$session.data?.user?.id) return []
-      const result = await getMyBookListings()
-      return result.success && result.data ? result.data : []
+      if (!$session.data?.user?.id) return [];
+      const result = await getMyBookListings();
+      return result.success && result.data ? result.data : [];
     },
     enabled: !!$session.data?.user?.id,
     staleTime: 1000 * 60,
-  }))
+  }));
 
   // Purchase requests (books I want to buy)
   const purchaseRequestsQuery = createQuery(() => ({
-    queryKey: ['dashboard-purchase-requests', $session.data?.user?.id],
+    queryKey: ["dashboard-purchase-requests", $session.data?.user?.id],
     queryFn: async () => {
-      if (!$session.data?.user?.id) return []
-      const result = await getMyPurchaseRequests()
-      return result.success && result.data ? result.data : []
+      if (!$session.data?.user?.id) return [];
+      const result = await getMyPurchaseRequests();
+      return result.success && result.data ? result.data : [];
     },
     enabled: !!$session.data?.user?.id,
     staleTime: 1000 * 60,
-  }))
+  }));
 
   // Saved books
   const savedBooksQuery = createQuery(() => ({
-    queryKey: ['dashboard-saved-books', $session.data?.user?.id],
+    queryKey: ["dashboard-saved-books", $session.data?.user?.id],
     queryFn: async () => {
-      if (!$session.data?.user?.id) return []
-      const result = await getSavedBooks()
-      return result.success && result.data ? result.data : []
+      if (!$session.data?.user?.id) return [];
+      const result = await getSavedBooks();
+      return result.success && result.data ? result.data : [];
     },
     enabled: !!$session.data?.user?.id,
     staleTime: 1000 * 60,
-  }))
+  }));
 
   // Derived data
-  const enrollments = $derived((enrollmentsQuery.data || []) as Registration[])
+  const enrollments = $derived((enrollmentsQuery.data || []) as Registration[]);
   const upcomingEvents = $derived(
     enrollments
       .filter((r) => {
         const t = r.event?.eventStartTime
           ? new Date(r.event.eventStartTime).getTime()
-          : NaN
-        return Number.isFinite(t) && t > Date.now()
+          : NaN;
+        return Number.isFinite(t) && t > Date.now();
       })
       .sort(
         (a, b) =>
           new Date(a.event!.eventStartTime).getTime() -
           new Date(b.event!.eventStartTime).getTime(),
       ),
-  )
+  );
 
   const allAssignments = $derived.by(() => {
-    const subjects = subjectsQuery.data?.subjects || []
+    const subjects = subjectsQuery.data?.subjects || [];
     return subjects.flatMap((s: any) =>
       (s.assignments || []).map((a: Assignment) => ({
         ...a,
         subjectTitle: s.title,
         subjectCode: s.code,
       })),
-    )
-  })
+    );
+  });
   const pendingAssignments = $derived(
     allAssignments
       .filter((a: any) => !a.submission)
       .sort((a: any, b: any) => {
-        if (!a.dueAt && !b.dueAt) return 0
-        if (!a.dueAt) return 1
-        if (!b.dueAt) return -1
-        return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime()
+        if (!a.dueAt && !b.dueAt) return 0;
+        if (!a.dueAt) return 1;
+        if (!b.dueAt) return -1;
+        return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime();
       }),
-  )
+  );
 
-  const myBooks = $derived((myBooksQuery.data || []) as BookListing[])
+  const myBooks = $derived((myBooksQuery.data || []) as BookListing[]);
   const activeListings = $derived(
-    myBooks.filter((b) => b.status === 'available'),
-  )
+    myBooks.filter((b) => b.status === "available"),
+  );
   const purchaseRequests = $derived(
     (purchaseRequestsQuery.data || []) as PurchaseRequest[],
-  )
+  );
   const pendingRequests = $derived(
-    purchaseRequests.filter((r) => r.status === 'requested'),
-  )
-  const savedBooks = $derived(savedBooksQuery.data || [])
-  const noticeStats = $derived(noticeStatsQuery.data as NoticeStats | null)
+    purchaseRequests.filter((r) => r.status === "requested"),
+  );
+  const savedBooks = $derived(savedBooksQuery.data || []);
+  const noticeStats = $derived(noticeStatsQuery.data as NoticeStats | null);
 
   // Urgent items (top 3 most time-sensitive)
   const urgentItems = $derived.by(() => {
     const items: {
-      type: 'assignment' | 'event'
-      title: string
-      subtitle: string
-      dueAt: Date
-      href: string
-      urgent: boolean
-    }[] = []
+      type: "assignment" | "event";
+      title: string;
+      subtitle: string;
+      dueAt: Date;
+      href: string;
+      urgent: boolean;
+    }[] = [];
 
     // Add upcoming assignments
     pendingAssignments.slice(0, 3).forEach((a: any) => {
-      const due = a.dueAt ? new Date(a.dueAt) : null
-      const isUrgent = due && due.getTime() - Date.now() < 24 * 60 * 60 * 1000
+      const due = a.dueAt ? new Date(a.dueAt) : null;
+      const isUrgent = due && due.getTime() - Date.now() < 24 * 60 * 60 * 1000;
       items.push({
-        type: 'assignment',
+        type: "assignment",
         title: a.title,
-        subtitle: a.subjectTitle || 'Assignment',
+        subtitle: a.subjectTitle || "Assignment",
         dueAt: due || new Date(Date.now() + 999999999),
-        href: '/classroom',
+        href: "/classroom",
         urgent: !!isUrgent,
-      })
-    })
+      });
+    });
 
     // Add upcoming events
     upcomingEvents.slice(0, 2).forEach((r) => {
-      const start = new Date(r.event!.eventStartTime)
-      const isUrgent = start.getTime() - Date.now() < 24 * 60 * 60 * 1000
+      const start = new Date(r.event!.eventStartTime);
+      const isUrgent = start.getTime() - Date.now() < 24 * 60 * 60 * 1000;
       items.push({
-        type: 'event',
+        type: "event",
         title: r.event!.title,
-        subtitle: r.event?.club?.name || 'Event',
+        subtitle: r.event?.club?.name || "Event",
         dueAt: start,
         href: `/clubs/${r.event!.clubId}/events/${r.eventId}`,
         urgent: isUrgent,
-      })
-    })
+      });
+    });
 
     return items
       .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime())
-      .slice(0, 3)
-  })
+      .slice(0, 3);
+  });
 
   const handleSignOut = async () => {
-    loading = true
+    loading = true;
     try {
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            window.location.href = '/'
+            window.location.href = "/";
           },
         },
-      })
+      });
     } catch (err: any) {
-      error = err.message
+      error = err.message;
     } finally {
-      loading = false
+      loading = false;
     }
-  }
+  };
 
   function formatDate(d: Date | string) {
-    const date = typeof d === 'string' ? new Date(d) : d
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    const date = typeof d === "string" ? new Date(d) : d;
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   }
 
   function formatTimeAgo(d: Date | string) {
-    const date = typeof d === 'string' ? new Date(d) : d
-    const diff = date.getTime() - Date.now()
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    if (days > 0) return `${days}d left`
-    if (hours > 0) return `${hours}h left`
-    if (diff > 0) return 'Soon'
-    return 'Overdue'
+    const date = typeof d === "string" ? new Date(d) : d;
+    const diff = date.getTime() - Date.now();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days > 0) return `${days}d left`;
+    if (hours > 0) return `${hours}h left`;
+    if (diff > 0) return "Soon";
+    return "Overdue";
   }
 
   const userInitial = $derived(
-    sessionUser?.name?.charAt(0)?.toUpperCase() || 'U',
-  )
+    sessionUser?.name?.charAt(0)?.toUpperCase() || "U",
+  );
 
-  let activeTab = $state<'assignments' | 'events' | 'books'>('assignments')
+  let activeTab = $state<"assignments" | "events" | "books">("assignments");
   let highlightedSection = $state<string | null>(
-    (routeQuery('highlightSection') as string | undefined) || null,
-  )
+    (routeQuery("highlightSection") as string | undefined) || null,
+  );
 
   $effect(() => {
-    if (!highlightedSection) return
-  })
+    if (!highlightedSection) return;
+  });
 </script>
 
 <div
@@ -319,10 +319,12 @@
       </div>
     {:else}
       <!-- User Header -->
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-6 rounded-2xl {highlightedSection ===
+      <div
+        class="flex flex-wrap items-center justify-between gap-3 mb-6 rounded-2xl {highlightedSection ===
         'overview'
-        ? 'ring-2 ring-cyan-400 ring-offset-2 px-3 py-3 bg-cyan-50/30 border border-cyan-300 notif-highlight-blink'
-        : ''}">
+          ? 'ring-2 ring-cyan-400 ring-offset-2 px-3 py-3 bg-cyan-50/30 border border-cyan-300 notif-highlight-blink'
+          : ''}"
+      >
         <div class="flex items-center gap-3 min-w-0">
           <div
             class="w-12 h-12 rounded-xl overflow-hidden border-2 border-emerald-200 shadow-sm bg-emerald-50"
@@ -361,7 +363,7 @@
           disabled={loading}
           class="px-4 py-2 text-xs font-medium rounded-lg bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50 transition"
         >
-          {loading ? 'Signing out...' : 'Sign Out'}
+          {loading ? "Signing out..." : "Sign Out"}
         </button>
       </div>
 
@@ -449,7 +451,7 @@
                       ? 'bg-violet-100 text-violet-600'
                       : 'bg-blue-100 text-blue-600'} flex items-center justify-center shrink-0"
                   >
-                    {#if item.type === 'assignment'}
+                    {#if item.type === "assignment"}
                       <svg
                         class="w-4 h-4"
                         fill="none"
@@ -505,7 +507,7 @@
       <div class="mb-6">
         <h2 class="text-sm font-bold text-slate-900 mb-3">Quick Actions</h2>
         <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
-          {#if userRole === 'student' || userRole === 'teacher'}
+          {#if userRole === "student" || userRole === "teacher"}
             <a
               href="/classroom"
               use:route
@@ -657,7 +659,7 @@
       >
         <div class="flex border-b border-slate-100">
           <button
-            onclick={() => (activeTab = 'assignments')}
+            onclick={() => (activeTab = "assignments")}
             class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
             'assignments'
               ? 'text-violet-700 bg-violet-50 border-b-2 border-violet-500'
@@ -670,7 +672,7 @@
               >{/if}
           </button>
           <button
-            onclick={() => (activeTab = 'events')}
+            onclick={() => (activeTab = "events")}
             class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
             'events'
               ? 'text-blue-700 bg-blue-50 border-b-2 border-blue-500'
@@ -683,7 +685,7 @@
               >{/if}
           </button>
           <button
-            onclick={() => (activeTab = 'books')}
+            onclick={() => (activeTab = "books")}
             class="flex-1 px-4 py-3 text-xs font-medium transition {activeTab ===
             'books'
               ? 'text-emerald-700 bg-emerald-50 border-b-2 border-emerald-500'
@@ -698,7 +700,7 @@
         </div>
 
         <div class="p-4">
-          {#if activeTab === 'assignments'}
+          {#if activeTab === "assignments"}
             {#if subjectsQuery.isLoading}
               <div class="flex justify-center py-8">
                 <div
@@ -770,11 +772,11 @@
                       >
                         {assignment.dueAt
                           ? formatDate(assignment.dueAt)
-                          : 'No due date'}
+                          : "No due date"}
                       </p>
                       <span
                         class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600"
-                        >{assignment.type === 'homework' ? 'HW' : 'CW'}</span
+                        >{assignment.type === "homework" ? "HW" : "CW"}</span
                       >
                     </div>
                   </a>
@@ -789,7 +791,7 @@
                 {/if}
               </div>
             {/if}
-          {:else if activeTab === 'events'}
+          {:else if activeTab === "events"}
             {#if enrollmentsQuery.isLoading}
               <div class="flex justify-center py-8">
                 <div
@@ -856,7 +858,7 @@
                         {registration.event!.title}
                       </p>
                       <p class="text-[10px] text-slate-500">
-                        {registration.event?.club?.name || 'Event'}
+                        {registration.event?.club?.name || "Event"}
                       </p>
                     </div>
                     <div class="text-right shrink-0">
@@ -965,7 +967,7 @@
                         class="p-3 rounded-lg border border-amber-200 bg-amber-50/50"
                       >
                         <p class="text-xs font-medium text-slate-900">
-                          {request.listing?.title || 'Book Request'}
+                          {request.listing?.title || "Book Request"}
                         </p>
                         <p class="text-[10px] text-slate-500">
                           Waiting for seller response
@@ -999,4 +1001,3 @@
     {/if}
   </div>
 </div>
-
