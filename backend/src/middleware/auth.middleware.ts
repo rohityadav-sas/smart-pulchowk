@@ -91,27 +91,10 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
                 if (dbUser) {
                     (req as any).user = dbUser;
                     (req as any).session = { userId: dbUser.id, authType: "firebase" };
-                    return next();
                 }
             }
         } catch (error) {
-            // Firebase token verification failed, try database user ID fallback
-            console.warn("Firebase token verification failed, trying database user ID fallback");
-        }
-
-        // Fallback: treat the token as a database user ID (for mobile app backward compatibility)
-        try {
-            const dbUser = await db.query.user.findFirst({
-                where: eq(user.id, token),
-            });
-
-            if (dbUser) {
-                (req as any).user = dbUser;
-                (req as any).session = { userId: dbUser.id, authType: "database_id" };
-                return next();
-            }
-        } catch (error) {
-            console.error("Database user lookup error:", error);
+            console.error("Firebase token verification error:", error);
         }
     }
 
@@ -150,24 +133,7 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
                     }
                 }
             } catch (error) {
-                // Firebase token verification failed, try database user ID fallback
-                console.warn("Firebase token verification failed in optionalAuth, trying database user ID fallback");
-            }
-
-            // Fallback: treat the token as a database user ID (for mobile app backward compatibility)
-            if (!(req as any).user) {
-                try {
-                    const dbUser = await db.query.user.findFirst({
-                        where: eq(user.id, token),
-                    });
-
-                    if (dbUser) {
-                        (req as any).user = dbUser;
-                        (req as any).session = { userId: dbUser.id, authType: "database_id" };
-                    }
-                } catch (error) {
-                    console.error("Database user lookup error in optionalAuth:", error);
-                }
+                console.error("Firebase token verification error in optionalAuth:", error);
             }
         }
     }

@@ -1,11 +1,32 @@
 import { CreateClubProfileInput, CreateEventDetailsInput } from "../types/events.js";
 import { db } from "../lib/db.js";
-import { clubs, clubProfiles } from "../models/event-schema.js";
-import { eq } from "drizzle-orm";
-import { events, aboutEvents } from "../models/event-schema.js";
+import { clubs, clubProfiles, events, aboutEvents, clubAdmins as clubAdminsTable } from "../models/event-schema.js";
+import { eq, and, or } from "drizzle-orm";
 
-export async function createClubProfile(clubId: number, profileData: CreateClubProfileInput) {
+async function isAuthorizedForClub(userId: string, clubId: number) {
+    const club = await db.query.clubs.findFirst({
+        where: eq(clubs.id, clubId),
+        columns: { authClubId: true }
+    });
+
+    if (!club) return false;
+    if (club.authClubId === userId) return true;
+
+    const admin = await db.query.clubAdmins.findFirst({
+        where: and(
+            eq(clubAdminsTable.clubId, clubId),
+            eq(clubAdminsTable.userId, userId)
+        )
+    });
+
+    return !!admin;
+}
+
+export async function createClubProfile(userId: string, clubId: number, profileData: CreateClubProfileInput) {
     try {
+        if (!await isAuthorizedForClub(userId, clubId)) {
+            throw new Error("Unauthorized to create profile for this club");
+        }
         const club = await db.query.clubs.findFirst({
             where: eq(clubs.id, clubId),
             columns: { id: true, isActive: true }
@@ -47,8 +68,11 @@ export async function createClubProfile(clubId: number, profileData: CreateClubP
     }
 }
 
-export async function updateClubProfile(clubId: number, profileData: CreateClubProfileInput) {
+export async function updateClubProfile(userId: string, clubId: number, profileData: CreateClubProfileInput) {
     try {
+        if (!await isAuthorizedForClub(userId, clubId)) {
+            throw new Error("Unauthorized to update profile for this club");
+        }
         const club = await db.query.clubs.findFirst({
             where: eq(clubs.id, clubId),
             columns: { id: true, isActive: true }
@@ -136,15 +160,19 @@ export async function getClubProfile(clubId: number) {
     }
 }
 
-export async function createExtraEventDetails(eventId: number, detailsData: CreateEventDetailsInput) {
+export async function createExtraEventDetails(userId: string, eventId: number, detailsData: CreateEventDetailsInput) {
     try {
         const event = await db.query.events.findFirst({
             where: eq(events.id, eventId),
-            columns: { id: true }
+            columns: { id: true, clubId: true }
         });
 
         if (!event) {
             throw new Error('Event not found');
+        }
+
+        if (!await isAuthorizedForClub(userId, event.clubId)) {
+            throw new Error("Unauthorized to create details for this event");
         }
 
         const [result] = await db
@@ -204,15 +232,19 @@ export async function getExtraEventDetails(eventId: number) {
     }
 }
 
-export async function updateExtraEventDetail(eventId: number, detailsData: CreateEventDetailsInput) {
+export async function updateExtraEventDetail(userId: string, eventId: number, detailsData: CreateEventDetailsInput) {
     try {
         const event = await db.query.events.findFirst({
             where: eq(events.id, eventId),
-            columns: { id: true }
+            columns: { id: true, clubId: true }
         });
 
         if (!event) {
             throw new Error('Event not found');
+        }
+
+        if (!await isAuthorizedForClub(userId, event.clubId)) {
+            throw new Error("Unauthorized to update details for this event");
         }
 
         const [result] = await db
