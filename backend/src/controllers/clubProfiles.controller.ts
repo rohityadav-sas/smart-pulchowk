@@ -10,6 +10,11 @@ import {
 
 export async function CreateClubProfile(req: Request, res: Response) {
     try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
         const { clubId, ...profileData } = req.body;
 
         if (!clubId) {
@@ -20,6 +25,7 @@ export async function CreateClubProfile(req: Request, res: Response) {
         }
 
         const result = await createClubProfile(
+            userId,
             parseInt(clubId),
             profileData
         )
@@ -39,6 +45,11 @@ export async function CreateClubProfile(req: Request, res: Response) {
 
 export async function UpdateClubProfile(req: Request, res: Response) {
     try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
         const { clubId } = req.params;
         const profileData = req.body;
 
@@ -50,6 +61,7 @@ export async function UpdateClubProfile(req: Request, res: Response) {
         }
 
         const result = await updateClubProfile(
+            userId,
             parseInt(clubId),
             profileData
         );
@@ -92,6 +104,11 @@ export async function getProfile(req: Request, res: Response) {
 
 export async function createEventDetail(req: Request, res: Response) {
     try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
         const { eventId, ...detailsData } = req.body;
 
         if (!eventId) {
@@ -102,6 +119,7 @@ export async function createEventDetail(req: Request, res: Response) {
         }
 
         const result = await createExtraEventDetails(
+            userId,
             parseInt(eventId),
             detailsData
         );
@@ -121,6 +139,11 @@ export async function createEventDetail(req: Request, res: Response) {
 
 export async function UpdateEventDetail(req: Request, res: Response) {
     try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
         const { eventId, ...detailsData } = req.body;
 
         if (!eventId) {
@@ -131,6 +154,7 @@ export async function UpdateEventDetail(req: Request, res: Response) {
         }
 
         const result = await updateExtraEventDetail(
+            userId,
             parseInt(eventId),
             detailsData
         )
@@ -168,4 +192,3 @@ export async function GetEventDetails(req: Request, res: Response) {
         })
     }
 }
-

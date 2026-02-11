@@ -24,7 +24,7 @@ import {
 import { jsonToCsv, generatePdf } from "../lib/export-utils.js";
 import { db } from "../lib/db.js";
 import { user } from "../models/auth-schema.js";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import {
     handleClubLogoUrlUpload,
     handleCLubLogoFileUpload,
@@ -32,6 +32,7 @@ import {
     handleEventBannerFileUpload
 } from "../services/clubEvents.service.js";
 import { uploadEventBannerToCloudinary } from "../services/cloudinary.service.js";
+import { clubs, events, clubAdmins } from "../models/event-schema.js";
 
 export async function getAdmins(req: Request, res: Response) {
     const { clubId } = req.params;
@@ -85,12 +86,10 @@ export async function allEvents(req: Request, res: Response) {
 export async function CreateClub(req: Request, res: Response) {
     const { ...clubData } = req.body;
 
-    // Verify email is provided
     if (!clubData.email) {
         return res.status(400).json({ success: false, message: "Email is required to link club to a user" });
     }
 
-    // Look up the user by email to get their ID
     const targetUser = await db.query.user.findFirst({
         where: eq(user.email, clubData.email)
     });
@@ -99,7 +98,6 @@ export async function CreateClub(req: Request, res: Response) {
         return res.status(404).json({ success: false, message: "User with this email not found. Please ask them to register first." });
     }
 
-    // Use the target user's ID as the authClubId
     const result = await createClub(targetUser.id, clubData);
 
     return res.json(result);
@@ -128,6 +126,10 @@ export async function existingClub(req: Request, res: Response) {
 
 export async function UpdateClubInfo(req: Request, res: Response) {
     try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
         const clubId = parseInt(req.params.clubId);
         const clubData = req.body;
 
@@ -135,7 +137,7 @@ export async function UpdateClubInfo(req: Request, res: Response) {
             return res.json({ message: "clubId must be included" });
         }
 
-        const result = await updateClubInfo(clubId, clubData);
+        const result = await updateClubInfo(userId, clubId, clubData);
 
         if (!result.success) {
             return res.status(404).json({
@@ -156,6 +158,10 @@ export async function UpdateClubInfo(req: Request, res: Response) {
 
 export async function UploadClubLogo(req: Request, res: Response) {
     try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
         const { clubId } = req.params;
 
         if (!clubId) {
@@ -168,6 +174,7 @@ export async function UploadClubLogo(req: Request, res: Response) {
 
         if (req.file) {
             const result = await handleCLubLogoFileUpload(
+                userId,
                 parseInt(clubId),
                 req.file
             );
@@ -180,6 +187,7 @@ export async function UploadClubLogo(req: Request, res: Response) {
         } else if (req.body.imageUrl) {
 
             const result = await handleClubLogoUrlUpload(
+                userId,
                 parseInt(clubId),
                 req.body.imageUrl
             );
@@ -207,6 +215,10 @@ export async function UploadClubLogo(req: Request, res: Response) {
 
 export async function DeleteClubLogo(req: Request, res: Response) {
     try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
         const { clubId } = req.params;
 
         if (!clubId) {
@@ -216,7 +228,7 @@ export async function DeleteClubLogo(req: Request, res: Response) {
             });
         }
 
-        const result = await deleteClubLogo(parseInt(clubId));
+        const result = await deleteClubLogo(userId, parseInt(clubId));
 
         if (!result.success) {
             return res.json(result);
@@ -413,9 +425,37 @@ export async function ExportRegisteredStudents(req: Request, res: Response) {
     try {
         const { eventId } = req.params;
         const format = req.query.format as string || 'csv';
+        const userId = (req as any).user?.id;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized: Please login" });
+        }
 
         if (!eventId) {
             return res.status(400).json({ success: false, message: "Event Id is required" });
+        }
+
+        // Check if user is authorized for the event's club
+        const event = await db.query.events.findFirst({
+            where: eq(events.id, parseInt(eventId)),
+            columns: { id: true, clubId: true }
+        });
+
+        if (!event) {
+            return res.status(404).json({ success: false, message: "Event not found" });
+        }
+
+        const club = await db.query.clubs.findFirst({
+            where: eq(clubs.id, event.clubId),
+            columns: { authClubId: true }
+        });
+
+        const isAdmin = await db.query.clubAdmins.findFirst({
+            where: and(eq(clubAdmins.clubId, event.clubId), eq(clubAdmins.userId, userId))
+        });
+
+        if (club?.authClubId !== userId && !isAdmin) {
+            return res.status(403).json({ success: false, message: "Unauthorized: Only club admins can export student data" });
         }
 
         const { eventTitle, data } = await getEventRegistrationsForExport(parseInt(eventId));

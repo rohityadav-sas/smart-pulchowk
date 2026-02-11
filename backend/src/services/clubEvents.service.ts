@@ -21,6 +21,22 @@ import { sendToUser } from "./notification.service.js";
 
 const { MAX_FILE_SIZE, ALLOWED_TYPES } = UPLOAD_CONSTANTS;
 
+async function isAuthorizedForClub(userId: string, clubId: number) {
+  const club = await db.query.clubs.findFirst({
+    where: eq(clubs.id, clubId),
+    columns: { authClubId: true },
+  });
+
+  if (!club) return false;
+  if (club.authClubId === userId) return true;
+
+  const admin = await db.query.clubAdmins.findFirst({
+    where: and(eq(clubAdmins.clubId, clubId), eq(clubAdmins.userId, userId)),
+  });
+
+  return !!admin;
+}
+
 export async function addClubAdmin(
   ownerId: string,
   clubId: number,
@@ -185,10 +201,14 @@ export async function getClubs() {
 }
 
 export async function updateClubInfo(
+  userId: string,
   clubId: number,
   clubData: createClubInput,
 ) {
   try {
+    if (!(await isAuthorizedForClub(userId, clubId))) {
+      throw new Error("Unauthorized: Only club admins or owners can update info");
+    }
     const club = await db.query.clubs.findFirst({
       where: eq(clubs.id, clubId),
     });
@@ -319,10 +339,14 @@ async function getClubLogoinfo(clubId: number) {
 }
 
 export async function handleClubLogoUrlUpload(
+  userId: string,
   clubId: number,
   imageUrl: string,
 ) {
   try {
+    if (!(await isAuthorizedForClub(userId, clubId))) {
+      throw new Error("Unauthorized to update logo for this club");
+    }
     if (!imageUrl || typeof imageUrl !== "string") {
       return {
         success: true,
@@ -364,10 +388,14 @@ export async function handleClubLogoUrlUpload(
 }
 
 export async function handleCLubLogoFileUpload(
+  userId: string,
   clubId: number,
   file: Express.Multer.File,
 ) {
   try {
+    if (!(await isAuthorizedForClub(userId, clubId))) {
+      throw new Error("Unauthorized to upload logo for this club");
+    }
     if (!ALLOWED_TYPES.includes(file.mimetype as any)) {
       return {
         success: false,
@@ -423,8 +451,11 @@ export async function handleCLubLogoFileUpload(
   }
 }
 
-export async function deleteClubLogo(clubId: number) {
+export async function deleteClubLogo(userId: string, clubId: number) {
   try {
+    if (!(await isAuthorizedForClub(userId, clubId))) {
+      throw new Error("Unauthorized to delete logo for this club");
+    }
     const club = await db.query.clubs.findFirst({
       where: eq(clubs.id, clubId),
       columns: {
