@@ -69,6 +69,14 @@
   let profileModalOpen = $state(false);
   let sellerMenuOpen = $state(false);
 
+  
+  let confirmModalOpen = $state(false);
+  let confirmTitle = $state("");
+  let confirmMessage = $state("");
+  let confirmActionText = $state("Confirm");
+  let confirmType = $state<"info" | "danger" | "warning">("info");
+  let onConfirmAction = $state<() => void | Promise<void>>(() => {});
+
   let requestMessage = $state("");
   let requestSubmitting = $state(false);
   let cancellingRequest = $state(false);
@@ -111,6 +119,21 @@
     toastTimeout = setTimeout(() => {
       trustError = null;
     }, 2000);
+  }
+
+  function showConfirm(options: {
+    title: string;
+    message: string;
+    confirmText?: string;
+    type?: "info" | "danger" | "warning";
+    onConfirm: () => void | Promise<void>;
+  }) {
+    confirmTitle = options.title;
+    confirmMessage = options.message;
+    confirmActionText = options.confirmText || "Confirm";
+    confirmType = options.type || "info";
+    onConfirmAction = options.onConfirm;
+    confirmModalOpen = true;
   }
 
   async function handleShare() {
@@ -331,45 +354,62 @@
   }
 
   async function handleDelete() {
-    if (!confirm("Delete this listing permanently?")) return;
-
-    deleting = true;
-    try {
-      const result = await deleteBookListing(bookId);
-      if (result.success) {
-        goto("/books");
-      } else {
-        alert(result.message || "Could not delete listing.");
-      }
-    } catch (error) {
-      console.error("Failed to delete listing:", error);
-    } finally {
-      deleting = false;
-    }
+    showConfirm({
+      title: "Delete Listing?",
+      message:
+        "Are you sure you want to delete this listing permanently? This action cannot be undone.",
+      confirmText: "Delete",
+      type: "danger",
+      onConfirm: async () => {
+        deleting = true;
+        try {
+          const result = await deleteBookListing(bookId);
+          if (result.success) {
+            goto("/books");
+          } else {
+            showError(result.message || "Could not delete listing.");
+          }
+        } catch (error) {
+          console.error("Failed to delete listing:", error);
+          showError("An error occurred while deleting.");
+        } finally {
+          deleting = false;
+        }
+      },
+    });
   }
 
   async function handleMarkSold() {
-    if (!confirm("Mark this listing as sold?")) return;
-
-    markingSold = true;
-    try {
-      const result = await markBookAsSold(bookId);
-      if (result.success) {
-        await queryClient.invalidateQueries({
-          queryKey: ["book-listing", bookId],
-        });
-        await Promise.all([
-          bookQuery.refetch(),
-          purchaseRequestQuery.refetch(),
-        ]);
-      } else {
-        alert(result.message || "Could not mark as sold.");
-      }
-    } catch (error) {
-      console.error("Failed to mark sold:", error);
-    } finally {
-      markingSold = false;
-    }
+    showConfirm({
+      title: "Mark as Sold?",
+      message:
+        "This will mark your listing as sold and notify any people with pending requests.",
+      confirmText: "Mark Sold",
+      type: "info",
+      onConfirm: async () => {
+        markingSold = true;
+        try {
+          const result = await markBookAsSold(bookId);
+          if (result.success) {
+            await queryClient.invalidateQueries({
+              queryKey: ["book-listing", bookId],
+            });
+            await Promise.all([
+              bookQuery.refetch(),
+              purchaseRequestQuery.refetch(),
+            ]);
+            showSuccess("Listing marked as sold!");
+          } else {
+            showError(result.message || "Could not mark as sold.");
+          }
+        } catch (error) {
+          console.error("Failed to mark sold:", error);
+          showError("An error occurred.");
+        } finally {
+          markingSold = false;
+        }
+      },
+    });
   }
 
   async function handleRateSeller(book: BookListing) {
@@ -447,13 +487,6 @@
 
   async function handleBlockSeller(book: BookListing) {
     if (!book.sellerId || blockSubmitting) return;
-    if (
-      !confirm(
-        "Block this seller? You will not see their marketplace activity.",
-      )
-    )
-      return;
-
     clearTrustMessages();
     blockSubmitting = true;
     try {
@@ -504,22 +537,30 @@
     const data = purchaseRequestQuery.data;
     if (!data || Array.isArray(data) || cancellingRequest) return;
     const request = data;
-    if (!confirm("Cancel your request to buy this book?")) return;
 
-    cancellingRequest = true;
-    try {
-      const result = await cancelPurchaseRequest(request.id);
-      if (result.success) {
-        await purchaseRequestQuery.refetch();
-      } else {
-        showError(result.message || "Failed to cancel request.");
-      }
-    } catch (error) {
-      console.error("Failed to cancel purchase request:", error);
-      showError("An error occurred while cancelling the request.");
-    } finally {
-      cancellingRequest = false;
-    }
+    showConfirm({
+      title: "Cancel Request?",
+      message: "Are you sure you want to cancel your request for this book?",
+      confirmText: "Cancel Request",
+      type: "warning",
+      onConfirm: async () => {
+        cancellingRequest = true;
+        try {
+          const result = await cancelPurchaseRequest(request.id);
+          if (result.success) {
+            await purchaseRequestQuery.refetch();
+            showSuccess("Request cancelled.");
+          } else {
+            showError(result.message || "Failed to cancel request.");
+          }
+        } catch (error) {
+          console.error("Failed to cancel purchase request:", error);
+          showError("An error occurred while cancelling the request.");
+        } finally {
+          cancellingRequest = false;
+        }
+      },
+    });
   }
 
   async function handleRespondToRequest(requestId: number, accept: boolean) {
@@ -3075,6 +3116,86 @@
             </button>
           {/if}
         {/if}
+      </div>
+    </div>
+  </div>
+{/if}
+
+
+{#if confirmModalOpen}
+  <div
+    class="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6"
+    transition:fade={{ duration: 200 }}
+  >
+    <!-- Backdrop -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div
+      class="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
+      onclick={() => (confirmModalOpen = false)}
+      role="button"
+      tabindex="-1"
+      aria-label="Close modal"
+    ></div>
+
+  
+    <div
+      class="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100"
+      transition:fly={{ y: 20, duration: 400 }}
+    >
+      <div class="p-8 text-center">
+        <!-- Icon -->
+        <div
+          class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 border-2 {confirmType ===
+          'danger'
+            ? 'bg-rose-50 border-rose-100 text-rose-500'
+            : confirmType === 'warning'
+              ? 'bg-amber-50 border-amber-100 text-amber-500'
+              : 'bg-indigo-50 border-indigo-100 text-indigo-500'}"
+        >
+          {#if confirmType === "danger"}
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          {:else if confirmType === "warning"}
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          {:else}
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          {/if}
+        </div>
+
+        <h3 class="text-xl font-black text-slate-900 mb-2 leading-tight">
+          {confirmTitle}
+        </h3>
+        <p class="text-slate-800 text-sm font-medium leading-relaxed px-2">
+          {confirmMessage}
+        </p>
+
+        <div class="mt-8 grid grid-cols-2 gap-3">
+          <button
+            onclick={() => (confirmModalOpen = false)}
+            class="py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm rounded-2xl transition-all active:scale-95"
+          >
+            Cancel
+          </button>
+          <button
+            onclick={async () => {
+              confirmModalOpen = false;
+              await onConfirmAction();
+            }}
+            class="py-3.5 px-4 font-bold text-sm rounded-2xl transition-all active:scale-95 text-white shadow-lg {confirmType ===
+            'danger'
+              ? 'bg-rose-500 hover:bg-rose-600 shadow-rose-200'
+              : confirmType === 'warning'
+                ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-200'
+                : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'}"
+          >
+            {confirmActionText}
+          </button>
+        </div>
       </div>
     </div>
   </div>
