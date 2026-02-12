@@ -21,7 +21,7 @@ import {
   bookListings,
   bookPurchaseRequests,
 } from "../models/book_buy_sell-schema.js";
-import { lostFoundClaims, lostFoundItems } from "../models/lost-found-schema.js";
+import { lostFoundClaims, lostFoundImages, lostFoundItems } from "../models/lost-found-schema.js";
 import { user } from "../models/auth-schema.js";
 import {
   DEFAULT_NOTIFICATION_PREFERENCES,
@@ -70,6 +70,7 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
   const listingIds = new Set<number>();
   const requestIds = new Set<number>();
   const claimIds = new Set<number>();
+  const itemIds = new Set<number>();
   const actorUserIds = new Set<string>();
 
   for (const row of rows) {
@@ -79,6 +80,7 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
     const listingId = parseNumericId(data.listingId) ?? parseNumericId(data.bookId);
     const requestId = parseNumericId(data.requestId);
     const claimId = parseNumericId(data.claimId);
+    const itemId = parseNumericId(data.itemId);
     const actorIdCandidate = [
       parseString(data.actorId),
       parseString(data.senderId),
@@ -96,11 +98,19 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
     if (listingId) listingIds.add(listingId);
     if (requestId) requestIds.add(requestId);
     if (claimId) claimIds.add(claimId);
+    if (itemId) itemIds.add(itemId);
     if (actorIdCandidate) actorUserIds.add(actorIdCandidate);
   }
 
-  const [eventRows, noticeRows, listingImageRows, requestRows, claimRows, actorRows] =
-    await Promise.all([
+  const [
+    eventRows,
+    noticeRows,
+    listingImageRows,
+    requestRows,
+    claimRows,
+    actorRows,
+    lostFoundImageRows,
+  ] = await Promise.all([
     eventIds.size > 0
       ? db
           .select({ id: events.id, bannerUrl: events.bannerUrl, title: events.title })
@@ -167,6 +177,16 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
           })
           .from(user)
           .where(inArray(user.id, [...actorUserIds]))
+      : Promise.resolve([]),
+    itemIds.size > 0
+      ? db
+          .select({
+            itemId: lostFoundImages.itemId,
+            imageUrl: lostFoundImages.imageUrl,
+          })
+          .from(lostFoundImages)
+          .where(inArray(lostFoundImages.itemId, [...itemIds]))
+          .orderBy(lostFoundImages.sortOrder)
       : Promise.resolve([]),
   ]);
 
@@ -245,6 +265,12 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
       },
     ]),
   );
+  const itemImageMap = new Map<number, string>();
+  for (const row of lostFoundImageRows) {
+    if (!itemImageMap.has(row.itemId)) {
+      itemImageMap.set(row.itemId, row.imageUrl);
+    }
+  }
 
   return rows.map((row) => {
     const sourceData = (row.data || {}) as NotificationData;
@@ -259,15 +285,18 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
       const eventId = parseNumericId(data.eventId);
       const noticeId = parseNumericId(data.noticeId);
       const listingId = parseNumericId(data.listingId) ?? parseNumericId(data.bookId);
+      const itemId = parseNumericId(data.itemId);
 
       const eventMeta = eventId ? eventMap.get(eventId) : null;
       const noticeMeta = noticeId ? noticeMap.get(noticeId) : null;
       const listingMeta = listingId ? listingMap.get(listingId) : null;
+      const itemImage = itemId ? itemImageMap.get(itemId) : null;
 
       if (eventMeta?.bannerUrl) data.thumbnailUrl = eventMeta.bannerUrl;
       else if (noticeMeta?.attachmentUrl && isImageUrl(noticeMeta.attachmentUrl))
         data.thumbnailUrl = noticeMeta.attachmentUrl;
       else if (listingMeta?.imageUrl) data.thumbnailUrl = listingMeta.imageUrl;
+      else if (itemImage) data.thumbnailUrl = itemImage;
     }
 
     const eventId = parseNumericId(data.eventId);
@@ -332,6 +361,13 @@ async function enrichNotificationData(rows: Array<{ type: string; data: unknown 
       }
       if (!parseString(data.itemTitle) && claimMeta.itemTitle) {
         data.itemTitle = claimMeta.itemTitle;
+      }
+
+      // Populate item image for claim received notifications if missing
+      const itemId = parseNumericId(data.itemId);
+      const itemImage = itemId ? itemImageMap.get(itemId) : null;
+      if (!parseString(data.thumbnailUrl) && itemImage) {
+        data.thumbnailUrl = itemImage;
       }
     }
 
