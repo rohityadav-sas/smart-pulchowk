@@ -91,6 +91,7 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
                 if (dbUser) {
                     (req as any).user = dbUser;
                     (req as any).session = { userId: dbUser.id, authType: "firebase" };
+                    return next();
                 }
             }
         } catch (error) {
