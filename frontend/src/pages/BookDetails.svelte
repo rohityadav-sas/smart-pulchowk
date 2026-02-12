@@ -2581,305 +2581,328 @@
       tabindex="-1"
     ></div>
     <div
-      class="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl"
+      class="relative w-full max-w-2xl max-h-[90vh] sm:max-h-[85vh] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col"
       in:fly={{ y: 20, duration: 400 }}
     >
-      <!-- Header -->
-      <div
-        class="relative h-32 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500"
+     <!-- Header -->
+      <button
+        onclick={() => (profileModalOpen = false)}
+        class="absolute top-4 right-4 z-50 p-2 bg-black/20 hover:bg-black/30 backdrop-blur-md rounded-full text-white transition-all active:scale-90"
+        aria-label="Close profile"
       >
-        <button
-          onclick={() => (profileModalOpen = false)}
-          class="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full text-white transition-colors"
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.5"
+            d="M6 18L18 6M6 6l12 12"
+          /></svg
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            /></svg
-          >
-        </button>
-      </div>
+      </button>
 
-      <!-- Content -->
-      <div class="relative px-6 pb-8">
-        <!-- Avatar -->
-        <div class="absolute -top-12 left-6">
-          <div class="p-1.5 bg-white rounded-full shadow-xl">
-            {#if book?.seller?.image}
-              <img
-                src={book.seller.image}
-                alt=""
-                class="w-24 h-24 rounded-full object-cover"
-              />
-            {:else}
-              <div
-                class="w-24 h-24 rounded-full bg-indigo-100 text-indigo-700 text-3xl font-black flex items-center justify-center"
-              >
-                {book?.seller?.name?.charAt(0) || "U"}
-              </div>
-            {/if}
-          </div>
-        </div>
-
-        <div
-          class="pt-16 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-        >
-          <div>
-            <h2 class="text-2xl font-black text-gray-900">
-              {book?.seller?.name || "Anonymous"}
-            </h2>
-            <p class="text-sm text-gray-500">{book?.seller?.email || ""}</p>
-            <div class="mt-2 flex flex-wrap gap-2">
-              {#if book?.seller?.isVerifiedSeller}
-                <span
-                  class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold border border-blue-100 uppercase tracking-wider"
-                  >Verified Seller</span
+      <div class="flex-1 overflow-y-auto custom-scrollbar">
+     <!-- Content -->
+        <div class="relative">
+          <div
+            class="h-32 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500"
+          ></div>
+         <!-- Avatar -->
+          <div class="absolute -bottom-12 left-8 z-10">
+            <div class="p-1.5 bg-white rounded-full shadow-2xl">
+              {#if book?.seller?.image}
+                <img
+                  src={book.seller.image}
+                  alt=""
+                  class="w-24 h-24 rounded-full object-cover"
+                />
+              {:else}
+                <div
+                  class="w-24 h-24 rounded-full bg-indigo-100 text-indigo-700 text-3xl font-black flex items-center justify-center border-2 border-indigo-50"
                 >
+                  {book?.seller?.name?.charAt(0) || "U"}
+                </div>
               {/if}
-              <span
-                class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase tracking-wider"
-                >Active Member</span
-              >
             </div>
           </div>
         </div>
 
-        <!-- Stats -->
-        <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="px-8 pt-16 pb-10">
           <div
-            class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
           >
-            <p
-              class="text-xs font-bold text-gray-400 uppercase tracking-widest"
-            >
-              Listed
-            </p>
-            <p class="mt-1 text-xl font-black text-gray-900">
-              {sellerListingsQuery.data?.totalCount || 0}
-            </p>
-          </div>
-          <div
-            class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
-          >
-            <p
-              class="text-xs font-bold text-gray-400 uppercase tracking-widest"
-            >
-              Sold
-            </p>
-            <p class="mt-1 text-xl font-black text-emerald-600">
-              {sellerReputationQuery.data?.soldCount || 0}
-            </p>
-          </div>
-          <div
-            class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
-          >
-            <p
-              class="text-xs font-bold text-gray-400 uppercase tracking-widest"
-            >
-              Rating
-            </p>
-            <div class="mt-1 flex items-center justify-center gap-1">
-              <span class="text-xl font-black text-amber-500"
-                >{sellerReputationQuery.data?.averageRating?.toFixed(1) ||
-                  "0.0"}</span
-              >
-              <svg
-                class="w-4 h-4 text-amber-500 fill-current"
-                viewBox="0 0 20 20"
-                ><path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                /></svg
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="mt-8">
-          <div class="flex border-b border-slate-100 px-2">
-            {#each ["listings", "reviews"] as tab}
-              <button
-                onclick={() => (profileTab = tab as any)}
-                class="px-6 py-3 text-sm font-bold capitalize transition-all relative {profileTab ===
-                tab
-                  ? 'text-indigo-600'
-                  : 'text-gray-400 hover:text-gray-600'}"
-              >
-                {tab}
-                {#if profileTab === tab}
-                  <div
-                    class="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 rounded-t-full"
-                    in:fade
-                  ></div>
+            <div>
+              <h2 class="text-2xl font-black text-gray-900">
+                {book?.seller?.name || "Anonymous"}
+              </h2>
+              <p class="text-sm text-gray-500">{book?.seller?.email || ""}</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                {#if book?.seller?.isVerifiedSeller}
+                  <span
+                    class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold border border-blue-100 uppercase tracking-wider"
+                    >Verified Seller</span
+                  >
                 {/if}
-              </button>
-            {/each}
+                <span
+                  class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase tracking-wider"
+                  >Active Member</span
+                >
+              </div>
+            </div>
           </div>
 
-          <div class="mt-6">
-            {#if profileTab === "listings"}
-              {#if sellerListingsQuery.data?.listings && sellerListingsQuery.data.listings.length > 0}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {#each sellerListingsQuery.data.listings as item}
-                    <a
-                      href="/books/{item.id}"
-                      class="group bg-slate-50/50 p-3 rounded-2xl border border-slate-100 hover:border-indigo-200 transition-all"
-                    >
-                      <div class="flex gap-3">
-                        <div
-                          class="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0"
-                        >
-                          {#if item.images?.[0]}
-                            <img
-                              src={item.images[0].imageUrl}
-                              alt={item.title}
-                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                          {:else}
-                            <div
-                              class="w-full h-full flex items-center justify-center text-slate-300"
-                            >
-                              <svg
-                                class="w-8 h-8"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                ><path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="1.5"
-                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                /></svg
+          <!-- Stats -->
+          <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div
+              class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
+            >
+              <p
+                class="text-xs font-bold text-gray-400 uppercase tracking-widest"
+              >
+                Listed
+              </p>
+              <p class="mt-1 text-xl font-black text-gray-900">
+                {sellerListingsQuery.data?.totalCount || 0}
+              </p>
+            </div>
+            <div
+              class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
+            >
+              <p
+                class="text-xs font-bold text-gray-400 uppercase tracking-widest"
+              >
+                Sold
+              </p>
+              <p class="mt-1 text-xl font-black text-emerald-600">
+                {sellerReputationQuery.data?.soldCount || 0}
+              </p>
+            </div>
+            <div
+              class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
+            >
+              <p
+                class="text-xs font-bold text-gray-400 uppercase tracking-widest"
+              >
+                Rating
+              </p>
+              <div class="mt-1 flex items-center justify-center gap-1">
+                <span class="text-xl font-black text-amber-500"
+                  >{sellerReputationQuery.data?.averageRating?.toFixed(1) ||
+                    "0.0"}</span
+                >
+                <svg
+                  class="w-4 h-4 text-amber-500 fill-current"
+                  viewBox="0 0 20 20"
+                  ><path
+                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                  /></svg
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="mt-8">
+            <div class="flex border-b border-slate-100 px-2">
+              {#each ["listings", "reviews"] as tab}
+                <button
+                  onclick={() => (profileTab = tab as any)}
+                  class="px-6 py-3 text-sm font-bold capitalize transition-all relative {profileTab ===
+                  tab
+                    ? 'text-indigo-600'
+                    : 'text-gray-400 hover:text-gray-600'}"
+                >
+                  {tab}
+                  {#if profileTab === tab}
+                    <div
+                      class="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 rounded-t-full"
+                      in:fade
+                    ></div>
+                  {/if}
+                </button>
+              {/each}
+            </div>
+
+            <div class="mt-6">
+              {#if profileTab === "listings"}
+                {#if sellerListingsQuery.data?.listings && sellerListingsQuery.data.listings.length > 0}
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {#each sellerListingsQuery.data.listings as item}
+                      <a
+                        href="/books/{item.id}"
+                        class="group bg-slate-50/50 p-3 rounded-2xl border border-slate-100 hover:border-indigo-200 transition-all"
+                      >
+                        <div class="flex gap-3">
+                          <div
+                            class="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0"
+                          >
+                            {#if item.images?.[0]}
+                              <img
+                                src={item.images[0].imageUrl}
+                                alt={item.title}
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              />
+                            {:else}
+                              <div
+                                class="w-full h-full flex items-center justify-center text-slate-300"
+                              >
+                                <svg
+                                  class="w-8 h-8"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                  ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                  /></svg
+                                >
+                              </div>
+                            {/if}
+                          </div>
+                          <div class="min-w-0 flex flex-col justify-center">
+                            <p class="text-sm font-bold text-gray-900 truncate">
+                              {item.title}
+                            </p>
+                            <p class="text-[10px] text-gray-500 truncate">
+                              {item.author}
+                            </p>
+                            <div class="mt-1 flex items-center gap-2">
+                              <span class="text-xs font-black text-indigo-600"
+                                >Rs. {parseFloat(
+                                  item.price || "0",
+                                ).toLocaleString()}</span
+                              >
+                              <span
+                                class="text-[9px] px-1.5 py-0.5 rounded-full bg-white border border-slate-100 text-slate-500 font-bold uppercase tracking-tighter"
+                                >{item.status}</span
                               >
                             </div>
-                          {/if}
+                          </div>
                         </div>
-                        <div class="min-w-0 flex flex-col justify-center">
-                          <p class="text-sm font-bold text-gray-900 truncate">
-                            {item.title}
-                          </p>
-                          <p class="text-[10px] text-gray-500 truncate">
-                            {item.author}
-                          </p>
-                          <div class="mt-1 flex items-center gap-2">
-                            <span class="text-xs font-black text-indigo-600"
-                              >Rs. {parseFloat(
-                                item.price || "0",
-                              ).toLocaleString()}</span
+                      </a>
+                    {/each}
+                  </div>
+                {:else}
+                  <div class="text-center py-12">
+                    <p class="text-sm text-gray-500">No other listings found</p>
+                  </div>
+                {/if}
+              {:else if profileTab === "reviews"}
+                {#if sellerReputationQuery.data?.recentRatings && sellerReputationQuery.data.recentRatings.length > 0}
+                  <div class="space-y-4">
+                    {#each sellerReputationQuery.data.recentRatings as review}
+                      <div
+                        class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:bg-white transition-colors"
+                      >
+                        <div class="flex items-start justify-between gap-4">
+                          <div class="flex items-center gap-3">
+                            {#if review.rater?.image}
+                              <img
+                                src={review.rater.image}
+                                alt=""
+                                class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                              />
+                            {:else}
+                              <div
+                                class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs border-2 border-white shadow-sm"
+                              >
+                                {review.rater?.name?.charAt(0) || "U"}
+                              </div>
+                            {/if}
+                            <div>
+                              <p class="text-sm font-bold text-gray-900">
+                                {review.rater?.name || "Anonymous"}
+                              </p>
+                              <p
+                                class="text-[10px] text-gray-400 font-medium tracking-tight"
+                              >
+                                {new Date(review.createdAt).toLocaleDateString(
+                                  undefined,
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  },
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="flex items-center gap-1 px-2.5 py-1 bg-amber-50 rounded-lg border border-amber-100/50"
+                          >
+                            <span class="text-xs font-black text-amber-600"
+                              >{review.rating}</span
+                            >
+                            <svg
+                              class="w-3.5 h-3.5 text-amber-500 fill-current"
+                              viewBox="0 0 20 20"
+                              ><path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                              /></svg
+                            >
+                          </div>
+                        </div>
+
+                        {#if review.listing?.title}
+                          <div class="mt-3.5 flex items-center gap-2">
+                            <span
+                              class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                              >Book:</span
                             >
                             <span
-                              class="text-[9px] px-1.5 py-0.5 rounded-full bg-white border border-slate-100 text-slate-500 font-bold uppercase tracking-tighter"
-                              >{item.status}</span
+                              class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100/50 truncate max-w-full"
                             >
+                              {review.listing.title}
+                            </span>
                           </div>
-                        </div>
-                      </div>
-                    </a>
-                  {/each}
-                </div>
-              {:else}
-                <div class="text-center py-12">
-                  <p class="text-sm text-gray-500">No other listings found</p>
-                </div>
-              {/if}
-            {:else if profileTab === "reviews"}
-              {#if sellerReputationQuery.data?.recentRatings && sellerReputationQuery.data.recentRatings.length > 0}
-                <div class="space-y-4">
-                  {#each sellerReputationQuery.data.recentRatings as review}
-                    <div
-                      class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:bg-white transition-colors"
-                    >
-                      <div class="flex items-start justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                          {#if review.rater?.image}
-                            <img
-                              src={review.rater.image}
-                              alt=""
-                              class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
-                            />
-                          {:else}
-                            <div
-                              class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs border-2 border-white shadow-sm"
+                        {/if}
+
+                        {#if review.review}
+                          <div class="mt-3 relative">
+                            <p
+                              class="text-sm text-gray-600 leading-relaxed italic border-l-2 border-slate-100 pl-3 py-0.5"
                             >
-                              {review.rater?.name?.charAt(0) || "U"}
-                            </div>
-                          {/if}
-                          <div>
-                            <p class="text-sm font-bold text-gray-900">
-                              {review.rater?.name || "Anonymous"}
-                            </p>
-                            <p class="text-[10px] text-gray-400 font-medium">
-                              {new Date(review.createdAt).toLocaleDateString(
-                                undefined,
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                },
-                              )}
+                              "{review.review}"
                             </p>
                           </div>
-                        </div>
-                        <div
-                          class="flex items-center gap-1 px-2 py-1 bg-amber-50 rounded-lg border border-amber-100"
-                        >
-                          <span class="text-xs font-black text-amber-600"
-                            >{review.rating}</span
-                          >
-                          <svg
-                            class="w-3 h-3 text-amber-500 fill-current"
-                            viewBox="0 0 20 20"
-                            ><path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                            /></svg
-                          >
-                        </div>
+                        {/if}
                       </div>
-                      {#if review.review}
-                        <div class="mt-3 pl-13">
-                          <p
-                            class="text-sm text-gray-600 leading-relaxed italic"
-                          >
-                            "{review.review}"
-                          </p>
-                        </div>
-                      {/if}
-                    </div>
-                  {/each}
-                </div>
-              {:else}
-                <div class="text-center py-12 px-4">
-                  <div
-                    class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4"
-                  >
-                    <svg
-                      class="w-8 h-8 text-slate-300"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      ><path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                      /></svg
-                    >
+                    {/each}
                   </div>
-                  <p class="text-sm font-bold text-gray-900">No reviews yet</p>
-                  <p class="text-xs text-gray-400 mt-1 max-w-[200px] mx-auto">
-                    Be the first to rate this seller after a successful
-                    transaction!
-                  </p>
-                </div>
+                {:else}
+                  <div class="text-center py-12 px-4">
+                    <div
+                      class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                      <svg
+                        class="w-8 h-8 text-slate-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        ><path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1.5"
+                          d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        /></svg
+                      >
+                    </div>
+                    <p class="text-sm font-bold text-gray-900">
+                      No reviews yet
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1 max-w-[200px] mx-auto">
+                      Be the first to rate this seller after a successful
+                      transaction!
+                    </p>
+                  </div>
+                {/if}
               {/if}
-            {/if}
+            </div>
           </div>
         </div>
       </div>
@@ -2894,7 +2917,9 @@
       : 'translate-y-full'}"
     transition:fly={{ y: 100, duration: 500 }}
   >
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
+    <div
+      class="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6"
+    >
       <div class="flex items-center gap-3 sm:gap-4 min-w-0">
         <div class="shrink-0">
           {#if book?.images?.[0]}
