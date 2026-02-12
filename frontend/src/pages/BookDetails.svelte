@@ -2582,17 +2582,18 @@
       tabindex="-1"
     ></div>
     <div
-      class="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl"
+      class="relative w-full max-w-2xl max-h-[90vh] sm:max-h-[85vh] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col"
       in:fly={{ y: 20, duration: 400 }}
     >
       <!-- Header -->
       <div
-        class="relative h-32 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500"
+        class="relative h-32 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500"
       >
         <!-- svelte-ignore a11y_consider_explicit_label -->
         <button
           onclick={() => (profileModalOpen = false)}
-          class="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full text-white transition-colors"
+          class="absolute top-4 right-4 z-50 p-2 bg-black/20 hover:bg-black/30 backdrop-blur-md rounded-full text-white transition-all active:scale-90"
+          aria-label="Close profile"
         >
           <svg
             class="w-5 h-5"
@@ -2602,7 +2603,7 @@
             ><path
               stroke-linecap="round"
               stroke-linejoin="round"
-              stroke-width="2"
+              stroke-width="2.5"
               d="M6 18L18 6M6 6l12 12"
             /></svg
           >
@@ -2610,7 +2611,7 @@
       </div>
 
       <!-- Content -->
-      <div class="relative px-6 pb-8">
+      <div class="relative px-6 pb-8 flex-1 overflow-y-auto custom-scrollbar">
         <!-- Avatar -->
         <div class="absolute -top-12 left-6">
           <div class="p-1.5 bg-white rounded-full shadow-xl">
@@ -2648,56 +2649,6 @@
               <span
                 class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase tracking-wider"
                 >Active Member</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div
-            class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
-          >
-            <p
-              class="text-xs font-bold text-gray-400 uppercase tracking-widest"
-            >
-              Listed
-            </p>
-            <p class="mt-1 text-xl font-black text-gray-900">
-              {sellerListingsQuery.data?.totalCount || 0}
-            </p>
-          </div>
-          <div
-            class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
-          >
-            <p
-              class="text-xs font-bold text-gray-400 uppercase tracking-widest"
-            >
-              Sold
-            </p>
-            <p class="mt-1 text-xl font-black text-emerald-600">
-              {sellerReputationQuery.data?.soldCount || 0}
-            </p>
-          </div>
-          <div
-            class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center"
-          >
-            <p
-              class="text-xs font-bold text-gray-400 uppercase tracking-widest"
-            >
-              Rating
-            </p>
-            <div class="mt-1 flex items-center justify-center gap-1">
-              <span class="text-xl font-black text-amber-500"
-                >{sellerReputationQuery.data?.averageRating?.toFixed(1) ||
-                  '0.0'}</span
-              >
-              <svg
-                class="w-4 h-4 text-amber-500 fill-current"
-                viewBox="0 0 20 20"
-                ><path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                /></svg
               >
             </div>
           </div>
@@ -2817,7 +2768,7 @@
                             <p class="text-sm font-bold text-gray-900">
                               {review.rater?.name || 'Anonymous'}
                             </p>
-                            <p class="text-[10px] text-gray-400 font-medium">
+                            <p class="text-[10px] text-gray-400 font-medium tracking-tight">
                               {new Date(review.createdAt).toLocaleDateString(
                                 undefined,
                                 {
@@ -2830,13 +2781,13 @@
                           </div>
                         </div>
                         <div
-                          class="flex items-center gap-1 px-2 py-1 bg-amber-50 rounded-lg border border-amber-100"
+                          class="flex items-center gap-1 px-2.5 py-1 bg-amber-50 rounded-lg border border-amber-100/50"
                         >
                           <span class="text-xs font-black text-amber-600"
                             >{review.rating}</span
                           >
                           <svg
-                            class="w-3 h-3 text-amber-500 fill-current"
+                            class="w-3.5 h-3.5 text-amber-500 fill-current"
                             viewBox="0 0 20 20"
                             ><path
                               d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
@@ -2844,10 +2795,25 @@
                           >
                         </div>
                       </div>
+
+                      {#if review.listing?.title}
+                        <div class="mt-3.5 flex items-center gap-2">
+                          <span
+                            class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                            >Book:</span
+                          >
+                          <span
+                            class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100/50 truncate max-w-full"
+                          >
+                            {review.listing.title}
+                          </span>
+                        </div>
+                      {/if}
+
                       {#if review.review}
-                        <div class="mt-3 pl-13">
+                        <div class="mt-3 relative">
                           <p
-                            class="text-sm text-gray-600 leading-relaxed italic"
+                            class="text-sm text-gray-600 leading-relaxed italic border-l-2 border-slate-100 pl-3 py-0.5"
                           >
                             "{review.review}"
                           </p>
@@ -2874,7 +2840,9 @@
                       /></svg
                     >
                   </div>
-                  <p class="text-sm font-bold text-gray-900">No reviews yet</p>
+                  <p class="text-sm font-bold text-gray-900">
+                    No reviews yet
+                  </p>
                   <p class="text-xs text-gray-400 mt-1 max-w-[200px] mx-auto">
                     Be the first to rate this seller after a successful
                     transaction!
