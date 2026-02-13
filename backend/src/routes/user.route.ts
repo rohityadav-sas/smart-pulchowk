@@ -15,6 +15,54 @@ const router = express.Router();
  * This allows Firebase Auth users from the mobile app to be registered in the same database
  * as Better Auth users from the website
  */
+router.get("/me", requireFirebaseAuth, async (req, res) => {
+    try {
+        const firebaseUser = (req as any).firebaseUser as {
+            uid?: string;
+            email?: string;
+        };
+        const firebaseUid = firebaseUser?.uid;
+
+         // Find the user by Firebase UID or by email (for linked accounts)
+        let dbUser = await db.query.user.findFirst({
+            where: eq(user.id, firebaseUid),
+        });
+
+        // If not found by UID, try finding by email (for web-linked accounts)
+        if (!dbUser && firebaseUser.email) {
+            dbUser = await db.query.user.findFirst({
+                where: eq(user.email, firebaseUser.email),
+            });
+        }
+
+        if (!dbUser) {
+             return res.status(404).json({
+                data: {
+                    success: false,
+                    message: "User not found",
+                }
+            });
+        }
+
+        res.json({
+            data: {
+                success: true,
+                user: { id: dbUser.id, email: dbUser.email, name: dbUser.name, role: dbUser.role, image: dbUser.image },
+            },
+        });
+
+    } catch (error) {
+         console.error("Error fetching user profile:", error);
+        res.status(500).json({
+            data: {
+                success: false,
+                message: "Failed to fetch user profile",
+                error: error instanceof Error ? error.message : "Unknown error",
+            },
+        });
+    }
+});
+
 router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
     try {
         const firebaseUser = (req as any).firebaseUser as {
@@ -100,11 +148,37 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
                 },
             });
 
-            // Suppress notification for existing users to prevent spam on every sync
-            // Only send if we detect a significantly new context if possible, but for now
-            // simpler to just not spam on every sync.
+            // Send notification ONLY if role was upgraded
+            if (existingUserById.role === 'guest' && role !== 'guest') {
+                sendToUser(authStudentId, {
+                    title: 'Access Level Updated',
+                    body: `Your account has been upgraded to ${role}.`,
+                    data: {
+                        type: 'role_update',
+                        iconKey: 'general',
+                    },
+                }).catch((error) =>
+                    console.error('Failed to send role update notification (existing):', error),
+                );
+            } else if (fcmToken && fcmToken !== existingUserById.fcmToken) {
+                 // Send sign-in notification if FCM token changed (new device)
+                 sendToUser(authStudentId, {
+                    title: 'New sign-in detected',
+                    body: 'Your account was signed in from a new device.',
+                    data: {
+                        type: 'security_alert',
+                        iconKey: 'general',
+                        ipAddress: req.ip || '',
+                        userAgent: req.headers['user-agent'] || '',
+                    },
+                }).catch((error) =>
+                    console.error('Failed to send mobile security alert notification (existing):', error),
+                );
+            }
+
             return;
         }
+
 
 
         // Check if email is already used by another user
@@ -174,6 +248,35 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
                     firebaseUid: authStudentId
                 },
             });
+
+            // Send notification if role was upgraded (even if account link existed)
+            if (existingUserByEmail.role === 'guest' && role !== 'guest') {
+                 sendToUser(existingUserByEmail.id, {
+                    title: 'Access Level Updated',
+                    body: `Your account has been upgraded to ${role}.`,
+                    data: {
+                        type: 'role_update',
+                        iconKey: 'general',
+                    },
+                }).catch((error) =>
+                    console.error('Failed to send role update notification (linking):', error),
+                );
+            } else if (fcmToken && fcmToken !== existingUserByEmail.fcmToken) {
+                 // Send sign-in notification if FCM token changed (new device)
+                 // This covers the case where an existing account link is reused on a new device
+                 sendToUser(existingUserByEmail.id, {
+                    title: 'New sign-in detected',
+                    body: 'Your account was signed in from a new device.',
+                    data: {
+                        type: 'security_alert',
+                        iconKey: 'general',
+                        ipAddress: req.ip || '',
+                        userAgent: req.headers['user-agent'] || '',
+                    },
+                }).catch((error) =>
+                    console.error('Failed to send mobile security alert notification (linking):', error),
+                );
+            }
 
             return;
 
