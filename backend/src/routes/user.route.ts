@@ -4,6 +4,8 @@ import { user } from "../models/auth-schema.js";
 import { eq } from "drizzle-orm";
 import { requireFirebaseAuth } from "../middleware/auth.middleware.js";
 
+import { determineUserRole } from "../lib/student-email-parser.js";
+
 const router = express.Router();
 
 /**
@@ -52,7 +54,7 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
             return;
         }
 
-        const email = tokenEmail || bodyEmail;
+        const email = (tokenEmail || bodyEmail) as string;
         const name = bodyName || firebaseUser?.name;
         const image = bodyImage || firebaseUser?.picture;
 
@@ -65,6 +67,9 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
             });
             return;
         }
+
+        // Determine role based on email
+        const role = determineUserRole(email);
 
         // Check if user already exists by ID
         const existingUserById = await db.query.user.findFirst({
@@ -79,6 +84,7 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
                     name: name,
                     image: image || existingUserById.image,
                     fcmToken: fcmToken || existingUserById.fcmToken,
+                    role: existingUserById.role === 'guest' ? role : existingUserById.role,
                     updatedAt: new Date(),
                 })
                 .where(eq(user.id, authStudentId));
@@ -87,7 +93,7 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
                 data: {
                     success: true,
                     message: "User already exists, info updated",
-                    user: { id: authStudentId, email, name, role: existingUserById.role },
+                    user: { id: authStudentId, email, name, role: existingUserById.role === 'guest' ? role : existingUserById.role },
                 },
             });
             return;
@@ -107,6 +113,7 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
                     name: name,
                     image: image || existingUserByEmail.image,
                     fcmToken: fcmToken || existingUserByEmail.fcmToken,
+                    role: existingUserByEmail.role === 'guest' ? role : existingUserByEmail.role,
                     updatedAt: new Date(),
                 })
                 .where(eq(user.id, existingUserByEmail.id));
@@ -119,7 +126,7 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
                         id: existingUserByEmail.id,  // Return web user's ID!
                         email,
                         name,
-                        role: existingUserByEmail.role
+                        role: existingUserByEmail.role === 'guest' ? role : existingUserByEmail.role
                     },
                     linkedFrom: "firebase",
                     firebaseUid: authStudentId
@@ -137,7 +144,7 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
                 email: email,
                 emailVerified: firebaseUser?.email_verified ?? true,
                 image: image,
-                role: "student",
+                role: role,
                 fcmToken: fcmToken,
             })
             .returning();
