@@ -1,8 +1,9 @@
-import { eq } from 'drizzle-orm'
+import { and, eq, inArray, sql } from 'drizzle-orm'
 import ky from 'ky'
 import { parse } from 'node-html-parser'
 import { db } from '../lib/db.js'
 import { notice, type NewNotice } from '../models/notice-schema.js'
+import { notifications } from '../models/notification-schema.js'
 import { UPLOAD_CONSTANTS, generatePublicId } from '../config/cloudinary.js'
 import { uploadAssignmentFileToCloudinary } from './cloudinary.service.js'
 import { createInAppNotificationForAudience } from './inAppNotification.service.js'
@@ -49,6 +50,7 @@ interface ExistingNoticeRow {
   publishedDate: string | null
   sourceUrl: string | null
   externalRef: string | null
+  createdAt: Date
 }
 
 const NOTICE_SOURCES: NoticeSource[] = [
@@ -101,6 +103,12 @@ function isCloudinaryNoticeAttachment(url: string | null | undefined): boolean {
   return (
     /res\.cloudinary\.com/i.test(value) && /\/notice-attachments\//i.test(value)
   )
+}
+
+function isImageUrl(url: string | null | undefined): boolean {
+  const value = normalizeText(url)
+  if (!value) return false
+  return /\.(jpg|jpeg|png|webp|gif|avif|svg)(\?.*)?$/i.test(value)
 }
 
 function createHttpClient() {
@@ -344,6 +352,7 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
       publishedDate: notice.publishedDate,
       sourceUrl: notice.sourceUrl,
       externalRef: notice.externalRef,
+      createdAt: notice.createdAt,
     })
     .from(notice)
 
@@ -463,9 +472,20 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
     ),
   )
 
+  const recentlyTouchedNoticeIds = new Set<number>(insertedRows.map((row) => row.id))
+  for (const item of dedupedScraped) {
+    const existing =
+      (item.externalRef ? existingByRef.get(item.externalRef) : undefined) ??
+      existingByFallback.get(
+        buildFallbackKey(item.category, item.title, item.publishedDate),
+      )
+    if (existing) recentlyTouchedNoticeIds.add(existing.id)
+  }
+
   const notificationPromises: Promise<unknown>[] = []
   for (const created of insertedRows) {
     const category = created.category as NoticeSyncCategory
+    const normalizedLevel = makeLegacySubsection(category)
     notificationPromises.push(
       createInAppNotificationForAudience({
         audience: 'all',
@@ -477,9 +497,9 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
           noticeTitle: created.title,
           category,
           section: toLegacySection(category),
-          subsection: makeLegacySubsection(category),
+          subsection: normalizedLevel,
           iconKey: 'notice',
-          ...(created.attachmentUrl
+          ...(isImageUrl(created.attachmentUrl)
             ? { thumbnailUrl: created.attachmentUrl as string }
             : {}),
         },
@@ -500,13 +520,137 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
           type: 'notice_created',
           category,
           section: toLegacySection(category),
-          subsection: makeLegacySubsection(category),
+          subsection: normalizedLevel,
           iconKey: 'notice',
         },
       }).catch((error) =>
         console.error('Failed to send sync notice FCM notification:', error),
       ),
     )
+  }
+
+  for (const updated of updates) {
+    const category = updated.category
+    const normalizedLevel = updated.payload.level || makeLegacySubsection(category)
+    notificationPromises.push(
+      createInAppNotificationForAudience({
+        audience: 'all',
+        type: 'notice_updated',
+        title: 'Notice Updated',
+        body: updated.payload.title,
+        data: {
+          noticeId: updated.id,
+          noticeTitle: updated.payload.title,
+          category,
+          section: toLegacySection(category),
+          subsection: normalizedLevel,
+          iconKey: 'notice',
+          ...(isImageUrl(updated.payload.attachmentUrl)
+            ? { thumbnailUrl: updated.payload.attachmentUrl as string }
+            : {}),
+        },
+      }).catch((error) =>
+        console.error(
+          'Failed to create sync notice update in-app notification:',
+          error,
+        ),
+      ),
+    )
+
+    notificationPromises.push(
+      sendToTopic('announcements', {
+        title: 'Notice Updated',
+        body: updated.payload.title,
+        data: {
+          noticeId: String(updated.id),
+          type: 'notice_updated',
+          category,
+          section: toLegacySection(category),
+          subsection: normalizedLevel,
+          iconKey: 'notice',
+        },
+      }).catch((error) =>
+        console.error(
+          'Failed to send sync notice update FCM notification:',
+          error,
+        ),
+      ),
+    )
+  }
+
+  // Backfill missing "notice_created" in-app entries for recently touched notices.
+  // This repairs cases where notice insertion succeeded but notification creation failed.
+  if (recentlyTouchedNoticeIds.size > 0) {
+    const touchedIds = [...recentlyTouchedNoticeIds]
+    const touchedRows = await db
+      .select({
+        id: notice.id,
+        title: notice.title,
+        category: notice.category,
+        level: notice.level,
+        attachmentUrl: notice.attachmentUrl,
+        createdAt: notice.createdAt,
+      })
+      .from(notice)
+      .where(inArray(notice.id, touchedIds))
+
+    const now = Date.now()
+    const recentRows = touchedRows.filter(
+      (row) => now - row.createdAt.getTime() <= 14 * 24 * 60 * 60 * 1000,
+    )
+
+    if (recentRows.length > 0) {
+      const recentIdsAsText = recentRows.map((row) => String(row.id))
+      const existingCreatedNotifRows = await db
+        .select({
+          noticeId: sql<string>`coalesce(${notifications.data}->>'noticeId', '')`,
+        })
+        .from(notifications)
+        .where(
+          and(
+            eq(notifications.type, 'notice_created'),
+            inArray(
+              sql<string>`coalesce(${notifications.data}->>'noticeId', '')`,
+              recentIdsAsText,
+            ),
+          ),
+        )
+
+      const existingCreatedNoticeIds = new Set(
+        existingCreatedNotifRows.map((row) => row.noticeId),
+      )
+
+      for (const row of recentRows) {
+        if (existingCreatedNoticeIds.has(String(row.id))) continue
+
+        const category = row.category as NoticeSyncCategory
+        const normalizedLevel = row.level || makeLegacySubsection(category)
+        notificationPromises.push(
+          createInAppNotificationForAudience({
+            audience: 'all',
+            type: 'notice_created',
+            title: 'New Notice Published',
+            body: row.title,
+            data: {
+              noticeId: row.id,
+              noticeTitle: row.title,
+              category,
+              section: toLegacySection(category),
+              subsection: normalizedLevel,
+              iconKey: 'notice',
+              ...(isImageUrl(row.attachmentUrl)
+                ? { thumbnailUrl: row.attachmentUrl as string }
+                : {}),
+            },
+          }).catch((error) =>
+            console.error(
+              'Failed to backfill sync notice in-app notification:',
+              error,
+            ),
+          ),
+        )
+      }
+    }
   }
 
   await Promise.allSettled(notificationPromises)
