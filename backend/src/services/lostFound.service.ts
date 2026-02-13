@@ -462,7 +462,7 @@ export async function createClaimRequest(
 
   const trimmedMessage = message?.trim()
   if (!trimmedMessage)
-    return { success: false, message: 'Claim message is required.' }
+    return { success: false, message: 'Request message is required.' }
 
   const item = await db.query.lostFoundItems.findFirst({
     where: eq(lostFoundItems.id, itemId),
@@ -478,18 +478,12 @@ export async function createClaimRequest(
   })
   if (!item) return { success: false, message: 'Lost/found item not found.' }
   if (item.ownerId === requesterId) {
-    return { success: false, message: 'You cannot claim your own item.' }
-  }
-  if (item.itemType !== 'found') {
-    return {
-      success: false,
-      message: 'Claim requests are only available for found items.',
-    }
+    return { success: false, message: 'You cannot submit a request for your own item.' }
   }
   if (item.status === 'resolved' || item.status === 'closed') {
     return {
       success: false,
-      message: 'This item is no longer accepting claims.',
+      message: 'This item is no longer accepting requests.',
     }
   }
 
@@ -505,7 +499,7 @@ export async function createClaimRequest(
     if (existing.status === 'pending' || existing.status === 'accepted') {
       return {
         success: false,
-        message: 'You already have an active claim request for this item.',
+        message: 'You already have an active request for this item.',
       }
     }
     const [reopened] = await db
@@ -536,9 +530,17 @@ export async function createClaimRequest(
     columns: { id: true, name: true, image: true },
   })
 
+  const isLostItem = item.itemType === 'lost'
+  const requestNoun = isLostItem ? 'report' : 'claim request'
+  const ownerActionText = isLostItem
+    ? 'reported finding your lost item'
+    : 'claimed your found item'
+
   await sendToUser(item.ownerId, {
-    title: 'New claim request',
-    body: `Someone requested your ${item.itemType} item: ${item.title}.`,
+    title: isLostItem ? 'New found report' : 'New claim request',
+    body: isLostItem
+      ? `Someone reported finding your lost item: ${item.title}.`
+      : `Someone requested your ${item.itemType} item: ${item.title}.`,
     data: {
       type: 'lost_found_claim_received',
       itemId: item.id.toString(),
@@ -549,17 +551,12 @@ export async function createClaimRequest(
     },
   })
   const requesterName = requester?.name?.trim() || 'Someone'
-  const actionText =
-    item.itemType === 'found'
-      ? 'claimed your found item'
-      : 'has a comment on your lost item'
-
   await safeCreateNotification('claim_received', () =>
     createInAppNotificationForUser({
       userId: item.ownerId,
       type: 'lost_found_claim_received',
-      title: 'New claim request',
-      body: `${requesterName} ${actionText}: ${item.title}.`,
+      title: isLostItem ? 'New found report' : 'New claim request',
+      body: `${requesterName} ${ownerActionText}: ${item.title}.`,
       data: {
         itemId: item.id,
         claimId: created.id,
@@ -574,7 +571,11 @@ export async function createClaimRequest(
     }),
   )
 
-  return { success: true, data: created, message: 'Claim request sent.' }
+  return {
+    success: true,
+    data: created,
+    message: `Your ${requestNoun} was sent.`,
+  }
 }
 
 export async function listClaimsForOwnerItem(
@@ -666,19 +667,34 @@ export async function setClaimStatus(
       .where(eq(lostFoundItems.id, itemId))
   }
 
+  const isLostItem = item.itemType === 'lost'
+  const requestNoun = isLostItem ? 'report' : 'claim'
+  const acceptedTitle = isLostItem ? 'Report accepted' : 'Claim accepted'
+  const rejectedTitle = isLostItem ? 'Report rejected' : 'Claim rejected'
+  const cancelledTitle = isLostItem ? 'Report cancelled' : 'Claim cancelled'
+  const acceptedBody = isLostItem
+    ? `Your report for "${item.title}" was accepted.`
+    : `Your claim for "${item.title}" was accepted.`
+  const rejectedBody = isLostItem
+    ? `Your report for "${item.title}" was rejected.`
+    : `Your claim for "${item.title}" was rejected.`
+  const cancelledBody = isLostItem
+    ? `Your report for "${item.title}" was cancelled.`
+    : `Your claim for "${item.title}" was cancelled.`
+
   await sendToUser(updatedClaim.requesterId, {
     title:
       nextStatus === 'accepted'
-        ? 'Claim accepted'
+        ? acceptedTitle
         : nextStatus === 'rejected'
-          ? 'Claim rejected'
-          : 'Claim cancelled',
+          ? rejectedTitle
+          : cancelledTitle,
     body:
       nextStatus === 'accepted'
-        ? `Your claim for "${item.title}" was accepted.`
+        ? acceptedBody
         : nextStatus === 'rejected'
-          ? `Your claim for "${item.title}" was rejected.`
-          : `Your claim for "${item.title}" was cancelled.`,
+          ? rejectedBody
+          : cancelledBody,
     data: {
       type:
         nextStatus === 'accepted'
@@ -705,16 +721,16 @@ export async function setClaimStatus(
             : 'lost_found_claim_cancelled',
       title:
         nextStatus === 'accepted'
-          ? 'Claim accepted'
+          ? acceptedTitle
           : nextStatus === 'rejected'
-            ? 'Claim rejected'
-            : 'Claim cancelled',
+            ? rejectedTitle
+            : cancelledTitle,
       body:
         nextStatus === 'accepted'
-          ? `Your claim for "${item.title}" was accepted.`
+          ? acceptedBody
           : nextStatus === 'rejected'
-            ? `Your claim for "${item.title}" was rejected.`
-            : `Your claim for "${item.title}" was cancelled.`,
+            ? rejectedBody
+            : cancelledBody,
       data: {
         itemId: item.id,
         claimId: updatedClaim.id,
@@ -726,7 +742,11 @@ export async function setClaimStatus(
     }),
   )
 
-  return { success: true, data: updatedClaim, message: 'Claim status updated.' }
+  return {
+    success: true,
+    data: updatedClaim,
+    message: `${requestNoun.charAt(0).toUpperCase() + requestNoun.slice(1)} status updated.`,
+  }
 }
 
 export async function markItemStatus(

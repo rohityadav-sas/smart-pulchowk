@@ -401,10 +401,10 @@
             />
           </svg>
           <h3 class="text-base font-medium text-gray-900 mb-2">
-            No claims yet
+            No requests yet
           </h3>
           <p class="text-sm text-gray-500">
-            You have not submitted any claim requests.
+            You have not submitted any lost/found requests.
           </p>
         </div>
       {:else}
@@ -458,7 +458,7 @@
                       {claim.message}
                     </p>
                     <p class="mt-2 text-xs text-gray-400">
-                      Claimed on {formatDate(claim.createdAt)}
+                      Requested on {formatDate(claim.createdAt)}
                     </p>
                   </div>
                 </div>

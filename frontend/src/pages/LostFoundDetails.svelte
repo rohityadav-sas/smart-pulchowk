@@ -80,9 +80,25 @@
       !!userId &&
       !isOwner &&
       !isGuest &&
-      item.itemType === "found" &&
       (item.status === "open" || item.status === "claimed") &&
       !item.viewerClaim,
+  );
+  const requestTerm = $derived(item?.itemType === "lost" ? "report" : "claim");
+  const requestTitle = $derived(
+    item?.itemType === "lost" ? "Report found item" : "Claim this item",
+  );
+  const requestHint = $derived(
+    item?.itemType === "lost"
+      ? "Share when and where you found it so the owner can verify."
+      : "Explain details that help verify ownership.",
+  );
+  const requestPlaceholder = $derived(
+    item?.itemType === "lost"
+      ? "I found this item at... and can verify by..."
+      : "I can identify the item by...",
+  );
+  const requestSubmitLabel = $derived(
+    item?.itemType === "lost" ? "Submit Report" : "Submit Claim",
   );
 
   $effect(() => {
@@ -118,12 +134,18 @@
     if (!result.success) {
       feedback = {
         type: "error",
-        message: result.message || "Failed to submit claim.",
+        message: result.message || "Failed to submit request.",
       };
       return;
     }
 
-    feedback = { type: "success", message: "Claim submitted successfully." };
+    feedback = {
+      type: "success",
+      message:
+        item?.itemType === "lost"
+          ? "Report submitted successfully."
+          : "Claim submitted successfully.",
+    };
     claimMessage = "";
     await refetchDetail();
   }
@@ -143,7 +165,14 @@
     }
     feedback = {
       type: "success",
-      message: status === "accepted" ? "Claim accepted." : "Claim rejected.",
+      message:
+        status === "accepted"
+          ? item?.itemType === "lost"
+            ? "Report accepted."
+            : "Claim accepted."
+          : item?.itemType === "lost"
+            ? "Report rejected."
+            : "Claim rejected.",
     };
     await refetchDetail();
   }
@@ -425,15 +454,15 @@
         <section
           class="rounded-3xl border border-cyan-100 bg-white/85 p-4 shadow-sm backdrop-blur-sm"
         >
-          <h2 class="text-base font-bold text-slate-900">Claim this item</h2>
+          <h2 class="text-base font-bold text-slate-900">{requestTitle}</h2>
           <p class="mt-1 text-sm text-slate-500">
-            Explain details that help verify ownership.
+            {requestHint}
           </p>
           <textarea
             bind:value={claimMessage}
             rows="4"
             class="mt-3 w-full rounded-xl border border-cyan-100 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-cyan-300 focus:outline-hidden focus:ring-2 focus:ring-cyan-100"
-            placeholder="I can identify the item by..."
+            placeholder={requestPlaceholder}
           ></textarea>
           <button
             class="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-linear-to-r from-cyan-600 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:from-cyan-500 hover:to-blue-500 disabled:opacity-60"
@@ -453,30 +482,26 @@
                 d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.94 9.94 0 01-4.255-.949L3 20l1.245-3.113A7.927 7.927 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
               />
             </svg>
-            {isClaiming ? "Claiming..." : "Submit Claim"}
+            {isClaiming
+              ? item?.itemType === "lost"
+                ? "Submitting report..."
+                : "Claiming..."
+              : requestSubmitLabel}
           </button>
         </section>
       {:else if !isOwner && item.viewerClaim}
         <div
           class="rounded-3xl border border-cyan-100 bg-white/85 p-4 text-sm text-slate-700 shadow-sm backdrop-blur-sm"
         >
-          Your claim status: <span class="font-semibold"
+          Your {requestTerm} status: <span class="font-semibold"
             >{item.viewerClaim.status}</span
           >
-        </div>
-      {:else if !isOwner && item.itemType === "lost"}
-        <div
-          class="rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 shadow-sm"
-        >
-          This is a <span class="font-semibold">lost item post</span>, so claim
-          requests are disabled. If you found this item, contact the owner
-          directly using the post details.
         </div>
       {:else if isGuest}
         <div
           class="rounded-3xl border border-cyan-200 bg-cyan-50 p-4 text-sm text-cyan-800"
         >
-          Sign in with a non-guest account to submit claims.
+          Sign in with a non-guest account to submit requests.
         </div>
       {/if}
 
@@ -485,11 +510,15 @@
           class="rounded-3xl border border-cyan-100 bg-white/85 p-4 shadow-sm backdrop-blur-sm"
         >
           <h2 class="text-base font-bold text-slate-900">
-            {item.itemType === "lost" ? "Comments" : "Claims"}
+            {item.itemType === "lost" ? "Found Reports" : "Claims"}
           </h2>
           {#if claimsQuery.isLoading}
             <div class="mt-3">
-              <LoadingSpinner text="Loading claims..." />
+              <LoadingSpinner
+                text={item.itemType === "lost"
+                  ? "Loading reports..."
+                  : "Loading claims..."}
+              />
             </div>
           {:else if claimsQuery.error}
             <p class="mt-2 text-sm text-rose-600">
@@ -497,7 +526,7 @@
             </p>
           {:else if ownerClaims.length === 0}
             <p class="mt-2 text-sm text-slate-500">
-              {item.itemType === "lost" ? "No comments yet." : "No claims yet."}
+              {item.itemType === "lost" ? "No reports yet." : "No claims yet."}
             </p>
           {:else}
             <div class="mt-3 space-y-2">

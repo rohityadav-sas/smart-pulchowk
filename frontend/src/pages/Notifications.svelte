@@ -757,7 +757,7 @@
       const actionText =
         lostFoundItemType === 'found'
           ? 'claimed your found item:'
-          : 'has a comment on your lost item:'
+          : 'reported finding your lost item:'
       return {
         actor: actor || 'Someone',
         action: actionText,
@@ -779,7 +779,7 @@
             : 'was cancelled'
       return {
         actor: null,
-        action: 'Your claim for',
+        action: lostFoundItemType === 'lost' ? 'Your report for' : 'Your claim for',
         subject: lostFoundTitle,
         suffix: `${lostFoundTitle ? ' ' : ''}${statusText}.`,
       }
