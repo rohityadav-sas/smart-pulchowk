@@ -512,7 +512,7 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
     )
 
     notificationPromises.push(
-      sendToTopic('announcements', {
+      sendToTopic('notices', {
         title: 'New Notice Published',
         body: created.title,
         data: {
