@@ -19,7 +19,7 @@ import {
   listingViews,
   bookPurchaseRequests,
 } from '../models/book_buy_sell-schema.js'
-import { sendToTopic } from './notification.service.js'
+import { sendToTopic, sendToTopicFiltered } from './notification.service.js'
 import { unwrapOne } from '../lib/type-utils.js'
 import { userBlocks } from '../models/trust-schema.js'
 
@@ -89,18 +89,26 @@ export const createBookListing = async (
       .returning()
 
     // Trigger push notification for new book listing
-    await sendToTopic('books', {
-      title: 'New Book Listed!',
-      body: `${data.title} is now available for ${data.price} NPR.`,
-      data: {
-        type: 'new_book',
-        bookId: listing.id.toString(),
-        listingId: listing.id.toString(),
-        listingTitle: data.title,
-        sellerId: sellerId,
-        iconKey: 'book',
+    // Filtering: Don't send to admin roles and don't send to the seller themselves
+    await sendToTopicFiltered(
+      'books',
+      {
+        title: 'New Book Listed!',
+        body: `${data.title} is now available for ${data.price} NPR.`,
+        data: {
+          type: 'new_book',
+          bookId: listing.id.toString(),
+          listingId: listing.id.toString(),
+          listingTitle: data.title,
+          sellerId: sellerId,
+          iconKey: 'book',
+        },
       },
-    })
+      {
+        excludeUserIds: [sellerId],
+        excludeRoles: ['admin'],
+      },
+    )
 
     return {
       success: true,

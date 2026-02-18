@@ -2,7 +2,7 @@ import admin from 'firebase-admin'
 import ENV from '../config/ENV.js'
 import { db } from '../lib/db.js'
 import { user } from '../models/auth-schema.js'
-import { eq } from 'drizzle-orm'
+import { eq, and, sql, notInArray } from 'drizzle-orm'
 import {
   createInAppNotificationForAudience,
   createInAppNotificationForUser,
@@ -196,6 +196,117 @@ export const sendToTopic = async (
   } catch (error) {
     await Promise.all(sideEffects)
     console.error(`Error sending notification to topic ${topic}:`, error)
+  }
+}
+
+export const sendToTopicFiltered = async (
+  topic: string,
+  payload: NotificationPayload,
+  options: {
+    excludeUserIds?: string[]
+    excludeRoles?: string[]
+  },
+) => {
+  const sideEffects: Promise<unknown>[] = []
+  const derivedTitle =
+    payload.title ||
+    (typeof payload.data?.title === 'string' ? payload.data.title : undefined)
+  const derivedBody =
+    payload.body ||
+    (typeof payload.data?.body === 'string' ? payload.data.body : undefined)
+
+  if (derivedTitle && derivedBody && topic === 'books') {
+    sideEffects.push(
+      createInAppNotificationForAudience({
+        audience: 'all',
+        type: 'book_listed',
+        title: derivedTitle,
+        body: derivedBody,
+        data: { iconKey: 'book', ...payload.data },
+      }).catch((error) =>
+        console.error('Failed to create in-app audience notification:', error),
+      ),
+    )
+  }
+
+  // If no exclusions, fallback to standard topic send
+  if (!options.excludeUserIds?.length && !options.excludeRoles?.length) {
+    return sendToTopic(topic, payload)
+  }
+
+  if (!isFirebaseInitialized) {
+    console.warn('Cannot send notification: Firebase not initialized.')
+    await Promise.all(sideEffects)
+    return
+  }
+
+  try {
+    // Fetch users with FCM tokens and filter them
+    const recipients = await db.query.user.findMany({
+      where: and(
+        sql`${user.fcmToken} is not null`,
+        options.excludeUserIds?.length
+          ? notInArray(user.id, options.excludeUserIds)
+          : undefined,
+        options.excludeRoles?.length
+          ? notInArray(user.role, options.excludeRoles)
+          : undefined,
+      ),
+      columns: { fcmToken: true },
+    })
+
+    const tokens = recipients
+      .map((r) => r.fcmToken)
+      .filter((t): t is string => !!t)
+
+    if (tokens.length === 0) {
+      await Promise.all(sideEffects)
+      return
+    }
+
+    // Multicast sends to unique tokens
+    const uniqueTokens = [...new Set(tokens)]
+
+    // Firebase multicast limit is 500 tokens per call
+    const chunks = []
+    for (let i = 0; i < uniqueTokens.length; i += 500) {
+      chunks.push(uniqueTokens.slice(i, i + 500))
+    }
+
+    const message: any = {
+      data: {
+        ...payload.data,
+        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+      },
+    }
+
+    if (payload.title && payload.body) {
+      message.notification = {
+        title: payload.title,
+        body: payload.body,
+      }
+    } else {
+      if (payload.title) message.data.title = payload.title
+      if (payload.body) message.data.body = payload.body
+    }
+
+    const responses = await Promise.all(
+      chunks.map((chunk) =>
+        admin.messaging().sendEachForMulticast({
+          ...message,
+          tokens: chunk,
+        }),
+      ),
+    )
+
+    console.log(
+      `Successfully sent filtered multicast for topic ${topic} to ${uniqueTokens.length} devices.`,
+    )
+    await Promise.all(sideEffects)
+    return responses
+  } catch (error) {
+    await Promise.all(sideEffects)
+    console.error(`Error sending filtered notifications for topic ${topic}:`, error)
   }
 }
 
