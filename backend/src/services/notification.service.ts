@@ -87,13 +87,34 @@ function isTypeAllowedByPreferences(
     lower.startsWith('lostfound_') ||
     icon === 'search'
 
-  if (isEventType && !preferences.eventReminders) return false
-  if (isNoticeType && !preferences.noticeUpdates) return false
-  if (isMarketplaceType && !preferences.marketplaceAlerts) return false
-  if (isClassroomType && !preferences.classroomAlerts) return false
-  if (isChatType && !preferences.chatAlerts) return false
-  if (isAdminType && !preferences.adminAlerts) return false
-  if (isLostFoundType && !preferences.lostAndFoundAlerts) return false
+  if (isEventType && !preferences.eventReminders) {
+    console.log(`Notification of type ${type} BLOCKED by eventReminders`);
+    return false
+  }
+  if (isNoticeType && !preferences.noticeUpdates) {
+    console.log(`Notification of type ${type} BLOCKED by noticeUpdates`);
+    return false
+  }
+  if (isMarketplaceType && !preferences.marketplaceAlerts) {
+    console.log(`Notification of type ${type} BLOCKED by marketplaceAlerts`);
+    return false
+  }
+  if (isClassroomType && !preferences.classroomAlerts) {
+    console.log(`Notification of type ${type} BLOCKED by classroomAlerts`);
+    return false
+  }
+  if (isChatType && !preferences.chatAlerts) {
+    console.log(`Notification of type ${type} BLOCKED by chatAlerts`);
+    return false
+  }
+  if (isAdminType && !preferences.adminAlerts) {
+    console.log(`Notification of type ${type} BLOCKED by adminAlerts`);
+    return false
+  }
+  if (isLostFoundType && !preferences.lostAndFoundAlerts) {
+    console.log(`Notification of type ${type} BLOCKED by lostAndFoundAlerts`);
+    return false
+  }
   return true
 }
 
@@ -352,6 +373,9 @@ export const sendToUser = async (
         payload.data?.iconKey,
       )
     ) {
+      console.log(
+        `Push notification for user ${userId} of type ${notificationType} BLOCKED by user preferences.`,
+      )
       return
     }
 

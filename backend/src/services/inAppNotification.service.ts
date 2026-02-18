@@ -634,6 +634,9 @@ export async function createInAppNotificationForUser(input: {
 }) {
   const prefs = await getNotificationPreferencesForUser(input.userId);
   if (!isNotificationTypeAllowedByPreferences(input.type, prefs.data, input.data)) {
+    console.log(
+      `In-app notification for user ${input.userId} of type ${input.type} BLOCKED by user preferences.`,
+    );
     return null;
   }
 
