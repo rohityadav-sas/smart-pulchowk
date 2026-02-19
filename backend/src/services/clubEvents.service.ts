@@ -1,40 +1,40 @@
-import { createClubInput } from '../types/events.js'
-import { db } from '../lib/db.js'
+import { createClubInput } from "../types/events.js";
+import { db } from "../lib/db.js";
 import {
   clubs,
   events,
   clubAdmins,
   eventRegistrations,
-} from '../models/event-schema.js' // updated import
-import { desc, eq, sql, and, or, asc, isNull } from 'drizzle-orm' // updated imports
-import { user } from '../models/auth-schema.js'
+} from "../models/event-schema.js"; // updated import
+import { desc, eq, sql, and, or, asc, isNull } from "drizzle-orm"; // updated imports
+import { user } from "../models/auth-schema.js";
 import {
   uploadClubLogoToCloudinary,
   deleteImageFromCLoudinary,
   uploadEventBanner,
-} from './cloudinary.service.js'
-import { UPLOAD_CONSTANTS, isValidImageUrl } from '../config/cloudinary.js'
-import { unwrapOne } from '../lib/type-utils.js'
-import { deriveEventStatus } from '../lib/event-status.js'
-import { createInAppNotificationsForUsers } from './inAppNotification.service.js'
-import { sendToUser } from './notification.service.js'
+} from "./cloudinary.service.js";
+import { UPLOAD_CONSTANTS, isValidImageUrl } from "../config/cloudinary.js";
+import { unwrapOne } from "../lib/type-utils.js";
+import { deriveEventStatus } from "../lib/event-status.js";
+import { createInAppNotificationsForUsers } from "./inAppNotification.service.js";
+import { sendToUser } from "./notification.service.js";
 
-const { MAX_FILE_SIZE, ALLOWED_TYPES } = UPLOAD_CONSTANTS
+const { MAX_FILE_SIZE, ALLOWED_TYPES } = UPLOAD_CONSTANTS;
 
 async function isAuthorizedForClub(userId: string, clubId: number) {
   const club = await db.query.clubs.findFirst({
     where: eq(clubs.id, clubId),
     columns: { authClubId: true },
-  })
+  });
 
-  if (!club) return false
-  if (club.authClubId === userId) return true
+  if (!club) return false;
+  if (club.authClubId === userId) return true;
 
   const admin = await db.query.clubAdmins.findFirst({
     where: and(eq(clubAdmins.clubId, clubId), eq(clubAdmins.userId, userId)),
-  })
+  });
 
-  return !!admin
+  return !!admin;
 }
 
 export async function addClubAdmin(
@@ -45,27 +45,27 @@ export async function addClubAdmin(
   try {
     const club = await db.query.clubs.findFirst({
       where: eq(clubs.id, clubId),
-    })
+    });
 
-    if (!club) throw new Error('Club not found')
+    if (!club) throw new Error("Club not found");
     if (club.authClubId !== ownerId)
-      throw new Error('Only the owner can add admins')
+      throw new Error("Only the owner can add admins");
 
     const targetUser = await db.query.user.findFirst({
       where: eq(user.email, newAdminEmail),
-    })
+    });
 
-    if (!targetUser) throw new Error('User with this email not found')
+    if (!targetUser) throw new Error("User with this email not found");
 
     await db.insert(clubAdmins).values({
       clubId,
       userId: targetUser.id,
-      role: 'admin',
-    })
+      role: "admin",
+    });
 
-    return { success: true, message: 'Admin added successfully' }
+    return { success: true, message: "Admin added successfully" };
   } catch (e: any) {
-    return { success: false, message: e.message }
+    return { success: false, message: e.message };
   }
 }
 
@@ -77,21 +77,21 @@ export async function removeClubAdmin(
   try {
     const club = await db.query.clubs.findFirst({
       where: eq(clubs.id, clubId),
-    })
+    });
 
-    if (!club) throw new Error('Club not found')
+    if (!club) throw new Error("Club not found");
     if (club.authClubId !== ownerId)
-      throw new Error('Only the owner can remove admins')
+      throw new Error("Only the owner can remove admins");
 
     await db
       .delete(clubAdmins)
       .where(
         and(eq(clubAdmins.clubId, clubId), eq(clubAdmins.userId, adminUserId)),
-      )
+      );
 
-    return { success: true, message: 'Admin removed successfully' }
+    return { success: true, message: "Admin removed successfully" };
   } catch (e: any) {
-    return { success: false, message: e.message }
+    return { success: false, message: e.message };
   }
 }
 
@@ -106,11 +106,11 @@ export async function getClubAdmins(clubId: number) {
       })
       .from(clubAdmins)
       .innerJoin(user, eq(clubAdmins.userId, user.id))
-      .where(eq(clubAdmins.clubId, clubId))
+      .where(eq(clubAdmins.clubId, clubId));
 
-    return { success: true, admins }
+    return { success: true, admins };
   } catch (e: any) {
-    return { success: false, message: e.message }
+    return { success: false, message: e.message };
   }
 }
 
@@ -120,23 +120,23 @@ export async function createClub(
 ) {
   try {
     if (!clubData) {
-      throw Error('Request body is missing')
+      throw Error("Request body is missing");
     }
 
     if (!clubData.name || clubData.name.trim().length === 0) {
-      throw new Error('Club name is required')
+      throw new Error("Club name is required");
     }
 
     if (!clubData.email) {
-      throw new Error('Valid email is required')
+      throw new Error("Valid email is required");
     }
 
     const existingClub = await db.query.clubs.findFirst({
       where: eq(clubs.name, clubData.name),
-    })
+    });
 
     if (existingClub) {
-      throw new Error('Club with this name already exists')
+      throw new Error("Club with this name already exists");
     }
 
     const [newclub] = await db
@@ -150,18 +150,18 @@ export async function createClub(
         logoPublicId: null,
         isActive: true,
       })
-      .returning()
+      .returning();
 
     return {
       success: true,
       club: newclub,
-      message: 'Club creatd successfully',
-    }
+      message: "Club creatd successfully",
+    };
   } catch (error) {
     return {
       success: false,
       message: error.message,
-    }
+    };
   }
 }
 
@@ -173,6 +173,7 @@ export async function getClubs() {
         authClubId: clubs.authClubId,
         name: clubs.name,
         description: clubs.description,
+        email: clubs.email,
         logoUrl: clubs.logoUrl,
         upcomingEvents: sql<number>`
                     COUNT(DISTINCT CASE
@@ -180,23 +181,30 @@ export async function getClubs() {
                     AND (${events.eventStartTime} > NOW() OR (${events.eventStartTime} <= NOW() AND ${events.eventEndTime} >= NOW()))
                     THEN ${events.id}
                     END)`,
+        completedEvents: sql<number>`
+                    COUNT(DISTINCT CASE 
+                    WHEN ${events.status} IS NULL 
+                    AND ${events.eventEndTime} < NOW()
+                    THEN ${events.id} 
+                    END)
+                `,
         totalParticipants: sql<number>`COALESCE(SUM(${events.currentParticipants}), 0)`,
       })
       .from(clubs)
       .leftJoin(events, eq(clubs.id, events.clubId))
       .where(eq(clubs.isActive, true))
       .groupBy(clubs.id)
-      .orderBy(asc(clubs.name))
+      .orderBy(asc(clubs.name));
 
     return {
       success: true,
       existingClub,
-    }
+    };
   } catch (error) {
     return {
       success: false,
       message: error.message,
-    }
+    };
   }
 }
 
@@ -208,36 +216,36 @@ export async function updateClubInfo(
   try {
     if (!(await isAuthorizedForClub(userId, clubId))) {
       throw new Error(
-        'Unauthorized: Only club admins or owners can update info',
-      )
+        "Unauthorized: Only club admins or owners can update info",
+      );
     }
     const club = await db.query.clubs.findFirst({
       where: eq(clubs.id, clubId),
-    })
+    });
 
     if (!club) {
       return {
         success: false,
-        message: 'No clubs found!!',
-      }
+        message: "No clubs found!!",
+      };
     }
 
-    const { logoUrl, ...otherClubData } = clubData
+    const { logoUrl, ...otherClubData } = clubData;
 
     const updateClubData: any = {
       ...otherClubData,
       updatedAt: new Date(),
-    }
+    };
 
     if (logoUrl !== undefined && logoUrl !== club.logoUrl) {
-      if (logoUrl === null || logoUrl === '') {
-        updateClubData.logoUrl = null
-        updateClubData.logoPublicId = null
-      } else if (typeof logoUrl === 'string') {
-        updateClubData.logoUrl = logoUrl
+      if (logoUrl === null || logoUrl === "") {
+        updateClubData.logoUrl = null;
+        updateClubData.logoPublicId = null;
+      } else if (typeof logoUrl === "string") {
+        updateClubData.logoUrl = logoUrl;
 
-        if (!logoUrl.includes('cloudinary.com')) {
-          updateClubData.logoPublicId = null
+        if (!logoUrl.includes("cloudinary.com")) {
+          updateClubData.logoPublicId = null;
         }
       }
     }
@@ -246,19 +254,19 @@ export async function updateClubInfo(
       .update(clubs)
       .set(updateClubData)
       .where(eq(clubs.id, clubId))
-      .returning()
+      .returning();
 
     return {
       success: true,
-      message: 'club Updated successfully',
+      message: "club Updated successfully",
       data: updatedClub,
-    }
+    };
   } catch (error) {
-    console.error(error.messsage)
+    console.error(error.messsage);
     return {
       success: false,
-      message: error.message || 'Failed to update the club Info',
-    }
+      message: error.message || "Failed to update the club Info",
+    };
   }
 }
 
@@ -294,21 +302,21 @@ export async function getClubById(clubId: number) {
       .from(clubs)
       .leftJoin(events, eq(events.clubId, clubs.id))
       .where(and(eq(clubs.id, clubId), eq(clubs.isActive, true)))
-      .groupBy(clubs.id)
+      .groupBy(clubs.id);
 
     if (!clubData) {
-      return null
+      return null;
     }
 
     return {
       success: true,
       clubData,
-    }
+    };
   } catch (error) {
     return {
       success: false,
       message: error.message,
-    }
+    };
   }
 }
 
@@ -324,7 +332,7 @@ export async function upadateClubLogoToDb(
       logoPublicId,
       updatedAt: new Date(),
     })
-    .where(eq(clubs.id, clubId))
+    .where(eq(clubs.id, clubId));
 }
 
 async function getClubLogoinfo(clubId: number) {
@@ -335,9 +343,9 @@ async function getClubLogoinfo(clubId: number) {
     })
     .from(clubs)
     .where(eq(clubs.id, clubId))
-    .limit(1)
+    .limit(1);
 
-  return club
+  return club;
 }
 
 export async function handleClubLogoUrlUpload(
@@ -347,45 +355,45 @@ export async function handleClubLogoUrlUpload(
 ) {
   try {
     if (!(await isAuthorizedForClub(userId, clubId))) {
-      throw new Error('Unauthorized to update logo for this club')
+      throw new Error("Unauthorized to update logo for this club");
     }
-    if (!imageUrl || typeof imageUrl !== 'string') {
+    if (!imageUrl || typeof imageUrl !== "string") {
       return {
         success: true,
-        message: 'Image URL is required',
-      }
+        message: "Image URL is required",
+      };
     }
 
     if (!isValidImageUrl(imageUrl)) {
       return {
         success: false,
-        message: 'Invalid image URL format',
-      }
+        message: "Invalid image URL format",
+      };
     }
 
-    const currentLogo = await getClubLogoinfo(clubId)
+    const currentLogo = await getClubLogoinfo(clubId);
 
     if (currentLogo?.logoPublicId) {
-      await deleteImageFromCLoudinary(currentLogo.logoPublicId)
+      await deleteImageFromCLoudinary(currentLogo.logoPublicId);
     }
 
-    await upadateClubLogoToDb(clubId, imageUrl, null)
+    await upadateClubLogoToDb(clubId, imageUrl, null);
 
     return {
       success: true,
       data: {
         url: imageUrl,
         publicId: null,
-        source: 'external',
+        source: "external",
       },
-    }
+    };
   } catch (error) {
-    console.error('URL upload error:', error)
+    console.error("URL upload error:", error);
 
     return {
       success: false,
-      message: error.message || 'Failed to save URL',
-    }
+      message: error.message || "Failed to save URL",
+    };
   }
 }
 
@@ -396,67 +404,67 @@ export async function handleCLubLogoFileUpload(
 ) {
   try {
     if (!(await isAuthorizedForClub(userId, clubId))) {
-      throw new Error('Unauthorized to upload logo for this club')
+      throw new Error("Unauthorized to upload logo for this club");
     }
     if (!ALLOWED_TYPES.includes(file.mimetype as any)) {
       return {
         success: false,
-        message: 'Invalid file type. Only JPEG, PNG, and WebP are allowed',
-      }
+        message: "Invalid file type. Only JPEG, PNG, and WebP are allowed",
+      };
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return {
         success: false,
-        message: 'File too large. Maximum size is 5MB',
-      }
+        message: "File too large. Maximum size is 5MB",
+      };
     }
 
-    const currentLogo = await getClubLogoinfo(clubId)
+    const currentLogo = await getClubLogoinfo(clubId);
 
     if (currentLogo?.logoPublicId) {
-      await deleteImageFromCLoudinary(currentLogo.logoPublicId)
+      await deleteImageFromCLoudinary(currentLogo.logoPublicId);
     }
 
-    const buffer = file.buffer
-    const base64 = buffer.toString('base64')
-    const dataUri = `data:${file.mimetype};base64,${base64}`
+    const buffer = file.buffer;
+    const base64 = buffer.toString("base64");
+    const dataUri = `data:${file.mimetype};base64,${base64}`;
 
-    const uploadResult = await uploadClubLogoToCloudinary(clubId, dataUri)
+    const uploadResult = await uploadClubLogoToCloudinary(clubId, dataUri);
 
     if (!uploadResult.success || !uploadResult.url) {
       return {
         success: false,
-        message: uploadResult.message || 'Upload failed',
-      }
+        message: uploadResult.message || "Upload failed",
+      };
     }
 
     await upadateClubLogoToDb(
       clubId,
       uploadResult.url,
       uploadResult.publicId || null,
-    )
+    );
 
     return {
       success: true,
       data: {
         url: uploadResult.url,
         publicId: uploadResult.publicId,
-        source: 'cloudinary',
+        source: "cloudinary",
       },
-    }
+    };
   } catch (error) {
     return {
       success: false,
-      message: error.message || 'upload failed',
-    }
+      message: error.message || "upload failed",
+    };
   }
 }
 
 export async function deleteClubLogo(userId: string, clubId: number) {
   try {
     if (!(await isAuthorizedForClub(userId, clubId))) {
-      throw new Error('Unauthorized to delete logo for this club')
+      throw new Error("Unauthorized to delete logo for this club");
     }
     const club = await db.query.clubs.findFirst({
       where: eq(clubs.id, clubId),
@@ -464,24 +472,24 @@ export async function deleteClubLogo(userId: string, clubId: number) {
         logoUrl: true,
         logoPublicId: true,
       },
-    })
+    });
 
     if (!club) {
       return {
         success: false,
-        message: 'Club not found',
-      }
+        message: "Club not found",
+      };
     }
 
     if (!club.logoUrl) {
       return {
         success: false,
-        message: 'No logo to delete',
-      }
+        message: "No logo to delete",
+      };
     }
 
     if (club.logoPublicId) {
-      await deleteImageFromCLoudinary(club.logoPublicId)
+      await deleteImageFromCLoudinary(club.logoPublicId);
     }
 
     await db
@@ -491,17 +499,17 @@ export async function deleteClubLogo(userId: string, clubId: number) {
         logoPublicId: null,
         updatedAt: new Date(),
       })
-      .where(eq(clubs.id, clubId))
+      .where(eq(clubs.id, clubId));
 
     return {
       success: true,
-      message: 'Logo deleted successfully',
-    }
+      message: "Logo deleted successfully",
+    };
   } catch (error) {
     return {
       success: false,
       message: error.message,
-    }
+    };
   }
 }
 
@@ -510,26 +518,26 @@ export async function getClubEvents(clubId: number) {
     const clubExists = await db.query.clubs.findFirst({
       where: eq(clubs.id, clubId),
       columns: { id: true },
-    })
+    });
 
     if (!clubExists) {
-      throw new Error('Club not found')
+      throw new Error("Club not found");
     }
 
     const clubEvents = await db.query.events.findMany({
       where: and(
         eq(events.clubId, clubId),
-        or(isNull(events.status), eq(events.status, 'cancelled')),
+        or(isNull(events.status), eq(events.status, "cancelled")),
       ),
       orderBy: [desc(events.eventStartTime)],
-    })
+    });
 
     if (clubEvents.length === 0) {
       return {
         success: true,
-        message: 'No events yet',
+        message: "No events yet",
         clubEvents: [],
-      }
+      };
     }
 
     return {
@@ -538,19 +546,19 @@ export async function getClubEvents(clubId: number) {
         ...event,
         status: deriveEventStatus(event),
       })),
-      message: 'successful',
-    }
+      message: "successful",
+    };
   } catch (error) {
     return {
       success: false,
       message: error.message,
-    }
+    };
   }
 }
 
 export async function getUpcomingevents() {
   try {
-    const now = new Date()
+    const now = new Date();
 
     const upcomingEvents = await db.query.events.findMany({
       where: and(
@@ -569,14 +577,14 @@ export async function getUpcomingevents() {
       },
       orderBy: [events.eventStartTime],
       limit: 20,
-    })
+    });
 
     if (upcomingEvents.length === 0) {
       return {
         success: true,
-        message: 'No events yet',
+        message: "No events yet",
         upcomingEvents: [],
-      }
+      };
     }
 
     return {
@@ -585,19 +593,19 @@ export async function getUpcomingevents() {
         ...event,
         status: deriveEventStatus(event),
       })),
-    }
+    };
   } catch (error) {
     return {
       success: false,
       message: (error as Error).message,
-    }
+    };
   }
 }
 
 export async function getAllEvents() {
   try {
     const allEvents = await db.query.events.findMany({
-      where: or(isNull(events.status), eq(events.status, 'cancelled')),
+      where: or(isNull(events.status), eq(events.status, "cancelled")),
       with: {
         club: {
           columns: {
@@ -609,14 +617,14 @@ export async function getAllEvents() {
       },
       orderBy: [desc(events.eventStartTime)],
       limit: 100,
-    })
+    });
 
     if (allEvents.length === 0) {
       return {
         success: true,
-        message: 'No events found',
+        message: "No events found",
         allEvents: [],
-      }
+      };
     }
 
     return {
@@ -625,12 +633,12 @@ export async function getAllEvents() {
         ...event,
         status: deriveEventStatus(event),
       })),
-    }
+    };
   } catch (error) {
     return {
       success: false,
       message: (error as Error).message,
-    }
+    };
   }
 }
 
@@ -646,7 +654,7 @@ export async function updateEventBannerToDb(
       bannerPublicId,
       updatedAt: new Date(),
     })
-    .where(eq(events.id, eventId))
+    .where(eq(events.id, eventId));
 }
 
 async function getEventBannerInfo(eventId: number) {
@@ -657,9 +665,9 @@ async function getEventBannerInfo(eventId: number) {
     })
     .from(events)
     .where(eq(events.id, eventId))
-    .limit(1)
+    .limit(1);
 
-  return event
+  return event;
 }
 
 export async function handleEventBannerUrlUpload(
@@ -667,43 +675,43 @@ export async function handleEventBannerUrlUpload(
   imageUrl: string,
 ) {
   try {
-    if (!imageUrl || typeof imageUrl !== 'string') {
+    if (!imageUrl || typeof imageUrl !== "string") {
       return {
         success: false,
-        message: 'Image URL is required',
-      }
+        message: "Image URL is required",
+      };
     }
 
     if (!isValidImageUrl(imageUrl)) {
       return {
         success: false,
-        message: 'Invalid image URL format',
-      }
+        message: "Invalid image URL format",
+      };
     }
 
-    const currentBanner = await getEventBannerInfo(eventId)
+    const currentBanner = await getEventBannerInfo(eventId);
 
     if (currentBanner?.bannerPublicId) {
-      await deleteImageFromCLoudinary(currentBanner.bannerPublicId)
+      await deleteImageFromCLoudinary(currentBanner.bannerPublicId);
     }
 
-    await updateEventBannerToDb(eventId, imageUrl, null)
+    await updateEventBannerToDb(eventId, imageUrl, null);
 
     return {
       success: true,
       data: {
         url: imageUrl,
         publicId: null,
-        source: 'external',
+        source: "external",
       },
-    }
+    };
   } catch (error: any) {
-    console.error('Event banner URL upload error:', error)
+    console.error("Event banner URL upload error:", error);
 
     return {
       success: false,
-      message: error.message || 'Failed to save URL',
-    }
+      message: error.message || "Failed to save URL",
+    };
   }
 }
 
@@ -715,55 +723,55 @@ export async function handleEventBannerFileUpload(
     if (!ALLOWED_TYPES.includes(file.mimetype as any)) {
       return {
         success: false,
-        message: 'Invalid file type. Only JPEG, PNG, and WebP are allowed',
-      }
+        message: "Invalid file type. Only JPEG, PNG, and WebP are allowed",
+      };
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return {
         success: false,
-        message: 'File too large. Maximum size is 5MB',
-      }
+        message: "File too large. Maximum size is 5MB",
+      };
     }
 
-    const currentBanner = await getEventBannerInfo(eventId)
+    const currentBanner = await getEventBannerInfo(eventId);
 
     if (currentBanner?.bannerPublicId) {
-      await deleteImageFromCLoudinary(currentBanner.bannerPublicId)
+      await deleteImageFromCLoudinary(currentBanner.bannerPublicId);
     }
 
-    const buffer = file.buffer
-    const base64 = buffer.toString('base64')
-    const dataUri = `data:${file.mimetype};base64,${base64}`
+    const buffer = file.buffer;
+    const base64 = buffer.toString("base64");
+    const dataUri = `data:${file.mimetype};base64,${base64}`;
 
-    const uploadResult = await uploadEventBanner(eventId, dataUri)
+    const uploadResult = await uploadEventBanner(eventId, dataUri);
 
     if (!uploadResult.success || !uploadResult.url) {
       return {
         success: false,
-        message: uploadResult.message || 'Upload failed',
-      }
+        message: uploadResult.message || "Upload failed",
+      };
     }
 
     await updateEventBannerToDb(
       eventId,
       uploadResult.url,
       uploadResult.publicId || null,
-    )
+    );
 
     return {
       success: true,
       data: {
         url: uploadResult.url,
         publicId: uploadResult.publicId,
-        source: 'cloudinary',
+        source: "cloudinary",
       },
-    }
+    };
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || 'upload failed',
-    }
+      message: error.message || "upload failed",
+    };
   }
 }
 
@@ -774,94 +782,94 @@ export async function cancelEvent(authId: string, eventId: number) {
       with: {
         club: true,
       },
-    })
+    });
 
     if (!event) {
-      return { success: false, message: 'Event not found' }
+      return { success: false, message: "Event not found" };
     }
 
-    const club = unwrapOne(event.club)
+    const club = unwrapOne(event.club);
     if (!club) {
-      return { success: false, message: 'Club not found for this event' }
+      return { success: false, message: "Club not found for this event" };
     }
 
-    const isPrimaryOwner = club.authClubId === authId
+    const isPrimaryOwner = club.authClubId === authId;
 
     const adminEntry = await db.query.clubAdmins.findFirst({
       where: and(
         eq(clubAdmins.clubId, event.clubId),
         eq(clubAdmins.userId, authId),
       ),
-    })
+    });
 
     if (!isPrimaryOwner && !adminEntry) {
       return {
         success: false,
-        message: 'Unauthorized: Only club owners or admins can cancel events',
-      }
+        message: "Unauthorized: Only club owners or admins can cancel events",
+      };
     }
 
-    if (event.status === 'cancelled') {
-      return { success: false, message: 'Event is already cancelled' }
+    if (event.status === "cancelled") {
+      return { success: false, message: "Event is already cancelled" };
     }
-    if (deriveEventStatus(event) === 'completed') {
-      return { success: false, message: 'Cannot cancel a completed event' }
+    if (deriveEventStatus(event) === "completed") {
+      return { success: false, message: "Cannot cancel a completed event" };
     }
 
     await db
       .update(events)
       .set({
-        status: 'cancelled',
+        status: "cancelled",
         updatedAt: new Date(),
       })
-      .where(eq(events.id, eventId))
+      .where(eq(events.id, eventId));
 
     const registrations = await db.query.eventRegistrations.findMany({
       where: and(
         eq(eventRegistrations.eventId, eventId),
-        eq(eventRegistrations.status, 'registered'),
+        eq(eventRegistrations.status, "registered"),
       ),
       columns: { userId: true },
-    })
+    });
 
     const notificationPayload = {
-      title: 'Event Cancelled',
+      title: "Event Cancelled",
       body: `"${event.title}" has been cancelled by the organizers.`,
       data: {
         eventId: eventId.toString(),
-        clubId: event.clubId?.toString() ?? '',
+        clubId: event.clubId?.toString() ?? "",
         publisherId: authId,
         eventTitle: event.title,
-        type: 'event_cancelled',
-        iconKey: 'event',
+        type: "event_cancelled",
+        iconKey: "event",
         ...(event.bannerUrl ? { thumbnailUrl: event.bannerUrl } : {}),
       },
-    }
+    };
 
     // Send in-app notifications
     await createInAppNotificationsForUsers({
       userIds: registrations.map((item) => item.userId),
-      type: 'event_cancelled',
+      type: "event_cancelled",
       title: notificationPayload.title,
       body: notificationPayload.body,
       data: notificationPayload.data,
-    })
+    });
 
     // Send FCM push notifications to each registered user
     // Await all promises to ensure reliability in serverless
     await Promise.all(
       registrations.map((reg) => sendToUser(reg.userId, notificationPayload)),
-    )
+    );
 
     return {
       success: true,
-      message: 'Event cancelled successfully',
-    }
+      message: "Event cancelled successfully",
+    };
   } catch (error: any) {
-    console.error('Cancel event error:', error)
+    console.error("Cancel event error:", error);
     return {
       success: false,
-      message: error.message || 'Failed to cancel event',
-    }
+      message: error.message || "Failed to cancel event",
+    };
   }
 }
