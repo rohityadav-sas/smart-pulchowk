@@ -111,7 +111,8 @@ export async function getEventRegistrations(eventId: number) {
                 columns: {
                     id: true,
                     name: true,
-                    email: true
+                    email: true,
+                    image: true,
                 }
             },
         },
@@ -129,6 +130,7 @@ export async function getEventRegistrations(eventId: number) {
                 id: student?.id,
                 name: student?.name,
                 email: student?.email,
+                image: student?.image,
             }
         };
     });
