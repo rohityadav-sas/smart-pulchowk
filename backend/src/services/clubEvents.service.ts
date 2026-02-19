@@ -873,3 +873,123 @@ export async function cancelEvent(authId: string, eventId: number) {
     };
   }
 }
+
+export async function updateEvent(
+  authId: string,
+  eventId: number,
+  eventData: any,
+) {
+  try {
+    const event = await db.query.events.findFirst({
+      where: eq(events.id, eventId),
+    });
+
+    if (!event) {
+      return { success: false, message: "Event not found" };
+    }
+
+    const club = await db.query.clubs.findFirst({
+      where: eq(clubs.id, event.clubId as number),
+    });
+
+    if (!club) {
+      return { success: false, message: "Club not found" };
+    }
+
+    const isPrimaryOwner = club.authClubId === authId;
+    const adminEntry = await db.query.clubAdmins.findFirst({
+      where: and(
+        eq(clubAdmins.clubId, event.clubId as number),
+        eq(clubAdmins.userId, authId),
+      ),
+    });
+
+    if (!isPrimaryOwner && !adminEntry) {
+      return {
+        success: false,
+        message: "Unauthorized: Only club owners or admins can update events",
+      };
+    }
+
+    // Prepare update data
+    const updateData: any = {
+      updatedAt: new Date(),
+    };
+
+    if (eventData.title) updateData.title = eventData.title;
+    if (eventData.description) updateData.description = eventData.description;
+    if (eventData.eventType) updateData.eventType = eventData.eventType;
+    if (eventData.venue) updateData.venue = eventData.venue;
+    if (eventData.maxParticipants !== undefined)
+      updateData.maxParticipants = eventData.maxParticipants;
+    if (eventData.externalRegistrationLink !== undefined)
+      updateData.externalRegistrationLink = eventData.externalRegistrationLink;
+
+    if (eventData.eventStartTime)
+      updateData.eventStartTime = new Date(eventData.eventStartTime);
+    if (eventData.eventEndTime)
+      updateData.eventEndTime = new Date(eventData.eventEndTime);
+    if (eventData.registrationDeadline)
+      updateData.registrationDeadline = new Date(
+        eventData.registrationDeadline,
+      );
+
+    const [updatedEvent] = await db
+      .update(events)
+      .set(updateData)
+      .where(eq(events.id, eventId))
+      .returning();
+
+    return {
+      success: true,
+      message: "Event updated successfully",
+      event: {
+        ...updatedEvent,
+        status: deriveEventStatus(updatedEvent),
+      },
+    };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+export async function deleteEvent(authId: string, eventId: number) {
+  try {
+    const event = await db.query.events.findFirst({
+      where: eq(events.id, eventId),
+    });
+
+    if (!event) {
+      return { success: false, message: "Event not found" };
+    }
+
+    const club = await db.query.clubs.findFirst({
+      where: eq(clubs.id, event.clubId as number),
+    });
+
+    if (!club) {
+      return { success: false, message: "Club not found" };
+    }
+
+    const isPrimaryOwner = club.authClubId === authId;
+    const adminEntry = await db.query.clubAdmins.findFirst({
+      where: and(
+        eq(clubAdmins.clubId, event.clubId as number),
+        eq(clubAdmins.userId, authId),
+      ),
+    });
+
+    if (!isPrimaryOwner && !adminEntry) {
+      return {
+        success: false,
+        message: "Unauthorized: Only club owners or admins can delete events",
+      };
+    }
+
+    await db.delete(events).where(eq(events.id, eventId));
+
+    return { success: true, message: "Event deleted successfully" };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}

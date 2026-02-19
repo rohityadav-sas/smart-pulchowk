@@ -11,7 +11,9 @@ import {
     getClubAdmins,
     updateClubInfo,
     deleteClubLogo,
-    cancelEvent
+    cancelEvent,
+    updateEvent,
+    deleteEvent
 } from "../services/clubEvents.service.js";
 import { createEvent } from "../services/createEvent.service.js";
 import {
@@ -504,6 +506,67 @@ export async function CancelEvent(req: Request, res: Response) {
 
     } catch (error: any) {
         console.error("Cancel event controller error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "An internal error occurred"
+        });
+    }
+}
+
+export async function UpdateEvent(req: Request, res: Response) {
+    try {
+        const { eventId } = req.params;
+        const authId = (req as any).user?.id;
+        const eventData = req.body;
+
+        if (!eventId) {
+            return res.status(400).json({ success: false, message: "Event Id is required" });
+        }
+
+        if (!authId) {
+            return res.status(401).json({ success: false, message: "Unauthorized: Please login" });
+        }
+
+        const result = await updateEvent(authId, parseInt(eventId), eventData);
+
+        if (!result.success) {
+            return res.status(result.message.includes("Unauthorized") ? 403 : 400).json(result);
+        }
+
+        return res.json(result);
+
+    } catch (error: any) {
+        console.error("Update event controller error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "An internal error occurred"
+        });
+    }
+}
+
+export async function DeleteEvent(req: Request, res: Response) {
+    try {
+        const { eventId } = req.params;
+        const authId = (req as any).user?.id;
+
+        if (!eventId) {
+            return res.status(400).json({ success: false, message: "Event Id is required" });
+        }
+
+        if (!authId) {
+            return res.status(401).json({ success: false, message: "Unauthorized: Please login" });
+        }
+
+        const result = await deleteEvent(authId, parseInt(eventId));
+
+        if (!result.success) {
+            return res.status(result.message.includes("Unauthorized") ? 403 : 400).json(result);
+        }
+
+        return res.json(result);
+
+    } catch (error: any) {
+        console.error("Delete event controller error:", error);
         return res.status(500).json({
             success: false,
             message: error.message || "An internal error occurred"
