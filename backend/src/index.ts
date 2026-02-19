@@ -26,7 +26,7 @@ const httpServer = createServer(app)
 
 const __dirname = import.meta.dirname
 
-app.all('/api/auth/*', toNodeHandler(auth))
+app.all('/api/auth/*splat', toNodeHandler(auth))
 app.use(compression())
 app.use(express.json({ limit: '1mb' }))
 app.use("/api/events", eventRoutes)
@@ -65,7 +65,7 @@ app.use(
   }),
 )
 
-app.get('*', async (_, res) => {
+app.get('/{*splat}', async (_, res) => {
   res.setHeader('Cache-Control', 'no-cache')
   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'))
 })
