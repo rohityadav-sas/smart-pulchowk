@@ -529,6 +529,16 @@ export async function getClubEvents(clubId: number) {
         eq(events.clubId, clubId),
         or(isNull(events.status), eq(events.status, "cancelled")),
       ),
+      with: {
+        club: {
+          columns: {
+            name: true,
+            logoUrl: true,
+            id: true,
+            authClubId: true,
+          },
+        },
+      },
       orderBy: [desc(events.eventStartTime)],
     });
 
@@ -572,6 +582,7 @@ export async function getUpcomingevents() {
             name: true,
             logoUrl: true,
             id: true,
+            authClubId: true,
           },
         },
       },
@@ -612,6 +623,7 @@ export async function getAllEvents() {
             name: true,
             logoUrl: true,
             id: true, // needed for links
+            authClubId: true,
           },
         },
       },
