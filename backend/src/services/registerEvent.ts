@@ -206,19 +206,8 @@ export async function getStudentActiveRegistration(userId: string) {
             ),
             with: {
                 event: {
-                    columns: {
-                        id: true,
-                        title: true,
-                        clubId: true,
-                        eventStartTime: true,
-                        venue: true,
-                    },
                     with: {
-                        club: {
-                            columns: {
-                                name: true
-                            }
-                        },
+                        club: true,
                     },
                 },
             },
