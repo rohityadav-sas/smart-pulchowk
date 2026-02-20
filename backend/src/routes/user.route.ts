@@ -47,7 +47,15 @@ router.get("/me", requireFirebaseAuth, async (req, res) => {
         res.json({
             data: {
                 success: true,
-                user: { id: dbUser.id, email: dbUser.email, name: dbUser.name, role: dbUser.role, image: dbUser.image },
+                user: {
+                    id: dbUser.id,
+                    email: dbUser.email,
+                    name: dbUser.name,
+                    role: dbUser.role,
+                    image: dbUser.image,
+                    isVerifiedSeller: dbUser.isVerifiedSeller,
+                    createdAt: dbUser.createdAt
+                },
             },
         });
 
