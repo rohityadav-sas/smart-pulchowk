@@ -3,7 +3,10 @@ import crypto from "node:crypto";
 import { db } from "../lib/db.js";
 import { user, account } from "../models/auth-schema.js";
 import { eq, and, sql } from "drizzle-orm";
-import { requireFirebaseAuth, optionalAuth } from "../middleware/auth.middleware.js";
+import {
+  requireFirebaseAuth,
+  optionalAuth,
+} from "../middleware/auth.middleware.js";
 
 import { determineUserRole } from "../lib/student-email-parser.js";
 import { sendToUser } from "../services/notification.service.js";
@@ -16,325 +19,375 @@ const router = express.Router();
  * as Better Auth users from the website
  */
 router.get("/me", requireFirebaseAuth, async (req, res) => {
-    try {
-        const firebaseUser = (req as any).firebaseUser as {
-            uid?: string;
-            email?: string;
-        };
-        const firebaseUid = firebaseUser?.uid;
+  try {
+    const firebaseUser = (req as any).firebaseUser as {
+      uid?: string;
+      email?: string;
+    };
+    const firebaseUid = firebaseUser?.uid;
 
-         // Find the user by Firebase UID or by email (for linked accounts)
-        let dbUser = await db.query.user.findFirst({
-            where: eq(user.id, firebaseUid),
-        });
+    // Find the user by Firebase UID or by email (for linked accounts)
+    let dbUser = await db.query.user.findFirst({
+      where: eq(user.id, firebaseUid),
+    });
 
-        // If not found by UID, try finding by email (for web-linked accounts)
-        if (!dbUser && firebaseUser.email) {
-            dbUser = await db.query.user.findFirst({
-                where: eq(user.email, firebaseUser.email),
-            });
-        }
-
-        if (!dbUser) {
-             return res.status(404).json({
-                data: {
-                    success: false,
-                    message: "User not found",
-                }
-            });
-        }
-
-        res.json({
-            data: {
-                success: true,
-                user: {
-                    id: dbUser.id,
-                    email: dbUser.email,
-                    name: dbUser.name,
-                    role: dbUser.role,
-                    image: dbUser.image,
-                    isVerifiedSeller: dbUser.isVerifiedSeller,
-                    createdAt: dbUser.createdAt
-                },
-            },
-        });
-
-    } catch (error) {
-         console.error("Error fetching user profile:", error);
-        res.status(500).json({
-            data: {
-                success: false,
-                message: "Failed to fetch user profile",
-                error: error instanceof Error ? error.message : "Unknown error",
-            },
-        });
+    // If not found by UID, try finding by email (for web-linked accounts)
+    if (!dbUser && firebaseUser.email) {
+      dbUser = await db.query.user.findFirst({
+        where: eq(user.email, firebaseUser.email),
+      });
     }
+
+    if (!dbUser) {
+      return res.status(404).json({
+        data: {
+          success: false,
+          message: "User not found",
+        },
+      });
+    }
+
+    res.json({
+      data: {
+        success: true,
+        user: {
+          id: dbUser.id,
+          email: dbUser.email,
+          name: dbUser.name,
+          role: dbUser.role,
+          image: dbUser.image,
+          isVerifiedSeller: dbUser.isVerifiedSeller,
+          createdAt: dbUser.createdAt,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({
+      data: {
+        success: false,
+        message: "Failed to fetch user profile",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+    });
+  }
 });
 
 router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
-    try {
-        const firebaseUser = (req as any).firebaseUser as {
-            uid?: string;
-            email?: string;
-            name?: string;
-            picture?: string;
-            email_verified?: boolean;
-        };
+  try {
+    const firebaseUser = (req as any).firebaseUser as {
+      uid?: string;
+      email?: string;
+      name?: string;
+      picture?: string;
+      email_verified?: boolean;
+    };
 
-        const {
-            authStudentId: bodyAuthStudentId,
-            email: bodyEmail,
-            name: bodyName,
-            image: bodyImage,
-            fcmToken
-        } = req.body;
+    const {
+      authStudentId: bodyAuthStudentId,
+      email: bodyEmail,
+      name: bodyName,
+      image: bodyImage,
+      fcmToken,
+      platform, // 'mobile' | 'web' | undefined
+    } = req.body;
 
-        const authStudentId = firebaseUser?.uid;
-        const tokenEmail = firebaseUser?.email;
+    const isMobile = platform === "mobile";
 
-        if (bodyAuthStudentId && authStudentId && bodyAuthStudentId !== authStudentId) {
-            res.status(403).json({
-                data: {
-                    success: false,
-                    message: "User ID mismatch with Firebase token",
-                },
-            });
-            return;
-        }
+    const authStudentId = firebaseUser?.uid;
+    const tokenEmail = firebaseUser?.email;
 
-        if (tokenEmail && bodyEmail && tokenEmail.toLowerCase() !== bodyEmail.toLowerCase()) {
-            res.status(403).json({
-                data: {
-                    success: false,
-                    message: "Email mismatch with Firebase token",
-                },
-            });
-            return;
-        }
+    if (
+      bodyAuthStudentId &&
+      authStudentId &&
+      bodyAuthStudentId !== authStudentId
+    ) {
+      res.status(403).json({
+        data: {
+          success: false,
+          message: "User ID mismatch with Firebase token",
+        },
+      });
+      return;
+    }
 
-        const email = (tokenEmail || bodyEmail) as string;
-        const name = bodyName || firebaseUser?.name;
-        const image = bodyImage || firebaseUser?.picture;
+    if (
+      tokenEmail &&
+      bodyEmail &&
+      tokenEmail.toLowerCase() !== bodyEmail.toLowerCase()
+    ) {
+      res.status(403).json({
+        data: {
+          success: false,
+          message: "Email mismatch with Firebase token",
+        },
+      });
+      return;
+    }
 
-        if (!authStudentId || !email || !name) {
-            res.status(400).json({
-                data: {
-                    success: false,
-                    message: "Missing required fields: authStudentId, email, name",
-                },
-            });
-            return;
-        }
+    const email = (tokenEmail || bodyEmail) as string;
+    const name = bodyName || firebaseUser?.name;
+    const image = bodyImage || firebaseUser?.picture;
 
-        // Determine role based on email
-        const role = determineUserRole(email);
+    if (!authStudentId || !email || !name) {
+      res.status(400).json({
+        data: {
+          success: false,
+          message: "Missing required fields: authStudentId, email, name",
+        },
+      });
+      return;
+    }
 
-        // Check if user already exists by ID
-        const existingUserById = await db.query.user.findFirst({
-            where: eq(user.id, authStudentId),
-        });
+    // Determine role based on email
+    const role = determineUserRole(email);
 
+    // Check if user already exists by ID
+    const existingUserById = await db.query.user.findFirst({
+      where: eq(user.id, authStudentId),
+    });
 
-        if (existingUserById) {
-            // User already exists, optionally update their info
-            await db
-                .update(user)
-                .set({
-                    name: name,
-                    image: image || existingUserById.image,
-                    fcmToken: fcmToken || existingUserById.fcmToken,
-                    role: existingUserById.role === 'guest' ? role : existingUserById.role,
-                    updatedAt: new Date(),
-                })
-                .where(eq(user.id, authStudentId));
+    if (existingUserById) {
+      // User already exists, optionally update their info
+      await db
+        .update(user)
+        .set({
+          name: name,
+          image: image || existingUserById.image,
+          fcmToken: fcmToken || existingUserById.fcmToken,
+          role:
+            existingUserById.role === "guest" ? role : existingUserById.role,
+          updatedAt: new Date(),
+        })
+        .where(eq(user.id, authStudentId));
 
-            res.json({
-                data: {
-                    success: true,
-                    message: "User already exists, info updated",
-                    user: { id: authStudentId, email, name, role: existingUserById.role === 'guest' ? role : existingUserById.role },
-                },
-            });
+      res.json({
+        data: {
+          success: true,
+          message: "User already exists, info updated",
+          user: {
+            id: authStudentId,
+            email,
+            name,
+            role:
+              existingUserById.role === "guest" ? role : existingUserById.role,
+          },
+        },
+      });
 
-            // Send notification ONLY if role was upgraded
-            if (existingUserById.role === 'guest' && role !== 'guest') {
-                sendToUser(authStudentId, {
-                    title: 'Access Level Updated',
-                    body: `Your account has been upgraded to ${role}.`,
-                    data: {
-                        type: 'role_update',
-                        iconKey: 'general',
-                    },
-                }).catch((error) =>
-                    console.error('Failed to send role update notification (existing):', error),
-                );
-            } else if (fcmToken && fcmToken !== existingUserById.fcmToken) {
-                 // Send sign-in notification if FCM token changed (new device)
-                 sendToUser(authStudentId, {
-                    title: 'New sign-in detected',
-                    body: 'Your account was signed in from a new device.',
-                    data: {
-                        type: 'security_alert',
-                        iconKey: 'general',
-                        ipAddress: req.ip || '',
-                        userAgent: req.headers['user-agent'] || '',
-                    },
-                }).catch((error) =>
-                    console.error('Failed to send mobile security alert notification (existing):', error),
-                );
-            }
-
-            return;
-        }
-
-
-
-        // Check if email is already used by another user
-        const existingUserByEmail = await db.query.user.findFirst({
-            where: eq(user.email, email),
-        });
-
-        if (existingUserByEmail) {
-            // Email exists with different ID - link the accounts
-            // Return the existing web user's ID so the app uses it for API calls
-            await db
-                .update(user)
-                .set({
-                    name: name,
-                    image: image || existingUserByEmail.image,
-                    fcmToken: fcmToken || existingUserByEmail.fcmToken,
-                    role: existingUserByEmail.role === 'guest' ? role : existingUserByEmail.role,
-                    updatedAt: new Date(),
-                })
-                .where(eq(user.id, existingUserByEmail.id));
-
-            // Create account link for Firebase if it doesn't exist
-            const existingAccount = await db.query.account.findFirst({
-                where: and(
-                    eq(account.providerId, "firebase"),
-                    eq(account.accountId, authStudentId)
-                )
-            });
-
-            if (!existingAccount) {
-                await db.insert(account).values({
-                    id: crypto.randomUUID(),
-                    userId: existingUserByEmail.id,
-                    providerId: "firebase",
-                    accountId: authStudentId,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                });
-                console.log(`[Sync] Created Firebase account link for user ${existingUserByEmail.id}`);
-
-                // ONLY send notification if this is a NEW link
-                sendToUser(existingUserByEmail.id, {
-                    title: 'New sign-in detected',
-                    body: 'Your account was linked and signed in from a new mobile session.',
-                    data: {
-                        type: 'security_alert',
-                        iconKey: 'general',
-                        ipAddress: req.ip || '',
-                        userAgent: req.headers['user-agent'] || '',
-                    },
-                }).catch((error) =>
-                    console.error('Failed to send mobile security alert notification (linking):', error),
-                );
-            }
-
-            res.json({
-                data: {
-                    success: true,
-                    message: "Account linked with existing web user",
-                    user: {
-                        id: existingUserByEmail.id,  // Return web user's ID!
-                        email,
-                        name,
-                        role: existingUserByEmail.role === 'guest' ? role : existingUserByEmail.role
-                    },
-                    linkedFrom: "firebase",
-                    firebaseUid: authStudentId
-                },
-            });
-
-            // Send notification if role was upgraded (even if account link existed)
-            if (existingUserByEmail.role === 'guest' && role !== 'guest') {
-                 sendToUser(existingUserByEmail.id, {
-                    title: 'Access Level Updated',
-                    body: `Your account has been upgraded to ${role}.`,
-                    data: {
-                        type: 'role_update',
-                        iconKey: 'general',
-                    },
-                }).catch((error) =>
-                    console.error('Failed to send role update notification (linking):', error),
-                );
-            } else if (fcmToken && fcmToken !== existingUserByEmail.fcmToken) {
-                 // Send sign-in notification if FCM token changed (new device)
-                 // This covers the case where an existing account link is reused on a new device
-                 sendToUser(existingUserByEmail.id, {
-                    title: 'New sign-in detected',
-                    body: 'Your account was signed in from a new device.',
-                    data: {
-                        type: 'security_alert',
-                        iconKey: 'general',
-                        ipAddress: req.ip || '',
-                        userAgent: req.headers['user-agent'] || '',
-                    },
-                }).catch((error) =>
-                    console.error('Failed to send mobile security alert notification (linking):', error),
-                );
-            }
-
-            return;
-
-        }
-
-        // Create new user
-        const [newUser] = await db
-            .insert(user)
-            .values({
-                id: authStudentId,
-                name: name,
-                email: email,
-                emailVerified: firebaseUser?.email_verified ?? true,
-                image: image,
-                role: role,
-                fcmToken: fcmToken,
-            })
-            .returning();
-
-        // Send security notification for new sign-in
-        sendToUser(newUser.id, {
-            title: 'New sign-in detected',
-            body: 'Your account was signed in from a new mobile session.',
-            data: {
-                type: 'security_alert',
-                iconKey: 'general',
-                ipAddress: req.ip || '',
-                userAgent: req.headers['user-agent'] || '',
-            },
+      // Send notification ONLY if role was upgraded
+      if (existingUserById.role === "guest" && role !== "guest") {
+        sendToUser(authStudentId, {
+          title: "Access Level Updated",
+          body: `Your account has been upgraded to ${role}.`,
+          data: {
+            type: "role_update",
+            iconKey: "general",
+          },
         }).catch((error) =>
-            console.error('Failed to send mobile security alert notification:', error),
+          console.error(
+            "Failed to send role update notification (existing):",
+            error,
+          ),
+        );
+      } else if (
+        fcmToken &&
+        fcmToken !== existingUserById.fcmToken &&
+        !isMobile
+      ) {
+        // Send sign-in notification if FCM token changed (new device), web only
+        sendToUser(authStudentId, {
+          title: "New sign-in detected",
+          body: "Your account was signed in from a new device.",
+          data: {
+            type: "security_alert",
+            iconKey: "general",
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || "",
+          },
+        }).catch((error) =>
+          console.error(
+            "Failed to send mobile security alert notification (existing):",
+            error,
+          ),
+        );
+      }
+
+      return;
+    }
+
+    // Check if email is already used by another user
+    const existingUserByEmail = await db.query.user.findFirst({
+      where: eq(user.email, email),
+    });
+
+    if (existingUserByEmail) {
+      // Email exists with different ID - link the accounts
+      // Return the existing web user's ID so the app uses it for API calls
+      await db
+        .update(user)
+        .set({
+          name: name,
+          image: image || existingUserByEmail.image,
+          fcmToken: fcmToken || existingUserByEmail.fcmToken,
+          role:
+            existingUserByEmail.role === "guest"
+              ? role
+              : existingUserByEmail.role,
+          updatedAt: new Date(),
+        })
+        .where(eq(user.id, existingUserByEmail.id));
+
+      // Create account link for Firebase if it doesn't exist
+      const existingAccount = await db.query.account.findFirst({
+        where: and(
+          eq(account.providerId, "firebase"),
+          eq(account.accountId, authStudentId),
+        ),
+      });
+
+      if (!existingAccount) {
+        await db.insert(account).values({
+          id: crypto.randomUUID(),
+          userId: existingUserByEmail.id,
+          providerId: "firebase",
+          accountId: authStudentId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+        console.log(
+          `[Sync] Created Firebase account link for user ${existingUserByEmail.id}`,
         );
 
-        res.status(201).json({
-            data: {
-                success: true,
-                message: "User created successfully",
-                user: { id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role },
-            },
-        });
-    } catch (error) {
-        console.error("Error syncing user:", error);
-        res.status(500).json({
-            data: {
-                success: false,
-                message: "Failed to sync user",
-                error: error instanceof Error ? error.message : "Unknown error",
-            },
-        });
+        // ONLY send notification if this is a NEW link
+        sendToUser(existingUserByEmail.id, {
+          title: "New sign-in detected",
+          body: "Your account was linked and signed in from a new mobile session.",
+          data: {
+            type: "security_alert",
+            iconKey: "general",
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || "",
+          },
+        }).catch((error) =>
+          console.error(
+            "Failed to send mobile security alert notification (linking):",
+            error,
+          ),
+        );
+      }
+
+      res.json({
+        data: {
+          success: true,
+          message: "Account linked with existing web user",
+          user: {
+            id: existingUserByEmail.id, // Return web user's ID!
+            email,
+            name,
+            role:
+              existingUserByEmail.role === "guest"
+                ? role
+                : existingUserByEmail.role,
+          },
+          linkedFrom: "firebase",
+          firebaseUid: authStudentId,
+        },
+      });
+
+      // Send notification if role was upgraded (even if account link existed)
+      if (existingUserByEmail.role === "guest" && role !== "guest") {
+        sendToUser(existingUserByEmail.id, {
+          title: "Access Level Updated",
+          body: `Your account has been upgraded to ${role}.`,
+          data: {
+            type: "role_update",
+            iconKey: "general",
+          },
+        }).catch((error) =>
+          console.error(
+            "Failed to send role update notification (linking):",
+            error,
+          ),
+        );
+      } else if (fcmToken && fcmToken !== existingUserByEmail.fcmToken && !isMobile) {
+        // Send sign-in notification if FCM token changed (new device), web only
+        // This covers the case where an existing account link is reused on a new device
+        sendToUser(existingUserByEmail.id, {
+          title: "New sign-in detected",
+          body: "Your account was signed in from a new device.",
+          data: {
+            type: "security_alert",
+            iconKey: "general",
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || "",
+          },
+        }).catch((error) =>
+          console.error(
+            "Failed to send mobile security alert notification (linking):",
+            error,
+          ),
+        );
+      }
+
+      return;
     }
+
+    // Create new user
+    const [newUser] = await db
+      .insert(user)
+      .values({
+        id: authStudentId,
+        name: name,
+        email: email,
+        emailVerified: firebaseUser?.email_verified ?? true,
+        image: image,
+        role: role,
+        fcmToken: fcmToken,
+      })
+      .returning();
+
+    // Send security notification for new sign-in only on web
+    if (!isMobile) {
+      sendToUser(newUser.id, {
+        title: "New sign-in detected",
+        body: "Your account was signed in from a new mobile session.",
+        data: {
+          type: "security_alert",
+          iconKey: "general",
+          ipAddress: req.ip || "",
+          userAgent: req.headers["user-agent"] || "",
+        },
+      }).catch((error) =>
+        console.error(
+          "Failed to send mobile security alert notification:",
+          error,
+        ),
+      );
+    }
+
+    res.status(201).json({
+      data: {
+        success: true,
+        message: "User created successfully",
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error syncing user:", error);
+    res.status(500).json({
+      data: {
+        success: false,
+        message: "Failed to sync user",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+    });
+  }
 });
 
 /**
@@ -343,63 +396,63 @@ router.post("/sync-user", requireFirebaseAuth, async (req, res) => {
  * Uses Firebase Auth middleware to verify the user's identity
  */
 router.post("/clear-fcm-token", requireFirebaseAuth, async (req, res) => {
-    try {
-        const firebaseUser = (req as any).firebaseUser as {
-            uid?: string;
-            email?: string;
-        };
+  try {
+    const firebaseUser = (req as any).firebaseUser as {
+      uid?: string;
+      email?: string;
+    };
 
-        // Get user ID from verified Firebase token
-        const firebaseUid = firebaseUser?.uid;
-        if (!firebaseUid) {
-            res.status(401).json({
-                success: false,
-                message: "Unauthorized: Invalid Firebase token",
-            });
-            return;
-        }
-
-        // Find the user by Firebase UID or by email (for linked accounts)
-        let dbUser = await db.query.user.findFirst({
-            where: eq(user.id, firebaseUid),
-        });
-
-        // If not found by UID, try finding by email (for web-linked accounts)
-        if (!dbUser && firebaseUser.email) {
-            dbUser = await db.query.user.findFirst({
-                where: eq(user.email, firebaseUser.email),
-            });
-        }
-
-        if (!dbUser) {
-            res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-            return;
-        }
-
-        // Clear FCM token for the user
-        await db
-            .update(user)
-            .set({
-                fcmToken: null,
-                updatedAt: new Date(),
-            })
-            .where(eq(user.id, dbUser.id));
-
-        res.json({
-            success: true,
-            message: "FCM token cleared successfully",
-        });
-    } catch (error) {
-        console.error("Error clearing FCM token:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to clear FCM token",
-            error: error instanceof Error ? error.message : "Unknown error",
-        });
+    // Get user ID from verified Firebase token
+    const firebaseUid = firebaseUser?.uid;
+    if (!firebaseUid) {
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized: Invalid Firebase token",
+      });
+      return;
     }
+
+    // Find the user by Firebase UID or by email (for linked accounts)
+    let dbUser = await db.query.user.findFirst({
+      where: eq(user.id, firebaseUid),
+    });
+
+    // If not found by UID, try finding by email (for web-linked accounts)
+    if (!dbUser && firebaseUser.email) {
+      dbUser = await db.query.user.findFirst({
+        where: eq(user.email, firebaseUser.email),
+      });
+    }
+
+    if (!dbUser) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+
+    // Clear FCM token for the user
+    await db
+      .update(user)
+      .set({
+        fcmToken: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, dbUser.id));
+
+    res.json({
+      success: true,
+      message: "FCM token cleared successfully",
+    });
+  } catch (error) {
+    console.error("Error clearing FCM token:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to clear FCM token",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
 });
 
 /**
@@ -407,73 +460,73 @@ router.post("/clear-fcm-token", requireFirebaseAuth, async (req, res) => {
  * Uses Firebase Auth middleware to verify the user's identity
  */
 router.post("/update-fcm-token", requireFirebaseAuth, async (req, res) => {
-    try {
-        const firebaseUser = (req as any).firebaseUser as {
-            uid?: string;
-            email?: string;
-        };
+  try {
+    const firebaseUser = (req as any).firebaseUser as {
+      uid?: string;
+      email?: string;
+    };
 
-        const { fcmToken } = req.body;
+    const { fcmToken } = req.body;
 
-        if (!fcmToken) {
-            res.status(400).json({
-                success: false,
-                message: "FCM token is required",
-            });
-            return;
-        }
-
-        // Get user ID from verified Firebase token
-        const firebaseUid = firebaseUser?.uid;
-        if (!firebaseUid) {
-            res.status(401).json({
-                success: false,
-                message: "Unauthorized: Invalid Firebase token",
-            });
-            return;
-        }
-
-        // Find the user by Firebase UID or by email (for linked accounts)
-        let dbUser = await db.query.user.findFirst({
-            where: eq(user.id, firebaseUid),
-        });
-
-        // If not found by UID, try finding by email (for web-linked accounts)
-        if (!dbUser && firebaseUser.email) {
-            dbUser = await db.query.user.findFirst({
-                where: eq(user.email, firebaseUser.email),
-            });
-        }
-
-        if (!dbUser) {
-            res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-            return;
-        }
-
-        // Update FCM token for the user
-        await db
-            .update(user)
-            .set({
-                fcmToken: fcmToken,
-                updatedAt: new Date(),
-            })
-            .where(eq(user.id, dbUser.id));
-
-        res.json({
-            success: true,
-            message: "FCM token updated successfully",
-        });
-    } catch (error) {
-        console.error("Error updating FCM token:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to update FCM token",
-            error: error instanceof Error ? error.message : "Unknown error",
-        });
+    if (!fcmToken) {
+      res.status(400).json({
+        success: false,
+        message: "FCM token is required",
+      });
+      return;
     }
+
+    // Get user ID from verified Firebase token
+    const firebaseUid = firebaseUser?.uid;
+    if (!firebaseUid) {
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized: Invalid Firebase token",
+      });
+      return;
+    }
+
+    // Find the user by Firebase UID or by email (for linked accounts)
+    let dbUser = await db.query.user.findFirst({
+      where: eq(user.id, firebaseUid),
+    });
+
+    // If not found by UID, try finding by email (for web-linked accounts)
+    if (!dbUser && firebaseUser.email) {
+      dbUser = await db.query.user.findFirst({
+        where: eq(user.email, firebaseUser.email),
+      });
+    }
+
+    if (!dbUser) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+
+    // Update FCM token for the user
+    await db
+      .update(user)
+      .set({
+        fcmToken: fcmToken,
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, dbUser.id));
+
+    res.json({
+      success: true,
+      message: "FCM token updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating FCM token:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update FCM token",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
 });
 
 /**
@@ -481,40 +534,40 @@ router.post("/update-fcm-token", requireFirebaseAuth, async (req, res) => {
  * Uses optional auth so even guests/unauthenticated users might be counted or at least able to view the count
  */
 router.get("/active-count", optionalAuth, async (req, res) => {
-    try {
-        const currentUser = (req as any).user;
+  try {
+    const currentUser = (req as any).user;
 
-        // 1. If user is authenticated, update their lastActiveAt timestamp
-        if (currentUser && currentUser.id) {
-            await db
-                .update(user)
-                .set({ lastActiveAt: new Date() })
-                .where(eq(user.id, currentUser.id));
-        }
-
-        // 2. Query total count of users who were active in the last 15 minutes
-        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-        
-        // Count users where lastActiveAt >= fifteenMinutesAgo
-        const [result] = await db
-            .select({ count: sql<number>`count(*)` })
-            .from(user)
-            .where(sql`${user.lastActiveAt} >= ${fifteenMinutesAgo}`);
-
-        res.json({
-            success: true,
-            data: {
-                activeCount: Number(result?.count || 0)
-            }
-        });
-    } catch (error) {
-        console.error("Error fetching active user count:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch active user count",
-            error: error instanceof Error ? error.message : "Unknown error",
-        });
+    // 1. If user is authenticated, update their lastActiveAt timestamp
+    if (currentUser && currentUser.id) {
+      await db
+        .update(user)
+        .set({ lastActiveAt: new Date() })
+        .where(eq(user.id, currentUser.id));
     }
+
+    // 2. Query total count of users who were active in the last 15 minutes
+    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+
+    // Count users where lastActiveAt >= fifteenMinutesAgo
+    const [result] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(user)
+      .where(sql`${user.lastActiveAt} >= ${fifteenMinutesAgo}`);
+
+    res.json({
+      success: true,
+      data: {
+        activeCount: Number(result?.count || 0),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching active user count:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch active user count",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
 });
 
 export default router;
