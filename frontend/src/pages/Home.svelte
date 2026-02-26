@@ -6,7 +6,9 @@
   const session = authClient.useSession();
 </script>
 
-<div class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] py-16 text-center">
+<div
+  class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] py-16 text-center"
+>
   <!-- Hero Section -->
   <div class="max-w-3xl mx-auto space-y-8" in:fly={{ y: 20, duration: 600 }}>
     <!-- Badge -->
@@ -40,27 +42,29 @@
     </p>
   </div>
 
-  <!-- Primary Navigation (Pill Style) -->
+  <!-- Primary Navigation (Compact & Responsive) -->
   <div
-    class="mt-12 w-full max-w-4xl"
+    class="mt-12 w-full max-w-2xl px-4 mx-auto"
     in:fly={{ y: 20, duration: 600, delay: 200 }}
   >
-    <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+    <div
+      class="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-2.5 sm:gap-3"
+    >
       {#if !$session.data?.user}
         <a
           href="/register"
-          class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold hover:scale-105 transition shadow-lg shadow-slate-900/20"
+          class="col-span-2 sm:col-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-slate-900/10"
         >
           Get Started
           <svg
-            class="w-4 h-4"
+            class="w-3.5 h-3.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
             ><path
               stroke-linecap="round"
               stroke-linejoin="round"
-              stroke-width="2"
+              stroke-width="2.5"
               d="M14 5l7 7m0 0l-7 7m7-7H3"
             /></svg
           >
@@ -69,19 +73,18 @@
         <a
           use:route
           href="/dashboard"
-          class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-900 font-bold hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50 transition shadow-sm hover:shadow-md"
+          class="col-span-2 sm:col-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 text-sm font-bold hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50 transition-all shadow-sm hover:shadow-md"
         >
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          Open Dashboard
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          Dashboard
         </a>
       {/if}
 
-      <div class="w-1 h-10 mx-2 rounded-full bg-slate-200"></div>
-      <!-- Feature Pills -->
+      <!-- Feature Buttons -->
       <a
         use:route
         href="/map"
-        class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition shadow-sm hover:shadow-md"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition-all shadow-sm hover:shadow-md"
       >
         <svg
           class="w-4 h-4"
@@ -106,7 +109,7 @@
       <a
         use:route
         href="/books"
-        class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition shadow-sm hover:shadow-md"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition-all shadow-sm hover:shadow-md"
       >
         <svg
           class="w-4 h-4"
@@ -126,7 +129,7 @@
       <a
         use:route
         href="/events"
-        class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition shadow-sm hover:shadow-md"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition-all shadow-sm hover:shadow-md"
       >
         <svg
           class="w-4 h-4"
@@ -146,7 +149,7 @@
       <a
         use:route
         href="/clubs"
-        class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition shadow-sm hover:shadow-md"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition-all shadow-sm hover:shadow-md"
       >
         <svg
           class="w-4 h-4"
