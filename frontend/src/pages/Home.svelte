@@ -6,7 +6,7 @@
   const session = authClient.useSession();
 </script>
 
-<div class="flex flex-col items-center min-h-[80vh] py-16 text-center">
+<div class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] py-16 text-center">
   <!-- Hero Section -->
   <div class="max-w-3xl mx-auto space-y-8" in:fly={{ y: 20, duration: 600 }}>
     <!-- Badge -->
@@ -164,10 +164,4 @@
       </a>
     </div>
   </div>
-
-  <footer
-    class="fixed bottom-0 left-0 right-0 p-6 text-center text-xs text-slate-400 font-medium"
-  >
-    &copy; 2026 Smart Pulchowk
-  </footer>
 </div>

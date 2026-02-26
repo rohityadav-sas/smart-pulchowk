@@ -11,8 +11,10 @@
   let loading = $state(false);
   let error = $state<string | null>(null);
   let results = $state<GlobalSearchResponse | null>(null);
+  let { size = "lg" }: { size?: "sm" | "lg" } = $props();
+
   let scope = $state<
-    "all" | "clubs" | "events" | "books" | "notices" | "places"
+    "all" | "clubs" | "events" | "books" | "notices" | "places" | "lost_found"
   >("all");
   const quickResultsCache = new Map<string, GlobalSearchResponse>();
 
@@ -113,18 +115,27 @@
 
 <div bind:this={wrapper} class="relative w-full max-w-2xl">
   <form
-    class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white/92 p-1.5"
+    class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white/92 {size ===
+    'sm'
+      ? 'p-1'
+      : 'p-1.5'}"
     onsubmit={(e) => {
       e.preventDefault();
       submitSearch();
     }}
   >
-    <div class="flex-1 flex items-center gap-2.5 px-2.5">
+    <div
+      class="flex-1 flex items-center gap-2.5 {size === 'sm'
+        ? 'px-1.5'
+        : 'px-2.5'}"
+    >
       <div
-        class="h-7 w-9 rounded-lg bg-cyan-50 border border-cyan-100 flex items-center justify-center"
+        class="{size === 'sm'
+          ? 'h-6 w-8'
+          : 'h-7 w-9'} rounded-lg bg-cyan-50 border border-cyan-100 flex items-center justify-center"
       >
         <svg
-          class="w-4 h-4 text-cyan-600"
+          class="{size === 'sm' ? 'w-3 h-3' : 'w-4 h-4'} text-cyan-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -140,11 +151,15 @@
       <input
         bind:value={query}
         onfocus={() => (open = true)}
-        placeholder="Search clubs, events, books, notices, locations..."
-        class="h-9 w-full bg-transparent text-[13px] text-slate-800 placeholder:text-slate-400 focus:outline-hidden"
+        placeholder={size === "sm"
+          ? "Search..."
+          : "Search clubs, events, books, notices, locations..."}
+        class="{size === 'sm'
+          ? 'h-8'
+          : 'h-9'} w-full bg-transparent text-[13px] text-slate-800 placeholder:text-slate-400 focus:outline-hidden"
       />
     </div>
-    <div class="relative">
+    <div class="relative {size === 'sm' ? 'hidden' : 'block'}">
       <select
         bind:value={scope}
         aria-label="Search scope"
@@ -155,6 +170,7 @@
         <option value="events">Events</option>
         <option value="books">Books</option>
         <option value="notices">Notices</option>
+        <option value="lost_found">Lost & Found</option>
         <option value="places">Places</option>
       </select>
       <svg
@@ -173,7 +189,9 @@
     </div>
     <button
       type="submit"
-      class="inline-flex cursor-pointer h-9 items-center gap-1.5 px-3.5 rounded-xl bg-linear-to-r from-cyan-600 to-blue-600 text-white text-[13px] font-semibold hover:from-cyan-700 hover:to-blue-700 transition-colors"
+      class="inline-flex cursor-pointer {size === 'sm'
+        ? 'h-8 px-2.5'
+        : 'h-9 px-3.5'} items-center gap-1.5 rounded-xl bg-linear-to-r from-cyan-600 to-blue-600 text-white text-[13px] font-semibold hover:from-cyan-700 hover:to-blue-700 transition-colors"
     >
       <svg
         class="w-3.5 h-3.5"
@@ -188,7 +206,9 @@
           d="M21 21l-5.2-5.2M16 10.8a5.2 5.2 0 11-10.4 0 5.2 5.2 0 0110.4 0z"
         />
       </svg>
-      Search
+      {#if size !== "sm"}
+        Search
+      {/if}
     </button>
   </form>
 
@@ -392,7 +412,7 @@
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M12 6.25v13.5m0-13.5c-1.9-1.45-4.5-2.25-7.25-2.25v13.5c2.75 0 5.35.8 7.25 2.25m0-13.5c1.9-1.45 4.5-2.25 7.25-2.25v13.5c-2.75 0-5.35.8-7.25 2.25"
+                      d="M12 6.25v13.5m0-13.5c-1.9-1.45-4.5-2.25-7.25-2.25v13.5c2.75 0 5.35.8 7.25 2.25m0-13.5c1.9-1.45-4.5-2.25-7.25-2.25v13.5c-2.75 0-5.35.8-7.25 2.25"
                     />
                   </svg>
                   Books
@@ -417,7 +437,7 @@
                           stroke-linecap="round"
                           stroke-linejoin="round"
                           stroke-width="2"
-                          d="M12 6.25v13.5m0-13.5c-1.9-1.45-4.5-2.25-7.25-2.25v13.5c2.75 0 5.35.8 7.25 2.25m0-13.5c1.9-1.45 4.5-2.25 7.25-2.25v13.5c-2.75 0-5.35.8-7.25 2.25"
+                          d="M12 6.25v13.5m0-13.5c-1.9-1.45-4.5-2.25-7.25-2.25v13.5c2.75 0 5.35.8 7.25 2.25m0-13.5c1.9-1.45-4.5-2.25-7.25-2.25v13.5c-2.75 0-5.35.8-7.25 2.25"
                         />
                       </svg>
                     </div>
@@ -516,6 +536,86 @@
               </div>
             {/if}
 
+            {#if results.lostFound.length > 0}
+              <div class="px-3 pb-2">
+                <p
+                  class="px-2 py-1 text-[11px] font-semibold text-slate-500 flex items-center gap-1.5"
+                >
+                  <svg
+                    class="w-3 h-3 text-indigo-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M20 13V7a2 2 0 00-2-2h-3V3H9v2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0H4"
+                    />
+                  </svg>
+                  Lost & Found
+                </p>
+                {#each results.lostFound as item}
+                  <a
+                    use:route
+                    href={`/lost-found/${item.id}`}
+                    onclick={() => (open = false)}
+                    class="group flex items-start gap-2.5 px-2 py-1.5 rounded-lg hover:bg-indigo-50 transition"
+                  >
+                    <div
+                      class="w-7 h-7 mt-0.5 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0 overflow-hidden"
+                    >
+                      {#if item.imageUrl}
+                        <img
+                          src={item.imageUrl}
+                          alt={item.title}
+                          class="w-full h-full object-cover"
+                        />
+                      {:else}
+                        <svg
+                          class="w-3.5 h-3.5 text-indigo-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M20 13V7a2 2 0 00-2-2h-3V3H9v2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0H4"
+                          />
+                        </svg>
+                      {/if}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <p
+                        class="text-[13px] font-semibold text-slate-800 truncate"
+                      >
+                        {item.title}
+                      </p>
+                      <p class="text-[11px] text-slate-500 truncate capitalise">
+                        {item.itemType} • {item.locationText}
+                      </p>
+                    </div>
+                    <svg
+                      class="w-3.5 h-3.5 text-slate-300 group-hover:text-indigo-600 mt-1 transition"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </a>
+                {/each}
+              </div>
+            {/if}
+
             {#if results.places.length > 0}
               <div class="px-3 pb-2">
                 <p
@@ -535,7 +635,7 @@
                     />
                     <circle cx="12" cy="8.3" r="2.2" />
                   </svg>
-                  Locations
+                  Places
                 </p>
                 {#each results.places as place}
                   <a
