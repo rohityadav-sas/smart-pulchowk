@@ -80,6 +80,12 @@
     function getNavItemClass(href: string, exact = false) {
         return `${navItemBase} ${isRouteActive(href, exact) ? navItemActive : navItemInactive}`;
     }
+
+    function handleLinkClick() {
+        if (window.innerWidth < 768) {
+            isOpen = false;
+        }
+    }
 </script>
 
 <!-- Mobile Overlay -->
@@ -115,6 +121,7 @@
                 use:route
                 href="/"
                 class="flex items-center gap-3 overflow-hidden"
+                onclick={handleLinkClick}
             >
                 <img
                     src="/logo.png"
@@ -145,6 +152,7 @@
             <button
                 class="w-full aspect-square flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-cyan-600 transition-colors"
                 aria-label="Search"
+                onclick={handleLinkClick}
             >
                 <svg
                     class="w-5 h-5"
@@ -168,7 +176,12 @@
     <!-- Navigation -->
     <nav class="flex-1 overflow-y-auto px-4 space-y-1 custom-scrollbar">
         <div class="space-y-1">
-            <a use:route href="/" class={getNavItemClass("/", true)}>
+            <a
+                use:route
+                href="/"
+                class={getNavItemClass("/", true)}
+                onclick={handleLinkClick}
+            >
                 <svg
                     class="w-5 h-5 shrink-0"
                     fill="none"
@@ -187,7 +200,12 @@
                 {/if}
             </a>
 
-            <a use:route href="/clubs" class={getNavItemClass("/clubs")}>
+            <a
+                use:route
+                href="/clubs"
+                class={getNavItemClass("/clubs")}
+                onclick={handleLinkClick}
+            >
                 <svg
                     class="w-5 h-5 shrink-0"
                     fill="none"
@@ -206,7 +224,12 @@
                 {/if}
             </a>
 
-            <a use:route href="/events" class={getNavItemClass("/events")}>
+            <a
+                use:route
+                href="/events"
+                class={getNavItemClass("/events")}
+                onclick={handleLinkClick}
+            >
                 <svg
                     class="w-5 h-5 shrink-0"
                     fill="none"
@@ -226,7 +249,12 @@
             </a>
 
             {#if !isGuestRole && !isNoticeManagerRole}
-                <a use:route href="/books" class={getNavItemClass("/books")}>
+                <a
+                    use:route
+                    href="/books"
+                    class={getNavItemClass("/books")}
+                    onclick={handleLinkClick}
+                >
                     <svg
                         class="w-5 h-5 shrink-0"
                         fill="none"
@@ -252,6 +280,7 @@
                 use:route
                 href="/lost-found"
                 class={getNavItemClass("/lost-found")}
+                onclick={handleLinkClick}
             >
                 <svg
                     class="w-5 h-5 shrink-0"
@@ -271,7 +300,12 @@
                 {/if}
             </a>
 
-            <a use:route href="/map" class={getNavItemClass("/map")}>
+            <a
+                use:route
+                href="/map"
+                class={getNavItemClass("/map")}
+                onclick={handleLinkClick}
+            >
                 <svg
                     class="w-5 h-5 shrink-0"
                     fill="none"
@@ -296,7 +330,12 @@
                 {/if}
             </a>
 
-            <a use:route href="/notices" class={getNavItemClass("/notices")}>
+            <a
+                use:route
+                href="/notices"
+                class={getNavItemClass("/notices")}
+                onclick={handleLinkClick}
+            >
                 <svg
                     class="w-5 h-5 shrink-0"
                     fill="none"
@@ -336,6 +375,7 @@
                     use:route
                     href="/dashboard"
                     class={getNavItemClass("/dashboard")}
+                    onclick={handleLinkClick}
                 >
                     <svg
                         class="w-5 h-5 shrink-0"
@@ -360,6 +400,7 @@
                 use:route
                 href="/notifications"
                 class={getNavItemClass("/notifications")}
+                onclick={handleLinkClick}
             >
                 <div class="relative">
                     <svg
@@ -393,6 +434,7 @@
                     use:route
                     href="/classroom"
                     class={getNavItemClass("/classroom")}
+                    onclick={handleLinkClick}
                 >
                     <svg
                         class="w-5 h-5 shrink-0"
@@ -414,7 +456,12 @@
             {/if}
 
             {#if currentRole === "admin"}
-                <a use:route href="/admin" class={getNavItemClass("/admin")}>
+                <a
+                    use:route
+                    href="/admin"
+                    class={getNavItemClass("/admin")}
+                    onclick={handleLinkClick}
+                >
                     <svg
                         class="w-5 h-5 shrink-0"
                         fill="none"
@@ -485,6 +532,7 @@
                         href="/settings"
                         class="p-1 text-slate-400 hover:text-cyan-600 transition-colors"
                         aria-label="Settings"
+                        onclick={handleLinkClick}
                     >
                         <svg
                             class="w-5 h-5"
@@ -507,6 +555,7 @@
                 use:route
                 href="/register"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-linear-to-r from-cyan-600 to-blue-600 text-white font-bold text-sm shadow-md shadow-cyan-200/50 hover:shadow-lg transition-all active:scale-95 overflow-hidden"
+                onclick={handleLinkClick}
             >
                 <svg
                     class="w-5 h-5 shrink-0"
