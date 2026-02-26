@@ -93,6 +93,7 @@
   let fullscreenProgress = $state<number | undefined>(undefined);
   let fullscreenLoaded = $state(false);
   let fullscreenAbortController: AbortController | null = null;
+  const fullscreenBlobCache = new Map<string, string>();
 
   // Management modal state
   let showManageModal = $state(false);
@@ -375,9 +376,6 @@
   function openImagePreview(url: string, title: string, noticeId?: number) {
     previewImage = url;
     previewTitle = title;
-    fullscreenLoaded = false;
-    fullscreenProgress = undefined;
-    fullscreenBlobUrl = null;
 
     // Use the already-loaded blob URL from the card image as placeholder,
     // or fall back to the optimized 800px URL (which should be cached)
@@ -387,7 +385,19 @@
       previewPlaceholderSrc = optimizeCloudinaryUrl(url, 800);
     }
 
-    // Start loading the HQ version in the background
+    // Check if this HQ image is already cached
+    const cachedBlob = fullscreenBlobCache.get(url);
+    if (cachedBlob) {
+      fullscreenBlobUrl = cachedBlob;
+      fullscreenProgress = 100;
+      fullscreenLoaded = true;
+      return;
+    }
+
+    // Not cached — reset and load fresh
+    fullscreenLoaded = false;
+    fullscreenProgress = undefined;
+    fullscreenBlobUrl = null;
     loadFullscreenImage(url);
   }
 
@@ -425,7 +435,9 @@
       }
 
       fullscreenProgress = 100;
-      fullscreenBlobUrl = URL.createObjectURL(new Blob(chunks as any[]));
+      const blobUrl = URL.createObjectURL(new Blob(chunks as any[]));
+      fullscreenBlobCache.set(rawUrl, blobUrl);
+      fullscreenBlobUrl = blobUrl;
     } catch (error) {
       if ((error as any)?.name !== "AbortError") {
         // Fallback: let the img load via network
@@ -444,11 +456,8 @@
       fullscreenAbortController.abort();
       fullscreenAbortController = null;
     }
-    // Revoke blob URL to free memory
-    if (fullscreenBlobUrl) {
-      URL.revokeObjectURL(fullscreenBlobUrl);
-      fullscreenBlobUrl = null;
-    }
+    // Keep blob URL in cache (don't revoke) so re-opening is instant
+    fullscreenBlobUrl = null;
     fullscreenProgress = undefined;
     fullscreenLoaded = false;
     previewPlaceholderSrc = "";
@@ -1400,28 +1409,33 @@
             fullscreenLoaded = true;
           }}
         />
-
-        <!-- Progress indicator (bottom of image) -->
-        {#if !fullscreenLoaded && fullscreenProgress !== undefined && fullscreenProgress < 100}
-          <div class="absolute bottom-0 left-0 right-0 p-3">
-            <div class="max-w-xs mx-auto">
-              <div class="flex items-center justify-center gap-2 mb-1.5">
-                <span class="text-xs text-white/80 font-medium drop-shadow">
-                  Loading high quality • {fullscreenProgress}%
-                </span>
-              </div>
-              <div
-                class="w-full h-1 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm"
-              >
-                <div
-                  class="h-full bg-white/80 transition-all duration-200 rounded-full"
-                  style="width: {fullscreenProgress}%"
-                ></div>
-              </div>
-            </div>
-          </div>
-        {/if}
       </div>
+
+      <!-- Progress indicator (below image) -->
+      {#if !fullscreenLoaded && fullscreenProgress !== undefined && fullscreenProgress < 100}
+        <div class="mt-3 flex flex-col items-center gap-2">
+          <div class="flex items-center gap-2">
+            <svg
+              class="w-3.5 h-3.5 text-white/70 animate-pulse"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z"
+              />
+            </svg>
+            <span class="text-[12px] text-white/70 font-medium tracking-wide">
+              Loading High Quality · {fullscreenProgress}%
+            </span>
+          </div>
+          <div class="w-48 h-[3px] bg-white/15 rounded-full overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-300 ease-out"
+              style="width: {fullscreenProgress}%; background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.8)); box-shadow: 0 0 6px rgba(255,255,255,0.25)"
+            ></div>
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
 {/if}
