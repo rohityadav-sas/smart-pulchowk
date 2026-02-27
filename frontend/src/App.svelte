@@ -257,9 +257,16 @@
   });
 
   onMount(() => {
-    if (window.innerWidth >= 768) {
-      isSidebarOpen = true;
-    }
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        isSidebarOpen = true;
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check
+
+    return () => window.removeEventListener("resize", handleResize);
   });
   const isEmbedded = $derived(embed === "true");
 
@@ -480,7 +487,7 @@
 
     <div
       class="flex-1 flex flex-col min-w-0 {!isResizing
-        ? 'transition-[margin-left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'
+        ? 'transition-[margin-left] duration-500 ease-in-out'
         : ''} main-content-wrapper"
       style="--sidebar-offset: {isSidebarOpen && !isEmbedded
         ? sidebarWidth + 'px'
@@ -489,14 +496,10 @@
       {#if !isEmbedded}
         <!-- Mobile Header -->
         <header
-          class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-cyan-100/70 bg-white/50 backdrop-blur-xl px-4 md:hidden shrink-0"
+          class="sticky top-0 z-30 flex h-16 items-center border-b border-cyan-100/70 bg-white/50 backdrop-blur-xl px-4 md:hidden shrink-0"
         >
-          <div class="flex items-center gap-3">
-            <img src="/logo.png" alt="Logo" class="size-8 rounded-lg" />
-            <span class="font-black text-slate-900">Smart Pulchowk</span>
-          </div>
           <button
-            class="p-2 text-slate-600 hover:text-cyan-600 transition-colors"
+            class="p-2 text-slate-600 hover:text-cyan-600 transition-all active:scale-90"
             onclick={() => (isSidebarOpen = true)}
             aria-label="Open sidebar"
           >
@@ -509,11 +512,15 @@
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16m-7 6h7"
+                stroke-width="2.5"
+                d="M4 7h16M4 12h16M4 17h16"
               />
             </svg>
           </button>
+          <div class="flex items-center gap-3 ml-2">
+            <img src="/logo.png" alt="Logo" class="size-8 rounded-lg" />
+            <span class="font-black text-slate-900">Smart Pulchowk</span>
+          </div>
         </header>
       {/if}
 
