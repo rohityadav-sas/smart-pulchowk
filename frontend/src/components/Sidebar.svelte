@@ -31,10 +31,28 @@
         isCollapsed = $bindable(false),
     }: Props = $props();
 
+    const MIN_SIDEBAR_WIDTH = 260;
+    const MAX_SIDEBAR_WIDTH = 450;
+    const COLLAPSED_WIDTH = 86;
+
+    let preCollapsedWidth = $state(260);
     let shouldFocusSearch = $state(false);
 
-    function startResizing() {
+    function toggleSidebar() {
+        if (isCollapsed) {
+            sidebarWidth = preCollapsedWidth;
+            isCollapsed = false;
+        } else {
+            preCollapsedWidth = sidebarWidth;
+            sidebarWidth = COLLAPSED_WIDTH;
+            isCollapsed = true;
+        }
+    }
+
+    function startResizing(e: MouseEvent) {
+        e.preventDefault();
         isResizing = true;
+        document.body.classList.add("is-resizing-active");
         window.addEventListener("mousemove", handleMouseMove);
         window.addEventListener("mouseup", stopResizing);
     }
@@ -42,19 +60,19 @@
     function handleMouseMove(e: MouseEvent) {
         if (!isResizing) return;
         const newWidth = e.clientX;
-        if (newWidth >= 64 && newWidth < 450) {
-            if (newWidth < 120) {
-                sidebarWidth = 80;
-                isCollapsed = true;
-            } else {
-                sidebarWidth = newWidth;
-                isCollapsed = false;
-            }
+        if (newWidth >= MIN_SIDEBAR_WIDTH && newWidth <= MAX_SIDEBAR_WIDTH) {
+            sidebarWidth = newWidth;
+            isCollapsed = false;
+        } else if (newWidth < MIN_SIDEBAR_WIDTH / 2) {
+            // Snap to collapsed if dragged very far left
+            sidebarWidth = COLLAPSED_WIDTH;
+            isCollapsed = true;
         }
     }
 
     function stopResizing() {
         isResizing = false;
+        document.body.classList.remove("is-resizing-active");
         window.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("mouseup", stopResizing);
     }
@@ -111,21 +129,54 @@
 {/if}
 
 <aside
-    class="fixed inset-y-0 left-0 z-50 flex flex-col bg-white/80 backdrop-blur-xl border-r border-slate-200/60 {!isResizing ? 'transition-all duration-300' : ''} group/sidebar {isOpen
+    class="fixed inset-y-0 left-0 z-50 flex flex-col bg-white/80 backdrop-blur-xl border-r border-slate-200/60 {isResizing
+        ? ''
+        : 'transition-[width] duration-500 cubic-bezier(0.4, 0, 0.2, 1)'} group/sidebar {isOpen
         ? 'translate-x-0'
         : '-translate-x-full'}"
-    style="width: {sidebarWidth}px; will-change: transform, width;"
+    style="width: {sidebarWidth}px; will-change: width;"
 >
     <!-- Resize Handle -->
-    <button
-        class="absolute -right-3 top-0 bottom-0 w-6 cursor-col-resize group z-50 hidden md:block opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300"
-        onmousedown={startResizing}
-        aria-label="Resize sidebar"
+    <div
+        class="absolute -right-3 top-0 bottom-0 w-6 cursor-col-resize group/handle z-50 hidden md:flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300"
     >
         <div
-            class="absolute inset-y-0 left-1/2 w-[2px] bg-slate-200 group-hover:bg-cyan-400 transition-colors"
+            class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[1px] bg-slate-200 group-hover/handle:bg-cyan-400 group-hover/handle:w-[2px] transition-all"
         ></div>
-    </button>
+
+        <!-- Resize trigger overlay to make grabbing easier -->
+        <div
+            class="absolute inset-0 z-0"
+            onmousedown={(e: MouseEvent) => startResizing(e)}
+            role="presentation"
+        ></div>
+
+        <!-- Collapse Toggle Button -->
+        <button
+            onclick={(e) => {
+                e.stopPropagation();
+                toggleSidebar();
+            }}
+            class="relative z-10 flex size-6.5 items-center justify-center rounded-full bg-white border border-slate-200 shadow-sm text-slate-500 hover:text-cyan-600 hover:border-cyan-200 hover:scale-110 active:scale-95 transition-all duration-200"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+            <svg
+                class="size-4.5 transition-transform duration-300 {isCollapsed
+                    ? ''
+                    : 'rotate-180'}"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M9 5l7 7-7 7"
+                />
+            </svg>
+        </button>
+    </div>
 
     <!-- Logo & Branding -->
     <div class="p-6">
@@ -141,49 +192,60 @@
                     alt="Logo"
                     class="size-10 rounded-xl shadow-lg shadow-cyan-100/50 shrink-0"
                 />
-                {#if !isCollapsed}
-                    <div class="min-w-0 transition-opacity duration-300">
-                        <p
-                            class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-600 leading-none mb-1"
-                        >
-                            Pulchowk Digital
-                        </p>
-                        <p
-                            class="text-xl font-black text-slate-900 tracking-tight whitespace-nowrap"
-                        >
-                            Smart Pulchowk
-                        </p>
-                    </div>
-                {/if}
+                <div
+                    class="min-w-0 transition-all duration-500 ease-in-out origin-left flex flex-col justify-center"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}
+                >
+                    <p
+                        class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-600 leading-none mb-1 whitespace-nowrap"
+                    >
+                        Pulchowk Digital
+                    </p>
+                    <p
+                        class="text-xl font-black text-slate-900 tracking-tight whitespace-nowrap"
+                    >
+                        Smart Pulchowk
+                    </p>
+                </div>
             </a>
         </div>
     </div>
 
-    <!-- Search -->
-    <div class="px-4 mb-6">
-        {#if isCollapsed}
-            <button
-                class="w-full aspect-square flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-cyan-600 transition-colors"
-                aria-label="Search"
-                onclick={(e) => expandAndFocusSearch(e)}
+    <div class="px-4 mb-6 transition-all duration-500 overflow-hidden">
+        <div class="relative w-full">
+            <div
+                class="transition-all duration-500 {isCollapsed
+                    ? 'opacity-0 scale-95 pointer-events-none'
+                    : 'opacity-100 scale-100'}"
             >
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <GlobalSearch size="sm" autofocus={shouldFocusSearch} />
+            </div>
+
+            {#if isCollapsed}
+                <button
+                    class="absolute inset-0 w-full aspect-square flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-cyan-600 transition-all duration-300 transform scale-110"
+                    aria-label="Search"
+                    onclick={(e) => expandAndFocusSearch(e)}
                 >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                </svg>
-            </button>
-        {:else}
-            <GlobalSearch size="sm" autofocus={shouldFocusSearch} />
-        {/if}
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                    </svg>
+                </button>
+            {/if}
+        </div>
     </div>
 
     <!-- Navigation -->
@@ -208,9 +270,14 @@
                         d="M3 10.5L12 3l9 7.5V21h-6v-6H9v6H3V10.5z"
                     />
                 </svg>
-                {#if !isCollapsed}
-                    <span class="font-semibold text-sm">Home</span>
-                {/if}
+                <span
+                    class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}>Home</span
+                >
             </a>
 
             <a
@@ -232,9 +299,14 @@
                         d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                     />
                 </svg>
-                {#if !isCollapsed}
-                    <span class="font-semibold text-sm">Clubs</span>
-                {/if}
+                <span
+                    class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}>Clubs</span
+                >
             </a>
 
             <a
@@ -256,9 +328,14 @@
                         d="M8 7V3m8 4V3m-9 8h10m-13 9h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v11a2 2 0 002 2z"
                     />
                 </svg>
-                {#if !isCollapsed}
-                    <span class="font-semibold text-sm">Events</span>
-                {/if}
+                <span
+                    class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}>Events</span
+                >
             </a>
 
             {#if !isGuestRole && !isNoticeManagerRole}
@@ -281,11 +358,15 @@
                             d="M12 6.25v13.5m0-13.5c-1.9-1.45-4.5-2.25-7.25-2.25v13.5c2.75 0 5.35.8 7.25 2.25m0-13.5c1.9-1.45 4.5-2.25 7.25-2.25v13.5c-2.75 0-5.35.8-7.25 2.25"
                         />
                     </svg>
-                    {#if !isCollapsed}
-                        <span class="font-semibold text-sm"
-                            >Book Marketplace</span
-                        >
-                    {/if}
+                    <span
+                        class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                        class:opacity-0={isCollapsed}
+                        class:scale-x-0={isCollapsed}
+                        class:w-0={isCollapsed}
+                        class:ml-0={isCollapsed}
+                        class:pointer-events-none={isCollapsed}
+                        >Book Marketplace</span
+                    >
                 </a>
             {/if}
 
@@ -308,9 +389,14 @@
                         d="M20 13V7a2 2 0 00-2-2h-3V3H9v2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0H4"
                     />
                 </svg>
-                {#if !isCollapsed}
-                    <span class="font-semibold text-sm">Lost & Found</span>
-                {/if}
+                <span
+                    class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}>Lost & Found</span
+                >
             </a>
 
             <a
@@ -338,9 +424,14 @@
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                 </svg>
-                {#if !isCollapsed}
-                    <span class="font-semibold text-sm">Map</span>
-                {/if}
+                <span
+                    class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}>Map</span
+                >
             </a>
 
             <a
@@ -368,20 +459,26 @@
                         d="M15 3v5h5M10 12h6M10 16h6"
                     />
                 </svg>
-                {#if !isCollapsed}
-                    <span class="font-semibold text-sm">Notices</span>
-                {/if}
+                <span
+                    class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}>Notices</span
+                >
             </a>
         </div>
 
         <div class="pt-6 mt-6 border-t border-slate-100">
-            {#if !isCollapsed}
-                <p
-                    class="px-3 mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider"
-                >
-                    Utilities
-                </p>
-            {/if}
+            <span
+                class="px-3 mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider transition-all duration-500 whitespace-nowrap block overflow-hidden origin-left"
+                class:opacity-0={isCollapsed}
+                class:scale-x-0={isCollapsed}
+                class:h-0={isCollapsed}
+                class:mb-0={isCollapsed}
+                class:pointer-events-none={isCollapsed}>Utilities</span
+            >
 
             {#if navUser && !isGuestRole && !isNoticeManagerRole}
                 <a
@@ -403,9 +500,14 @@
                             d="M3 12l9-9 9 9M5 10v10h14V10"
                         />
                     </svg>
-                    {#if !isCollapsed}
-                        <span class="font-semibold text-sm">Dashboard</span>
-                    {/if}
+                    <span
+                        class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                        class:opacity-0={isCollapsed}
+                        class:scale-x-0={isCollapsed}
+                        class:w-0={isCollapsed}
+                        class:ml-0={isCollapsed}
+                        class:pointer-events-none={isCollapsed}>Dashboard</span
+                    >
                 </a>
             {/if}
 
@@ -437,9 +539,14 @@
                         </span>
                     {/if}
                 </div>
-                {#if !isCollapsed}
-                    <span class="font-semibold text-sm">Notifications</span>
-                {/if}
+                <span
+                    class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}>Notifications</span
+                >
             </a>
 
             {#if currentRole === "student" || currentRole === "teacher"}
@@ -462,9 +569,14 @@
                             d="M4 6h16v10H4zM8 20h8"
                         />
                     </svg>
-                    {#if !isCollapsed}
-                        <span class="font-semibold text-sm">Classroom</span>
-                    {/if}
+                    <span
+                        class="font-semibold text-sm transition-all duration-500 whitespace-nowrap origin-left"
+                        class:opacity-0={isCollapsed}
+                        class:scale-x-0={isCollapsed}
+                        class:w-0={isCollapsed}
+                        class:ml-0={isCollapsed}
+                        class:pointer-events-none={isCollapsed}>Classroom</span
+                    >
                 </a>
             {/if}
 
@@ -497,25 +609,27 @@
     </nav>
 
     <!-- User Profile / Footer -->
-    <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+    <div class="px-4 border-t border-slate-100 bg-slate-50/50">
         {#if showNavSessionLoader}
-            <div class="flex items-center gap-3 px-2 py-1">
+            <div class="flex items-center gap-3 px-2 py-6">
                 <div
-                    class="w-8 h-8 rounded-full bg-slate-200 animate-pulse"
+                    class="w-9 h-9 rounded-full bg-slate-200 animate-pulse shrink-0"
                 ></div>
                 {#if !isCollapsed}
-                    <div class="flex-1 space-y-1">
+                    <div class="flex-1 space-y-1.5 min-w-0">
                         <div
-                            class="h-3 w-20 bg-slate-200 rounded animate-pulse"
+                            class="h-3 w-28 bg-slate-200 rounded animate-pulse"
                         ></div>
                         <div
-                            class="h-2 w-12 bg-slate-200 rounded animate-pulse"
+                            class="h-2 w-16 bg-slate-200 rounded animate-pulse"
                         ></div>
                     </div>
                 {/if}
             </div>
         {:else if navUser}
-            <div class="flex items-center gap-3 px-2 py-1 overflow-hidden">
+            <div
+                class="flex items-center gap-3 px-2 py-1 overflow-hidden"
+            >
                 <div
                     class="size-9 rounded-full bg-linear-to-tr from-cyan-500 to-blue-500 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-sm overflow-hidden"
                 >
@@ -529,17 +643,29 @@
                         {navUser.name?.charAt(0) || "U"}
                     {/if}
                 </div>
-                {#if !isCollapsed}
-                    <div class="min-w-0 flex-1">
-                        <p class="text-sm font-bold text-slate-900 truncate">
-                            {navUser.name}
-                        </p>
-                        <p
-                            class="text-[10px] text-slate-500 font-medium truncate uppercase tracking-tight"
-                        >
-                            {currentRole}
-                        </p>
-                    </div>
+                <div
+                    class="min-w-0 flex-1 transition-all duration-500 origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}
+                >
+                    <p class="text-sm font-bold text-slate-900 truncate">
+                        {navUser.name}
+                    </p>
+                    <p
+                        class="text-[10px] text-slate-500 font-medium truncate uppercase tracking-tight"
+                    >
+                        {currentRole}
+                    </p>
+                </div>
+                <div
+                    class="transition-all duration-500 origin-right"
+                    class:opacity-0={isCollapsed}
+                    class:scale-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}
+                >
                     <a
                         use:route
                         href="/settings"
@@ -562,19 +688,22 @@
                             <circle cx="12" cy="12" r="3" />
                         </svg>
                     </a>
-                {/if}
+                </div>
             </div>
         {:else}
             <a
                 use:route
                 href="/register"
-                class="flex flex-row items-center justify-center {sidebarWidth < 200 && !isCollapsed
+                class="flex flex-row items-center justify-center {sidebarWidth <
+                    200 && !isCollapsed
                     ? 'gap-1.5 px-2 py-2'
                     : 'gap-3 px-3 py-2.5'} rounded-xl bg-linear-to-r from-cyan-600 to-blue-600 text-white font-bold shadow-md shadow-cyan-200/50 hover:shadow-lg transition-all active:scale-95 overflow-hidden w-full"
                 onclick={handleLinkClick}
             >
                 <svg
-                    class="{sidebarWidth < 200 ? 'w-4 h-4' : 'w-5 h-5'} shrink-0"
+                    class="{sidebarWidth < 200
+                        ? 'w-4 h-4'
+                        : 'w-5 h-5'} shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -586,15 +715,22 @@
                         d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                     />
                 </svg>
-                {#if !isCollapsed}
+                <span
+                    class="transition-all duration-500 whitespace-nowrap origin-left"
+                    class:opacity-0={isCollapsed}
+                    class:scale-x-0={isCollapsed}
+                    class:w-0={isCollapsed}
+                    class:ml-0={isCollapsed}
+                    class:pointer-events-none={isCollapsed}
+                >
                     <span
                         class="{sidebarWidth < 200
                             ? 'text-[11px]'
-                            : 'text-sm'} leading-tight whitespace-nowrap"
+                            : 'text-sm'} leading-tight"
                     >
                         Sign In
                     </span>
-                {/if}
+                </span>
             </a>
         {/if}
     </div>
@@ -613,5 +749,10 @@
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background: #cbd5e1;
+    }
+
+    :global(body.is-resizing-active) {
+        user-select: none !important;
+        cursor: col-resize !important;
     }
 </style>
