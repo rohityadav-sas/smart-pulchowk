@@ -2956,7 +2956,7 @@
 
 {#if showStickyBar && bookQuery.data}
   <div
-    class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-2xl border-t border-slate-100 py-3.5 sm:py-5 px-4 sm:px-10 shadow-[0_-12px_40px_-15px_rgba(0,0,0,0.12)] transition-all duration-500 transform {showStickyBar
+    class="book-sticky-bar fixed bottom-0 left-0 md:left-(--sidebar-offset,0px) right-0 z-40 bg-white/95 backdrop-blur-2xl border-t border-slate-100 py-3.5 sm:py-5 px-4 sm:px-10 shadow-[0_-12px_40px_-15px_rgba(0,0,0,0.12)] transition-all duration-500 ease-in-out transform {showStickyBar
       ? 'translate-y-0'
       : 'translate-y-full'}"
     transition:fly={{ y: 100, duration: 500 }}
@@ -3325,3 +3325,17 @@
     </button>
   </div>
 {/if}
+
+<style>
+  :global(body.is-resizing-active) .book-sticky-bar {
+    transition: none !important;
+  }
+
+  @media (max-width: 767px) {
+    :global(body.sidebar-open) .book-sticky-bar {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(100%) !important;
+    }
+  }
+</style>

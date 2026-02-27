@@ -130,7 +130,7 @@
 <aside
     class="fixed inset-y-0 left-0 z-50 flex flex-col bg-white/80 backdrop-blur-xl border-r border-slate-200/60 {isResizing
         ? ''
-        : 'transition-[width] duration-500 cubic-bezier(0.4, 0, 0.2, 1)'} group/sidebar {isOpen
+        : 'transition-[width] duration-500 ease-in-out'} group/sidebar {isOpen
         ? 'translate-x-0'
         : '-translate-x-full'}"
     style="width: {sidebarWidth}px; will-change: width;"

@@ -248,6 +248,14 @@
   let isResizing = $state(false);
   let isCollapsed = $state(false);
 
+  $effect(() => {
+    if (isSidebarOpen) {
+      document.body.classList.add("sidebar-open");
+    } else {
+      document.body.classList.remove("sidebar-open");
+    }
+  });
+
   onMount(() => {
     if (window.innerWidth >= 768) {
       isSidebarOpen = true;
@@ -464,15 +472,19 @@
         {isNoticeManagerRole}
         {showNavSessionLoader}
         bind:isOpen={isSidebarOpen}
-        bind:sidebarWidth={sidebarWidth}
-        bind:isResizing={isResizing}
-        bind:isCollapsed={isCollapsed}
+        bind:sidebarWidth
+        bind:isResizing
+        bind:isCollapsed
       />
     {/if}
 
-    <div 
-      class="flex-1 flex flex-col min-w-0 {!isResizing ? 'transition-[margin-left] duration-300' : ''} main-content-wrapper"
-      style="--sidebar-offset: {isSidebarOpen && !isEmbedded ? sidebarWidth + 'px' : '0px'}; will-change: margin-left;"
+    <div
+      class="flex-1 flex flex-col min-w-0 {!isResizing
+        ? 'transition-[margin-left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'
+        : ''} main-content-wrapper"
+      style="--sidebar-offset: {isSidebarOpen && !isEmbedded
+        ? sidebarWidth + 'px'
+        : '0px'}; will-change: margin-left;"
     >
       {#if !isEmbedded}
         <!-- Mobile Header -->
@@ -532,11 +544,7 @@
               ? 'opacity-100 visible'
               : 'opacity-0 invisible pointer-events-none'}"
           >
-            <MapComponent 
-              bind:isSidebarOpen={isSidebarOpen} 
-              sidebarWidth={sidebarWidth}
-              isResizing={isResizing}
-            />
+            <MapComponent bind:isSidebarOpen {sidebarWidth} {isResizing} />
           </div>
         {/if}
         <div class={isMapRoute ? "hidden" : "contents"}>
