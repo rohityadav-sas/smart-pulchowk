@@ -1,17 +1,16 @@
-import { db } from '../lib/db.js'
-import { conversations, messages } from '../models/chat-schema.js'
-import { user } from '../models/auth-schema.js'
+import { db } from "../lib/db.js";
+import { conversations, messages } from "../models/chat-schema.js";
+import { user } from "../models/auth-schema.js";
 import {
   bookListings,
   bookPurchaseRequests,
-} from '../models/book_buy_sell-schema.js'
-import { eq, and, or, desc, lt } from 'drizzle-orm'
-import { sendToUser } from './notification.service.js'
-import { isUserBlockedBetween } from './trust.service.js'
-import { hasUnreadNotificationOfTypes } from './inAppNotification.service.js'
+} from "../models/book_buy_sell-schema.js";
+import { eq, and, or, desc, lt } from "drizzle-orm";
+import { sendToUser } from "./notification.service.js";
+import { isUserBlockedBetween } from "./trust.service.js";
 
 function hasMention(content: string) {
-  return /(^|\s)@\w+/i.test(content)
+  return /(^|\s)@\w+/i.test(content);
 }
 
 export const sendMessage = async (
@@ -29,31 +28,34 @@ export const sendMessage = async (
           limit: 1,
         },
       },
-    })
+    });
 
     if (!listing) {
-      return { success: false, message: 'Listing not found.' }
+      return { success: false, message: "Listing not found." };
     }
 
-    const sellerId = listing.sellerId
-    const targetBuyerId = buyerId || (senderId === sellerId ? null : senderId)
+    const sellerId = listing.sellerId;
+    const targetBuyerId = buyerId || (senderId === sellerId ? null : senderId);
 
     if (!targetBuyerId) {
       return {
         success: false,
         message:
-          'Recipient (buyer) must be specified when the seller sends a message.',
-      }
+          "Recipient (buyer) must be specified when the seller sends a message.",
+      };
     }
 
     const prospectiveRecipientId =
-      senderId === sellerId ? targetBuyerId : sellerId
-    const blocked = await isUserBlockedBetween(senderId, prospectiveRecipientId)
+      senderId === sellerId ? targetBuyerId : sellerId;
+    const blocked = await isUserBlockedBetween(
+      senderId,
+      prospectiveRecipientId,
+    );
     if (blocked) {
       return {
         success: false,
-        message: 'Messaging is blocked due to trust settings between users.',
-      }
+        message: "Messaging is blocked due to trust settings between users.",
+      };
     }
 
     if (senderId !== sellerId) {
@@ -61,16 +63,16 @@ export const sendMessage = async (
         where: and(
           eq(bookPurchaseRequests.listingId, listingId),
           eq(bookPurchaseRequests.buyerId, targetBuyerId),
-          eq(bookPurchaseRequests.status, 'accepted'),
+          eq(bookPurchaseRequests.status, "accepted"),
         ),
-      })
+      });
 
       if (!acceptedRequest) {
         return {
           success: false,
           message:
-            'Chat is only available after your purchase request has been accepted.',
-        }
+            "Chat is only available after your purchase request has been accepted.",
+        };
       }
     }
 
@@ -80,7 +82,7 @@ export const sendMessage = async (
         eq(conversations.listingId, listingId),
         eq(conversations.buyerId, targetBuyerId),
       ),
-    })
+    });
 
     if (!conversation) {
       const [newConversation] = await db
@@ -90,8 +92,8 @@ export const sendMessage = async (
           buyerId: targetBuyerId,
           sellerId: sellerId,
         })
-        .returning()
-      conversation = newConversation
+        .returning();
+      conversation = newConversation;
     }
 
     // 3. Create message
@@ -102,7 +104,7 @@ export const sendMessage = async (
         senderId,
         content,
       })
-      .returning()
+      .returning();
 
     // 4. Update conversation timestamp and reset deletion flags
     await db
@@ -112,50 +114,40 @@ export const sendMessage = async (
         buyerDeleted: false,
         sellerDeleted: false,
       })
-      .where(eq(conversations.id, conversation.id))
+      .where(eq(conversations.id, conversation.id));
 
     // 5. Get sender info for notifications
-    const recipientId = senderId === sellerId ? conversation.buyerId : sellerId
+    const recipientId = senderId === sellerId ? conversation.buyerId : sellerId;
     const sender = await db.query.user.findFirst({
       where: eq(user.id, senderId),
-    })
+    });
 
-    const messageType = hasMention(content) ? 'chat_mention' : 'chat_message'
-    const shouldBatch =
-      messageType === 'chat_message' &&
-      (await hasUnreadNotificationOfTypes({
-        userId: recipientId,
-        types: ['chat_message', 'chat_mention'],
-        since: new Date(Date.now() - 10 * 60 * 1000),
-        conversationId: conversation.id,
-      }))
+    const messageType = hasMention(content) ? "chat_mention" : "chat_message";
 
-    // 6. Send FCM push notification (WebSocket events removed)
-    if (!shouldBatch) {
-      await sendToUser(recipientId, {
-        title: sender?.name || 'New Message',
-        body: content,
-        data: {
-          type: messageType,
-          conversationId: conversation.id.toString(),
-          listingId: listing.id.toString(),
-          senderId,
-          senderName: sender?.name || 'Someone',
-          content: content,
-          iconKey: 'chat',
-          ...(listing.images?.[0]?.imageUrl
-            ? { thumbnailUrl: listing.images[0].imageUrl }
-            : {}),
-        },
-      })
-    }
+    // 6. Send FCM push notification for every message
+    await sendToUser(recipientId, {
+      title: sender?.name || "New Message",
+      body: content,
+      data: {
+        type: messageType,
+        conversationId: conversation.id.toString(),
+        listingId: listing.id.toString(),
+        senderId,
+        senderName: sender?.name || "Someone",
+        content: content,
+        iconKey: "chat",
+        ...(listing.images?.[0]?.imageUrl
+          ? { thumbnailUrl: listing.images[0].imageUrl }
+          : {}),
+      },
+    });
 
-    return { success: true, data: newMessage }
+    return { success: true, data: newMessage };
   } catch (error) {
-    console.error('Error in sendMessage service:', error)
-    return { success: false, message: 'Failed to send message.' }
+    console.error("Error in sendMessage service:", error);
+    return { success: false, message: "Failed to send message." };
   }
-}
+};
 
 export const getConversations = async (userId: string) => {
   try {
@@ -184,14 +176,14 @@ export const getConversations = async (userId: string) => {
         },
       },
       orderBy: [desc(conversations.updatedAt)],
-    })
+    });
 
-    return { success: true, data: userConversations }
+    return { success: true, data: userConversations };
   } catch (error) {
-    console.error('Error in getConversations service:', error)
-    return { success: false, message: 'Failed to fetch conversations.' }
+    console.error("Error in getConversations service:", error);
+    return { success: false, message: "Failed to fetch conversations." };
   }
-}
+};
 
 export const getMessages = async (
   conversationId: number,
@@ -208,22 +200,22 @@ export const getMessages = async (
           eq(conversations.sellerId, userId),
         ),
       ),
-    })
+    });
 
     if (!conversation) {
       return {
         success: false,
-        message: 'Conversation not found or access denied.',
-      }
+        message: "Conversation not found or access denied.",
+      };
     }
 
-    const limit = Math.max(1, Math.min(options?.limit ?? 30, 100))
+    const limit = Math.max(1, Math.min(options?.limit ?? 30, 100));
     const whereClause = options?.before
       ? and(
           eq(messages.conversationId, conversationId),
           lt(messages.createdAt, options.before),
         )
-      : eq(messages.conversationId, conversationId)
+      : eq(messages.conversationId, conversationId);
 
     const convoMessages = await db.query.messages.findMany({
       where: whereClause,
@@ -232,14 +224,14 @@ export const getMessages = async (
       with: {
         sender: true,
       },
-    })
+    });
 
-    const data = convoMessages.slice(0, limit)
-    const hasMore = convoMessages.length > limit
+    const data = convoMessages.slice(0, limit);
+    const hasMore = convoMessages.length > limit;
     const nextBefore =
       hasMore && data.length > 0
         ? data[data.length - 1].createdAt.toISOString()
-        : null
+        : null;
 
     return {
       success: true,
@@ -249,12 +241,12 @@ export const getMessages = async (
         hasMore,
         nextBefore,
       },
-    }
+    };
   } catch (error) {
-    console.error('Error in getMessages service:', error)
-    return { success: false, message: 'Failed to fetch messages.' }
+    console.error("Error in getMessages service:", error);
+    return { success: false, message: "Failed to fetch messages." };
   }
-}
+};
 
 export const sendMessageToConversation = async (
   conversationId: number,
@@ -270,13 +262,13 @@ export const sendMessageToConversation = async (
           eq(conversations.sellerId, senderId),
         ),
       ),
-    })
+    });
 
     if (!conversation) {
       return {
         success: false,
-        message: 'Conversation not found or access denied.',
-      }
+        message: "Conversation not found or access denied.",
+      };
     }
 
     const listing = await db.query.bookListings.findFirst({
@@ -286,18 +278,21 @@ export const sendMessageToConversation = async (
           limit: 1,
         },
       },
-    })
+    });
 
     const participantRecipientId =
       senderId === conversation.buyerId
         ? conversation.sellerId
-        : conversation.buyerId
-    const blocked = await isUserBlockedBetween(senderId, participantRecipientId)
+        : conversation.buyerId;
+    const blocked = await isUserBlockedBetween(
+      senderId,
+      participantRecipientId,
+    );
     if (blocked) {
       return {
         success: false,
-        message: 'Messaging is blocked due to trust settings between users.',
-      }
+        message: "Messaging is blocked due to trust settings between users.",
+      };
     }
 
     // If it's a seller, they can always reply.
@@ -311,13 +306,13 @@ export const sendMessageToConversation = async (
           eq(bookPurchaseRequests.listingId, conversation.listingId),
           eq(bookPurchaseRequests.buyerId, conversation.buyerId),
         ),
-      })
+      });
 
       if (!request) {
         return {
           success: false,
-          message: 'Chat is no longer available.',
-        }
+          message: "Chat is no longer available.",
+        };
       }
     }
 
@@ -328,7 +323,7 @@ export const sendMessageToConversation = async (
         senderId,
         content,
       })
-      .returning()
+      .returning();
 
     await db
       .update(conversations)
@@ -337,52 +332,43 @@ export const sendMessageToConversation = async (
         buyerDeleted: false,
         sellerDeleted: false,
       })
-      .where(eq(conversations.id, conversationId))
+      .where(eq(conversations.id, conversationId));
 
     // 4. Send notification to recipient
     const recipientId =
       senderId === conversation.buyerId
         ? conversation.sellerId
-        : conversation.buyerId
+        : conversation.buyerId;
     const sender = await db.query.user.findFirst({
       where: eq(user.id, senderId),
-    })
+    });
 
-    const messageType = hasMention(content) ? 'chat_mention' : 'chat_message'
-    const shouldBatch =
-      messageType === 'chat_message' &&
-      (await hasUnreadNotificationOfTypes({
-        userId: recipientId,
-        types: ['chat_message', 'chat_mention'],
-        since: new Date(Date.now() - 10 * 60 * 1000),
-        conversationId,
-      }))
+    const messageType = hasMention(content) ? "chat_mention" : "chat_message";
 
-    if (!shouldBatch) {
-      await sendToUser(recipientId, {
-        title: sender?.name || 'New Message',
-        body: content,
-        data: {
-          type: messageType,
-          conversationId: conversationId.toString(),
-          listingId: conversation.listingId.toString(),
-          senderId,
-          senderName: sender?.name || 'Someone',
-          content: content,
-          iconKey: 'chat',
-          ...(listing?.images?.[0]?.imageUrl
-            ? { thumbnailUrl: listing.images[0].imageUrl }
-            : {}),
-        },
-      })
-    }
+    // 4. Send notification for every message
+    await sendToUser(recipientId, {
+      title: sender?.name || "New Message",
+      body: content,
+      data: {
+        type: messageType,
+        conversationId: conversationId.toString(),
+        listingId: conversation.listingId.toString(),
+        senderId,
+        senderName: sender?.name || "Someone",
+        content: content,
+        iconKey: "chat",
+        ...(listing?.images?.[0]?.imageUrl
+          ? { thumbnailUrl: listing.images[0].imageUrl }
+          : {}),
+      },
+    });
 
-    return { success: true, data: newMessage }
+    return { success: true, data: newMessage };
   } catch (error) {
-    console.error('Error in sendMessageToConversation service:', error)
-    return { success: false, message: 'Failed to send message.' }
+    console.error("Error in sendMessageToConversation service:", error);
+    return { success: false, message: "Failed to send message." };
   }
-}
+};
 
 export const deleteConversation = async (
   conversationId: number,
@@ -398,34 +384,34 @@ export const deleteConversation = async (
           eq(conversations.sellerId, userId),
         ),
       ),
-    })
+    });
 
     if (!conversation) {
       return {
         success: false,
-        message: 'Conversation not found or access denied.',
-      }
+        message: "Conversation not found or access denied.",
+      };
     }
 
-    const isBuyer = conversation.buyerId === userId
+    const isBuyer = conversation.buyerId === userId;
 
     // 2. Set the deleted flag for this user
     if (isBuyer) {
       await db
         .update(conversations)
         .set({ buyerDeleted: true })
-        .where(eq(conversations.id, conversationId))
+        .where(eq(conversations.id, conversationId));
     } else {
       await db
         .update(conversations)
         .set({ sellerDeleted: true })
-        .where(eq(conversations.id, conversationId))
+        .where(eq(conversations.id, conversationId));
     }
 
     // 3. Re-fetch to check if both are now deleted
     const updatedConversation = await db.query.conversations.findFirst({
       where: eq(conversations.id, conversationId),
-    })
+    });
 
     if (
       updatedConversation &&
@@ -433,13 +419,15 @@ export const deleteConversation = async (
       updatedConversation.sellerDeleted === true
     ) {
       // Permanently delete if both deleted
-      await db.delete(conversations).where(eq(conversations.id, conversationId))
-      return { success: true, message: 'Conversation deleted permanently.' }
+      await db
+        .delete(conversations)
+        .where(eq(conversations.id, conversationId));
+      return { success: true, message: "Conversation deleted permanently." };
     }
 
-    return { success: true, message: 'Conversation deleted for you.' }
+    return { success: true, message: "Conversation deleted for you." };
   } catch (error) {
-    console.error('Error in deleteConversation service:', error)
-    return { success: false, message: 'Failed to delete conversation.' }
+    console.error("Error in deleteConversation service:", error);
+    return { success: false, message: "Failed to delete conversation." };
   }
-}
+};

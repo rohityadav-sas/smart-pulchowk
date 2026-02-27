@@ -440,6 +440,11 @@ export const sendToUser = async (
         ...payload.data,
         click_action: 'FLUTTER_NOTIFICATION_CLICK',
       },
+      android: {
+        notification: {
+          channelId: 'high_importance_channel',
+        },
+      },
       token: userData.fcmToken,
     }
 
