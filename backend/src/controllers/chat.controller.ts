@@ -5,6 +5,7 @@ import {
     getMessages,
     deleteConversation,
     sendMessageToConversation,
+    markMessagesAsRead,
 } from "../services/chat.service.js";
 
 const getUserId = (req: Request): string | null => {
@@ -194,6 +195,39 @@ export const DeleteConversation = async (req: Request, res: Response) => {
         return res.status(500).json({
             success: false,
             message: "An error occurred while deleting the conversation.",
+        });
+    }
+};
+export const MarkMessagesAsRead = async (req: Request, res: Response) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required.",
+            });
+        }
+
+        const conversationId = parseInt(req.params.conversationId);
+        if (isNaN(conversationId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Valid conversation ID is required.",
+            });
+        }
+
+        const result = await markMessagesAsRead(conversationId, userId);
+
+        if (!result.success) {
+            return res.status(result.message?.includes("denied") ? 403 : 400).json(result);
+        }
+
+        return res.json(result);
+    } catch (error) {
+        console.error("Error in MarkMessagesAsRead controller:", error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while marking messages as read.",
         });
     }
 };

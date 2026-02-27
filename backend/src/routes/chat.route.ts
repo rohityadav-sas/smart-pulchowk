@@ -6,6 +6,7 @@ import {
     GetMessages,
     DeleteConversation,
     SendMessageToConversation,
+    MarkMessagesAsRead,
 } from "../controllers/chat.controller.js";
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get("/conversations", requireAuth, GetConversations);
 router.get("/conversations/:conversationId/messages", requireAuth, GetMessages);
 router.post("/conversations/:conversationId/messages", requireAuth, SendMessageToConversation);
 router.delete("/conversations/:conversationId", requireAuth, DeleteConversation);
+router.patch("/conversations/:conversationId/read", requireAuth, MarkMessagesAsRead);
 
 export default router;

@@ -5,7 +5,7 @@ import {
   bookListings,
   bookPurchaseRequests,
 } from "../models/book_buy_sell-schema.js";
-import { eq, and, or, desc, lt } from "drizzle-orm";
+import { eq, and, or, desc, lt, count, inArray, not } from "drizzle-orm";
 import { sendToUser } from "./notification.service.js";
 import { isUserBlockedBetween } from "./trust.service.js";
 
@@ -178,7 +178,42 @@ export const getConversations = async (userId: string) => {
       orderBy: [desc(conversations.updatedAt)],
     });
 
-    return { success: true, data: userConversations };
+    const data = userConversations.map((conv) => {
+      // Calculate unread count (messages NOT sent by current user where is_read is false)
+      // Note: With current 'with' relation, messages only returns the last one.
+      // We might need a separate query or adjust the relation if we want full count efficiently.
+      // For now, let's just count them properly.
+      return {
+        ...conv,
+        unreadCount: 0, // Placeholder, will populate below
+      }
+    })
+
+    // Fetch unread counts for all these conversations
+    const conversationIds = userConversations.map(c => c.id);
+    if (conversationIds.length > 0) {
+      const unreadCounts = await db
+        .select({
+          conversationId: messages.conversationId,
+          count: count(),
+        })
+        .from(messages)
+        .where(
+          and(
+            inArray(messages.conversationId, conversationIds),
+            eq(messages.isRead, false),
+            not(eq(messages.senderId, userId))
+          )
+        )
+        .groupBy(messages.conversationId);
+
+      data.forEach(conv => {
+        const found = unreadCounts.find(u => u.conversationId === conv.id);
+        (conv as any).unreadCount = found ? Number(found.count) : 0;
+      });
+    }
+
+    return { success: true, data };
   } catch (error) {
     console.error("Error in getConversations service:", error);
     return { success: false, message: "Failed to fetch conversations." };
@@ -429,5 +464,46 @@ export const deleteConversation = async (
   } catch (error) {
     console.error("Error in deleteConversation service:", error);
     return { success: false, message: "Failed to delete conversation." };
+  }
+};
+export const markMessagesAsRead = async (
+  conversationId: number,
+  userId: string,
+) => {
+  try {
+    // Verify user is part of conversation
+    const conversation = await db.query.conversations.findFirst({
+      where: and(
+        eq(conversations.id, conversationId),
+        or(
+          eq(conversations.buyerId, userId),
+          eq(conversations.sellerId, userId),
+        ),
+      ),
+    });
+
+    if (!conversation) {
+      return {
+        success: false,
+        message: "Conversation not found or access denied.",
+      };
+    }
+
+    // Mark all messages as read where sender is NOT the current user
+    await db
+      .update(messages)
+      .set({ isRead: true })
+      .where(
+        and(
+          eq(messages.conversationId, conversationId),
+          eq(messages.isRead, false),
+          not(eq(messages.senderId, userId)),
+        ),
+      );
+
+    return { success: true, message: "Messages marked as read." };
+  } catch (error) {
+    console.error("Error in markMessagesAsRead service:", error);
+    return { success: false, message: "Failed to mark messages as read." };
   }
 };
