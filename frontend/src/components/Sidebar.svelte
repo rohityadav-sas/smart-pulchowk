@@ -2,6 +2,7 @@
     import { route } from "@mateothegreat/svelte5-router";
     import GlobalSearch from "./GlobalSearch.svelte";
     import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
 
     interface Props {
         navUser: any;
@@ -124,6 +125,7 @@
         class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden"
         onclick={() => (isOpen = false)}
         aria-label="Close sidebar"
+        transition:fade={{ duration: 300 }}
     ></button>
 {/if}
 
