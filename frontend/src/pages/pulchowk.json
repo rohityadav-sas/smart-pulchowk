@@ -742,7 +742,7 @@
       "properties": {
         "title": "MSC Hostel",
         "about": "MSc Hostel provides residential accommodation for postgraduate students enrolled in graduate-level engineering and research programs at the campus.",
-        "image": ""
+        "image": ["https://res.cloudinary.com/dbep7iwmy/image/upload/v1772384420/Msc_Hostel_1_c2spjn.jpg","https://res.cloudinary.com/dbep7iwmy/image/upload/v1772384420/Msc_Hostel_2_riapwn.jpg","https://res.cloudinary.com/dbep7iwmy/image/upload/v1772384423/Msc_Hostel_3_qyp5i0.jpg"]
       },
       "geometry": {
         "type": "Point",
@@ -757,7 +757,7 @@
       "properties": {
         "title": "Hydro Lab",
         "about": "Hydro Lab is a hydropower-focused research and testing facility within IOE premises, supporting hydraulic studies, consultancy, and engineering services.",
-        "image": ""
+        "image": ["https://res.cloudinary.com/dbep7iwmy/image/upload/v1772384421/Hydro_Lab_1_enddd9.jpg","https://res.cloudinary.com/dbep7iwmy/image/upload/v1772384421/Hydro_Lab_2_yf0cz9.jpg","https://res.cloudinary.com/dbep7iwmy/image/upload/v1772384423/Msc_Hostel_3_qyp5i0.jpg"]
       },
       "geometry": {
         "type": "Point",
@@ -772,7 +772,7 @@
       "properties": {
         "title": "Department of Roads",
         "about": "This office represents Nepal?s Department of Roads unit near campus, associated with transport infrastructure coordination and technical engagement.",
-        "image": ""
+        "image": "https://res.cloudinary.com/dbep7iwmy/image/upload/v1772384421/dept_of_road_kfpv29.jpg"
       },
       "geometry": {
         "type": "Point",
