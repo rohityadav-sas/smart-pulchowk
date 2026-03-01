@@ -54,6 +54,13 @@ interface ExistingNoticeRow {
   createdAt: Date
 }
 
+interface ExistingNoticeLookupInput {
+  category: string
+  title: string
+  publishedDate: string | null
+  externalRef: string | null
+}
+
 const NOTICE_SOURCES: NoticeSource[] = [
   {
     category: 'results',
@@ -251,6 +258,7 @@ async function scrapeSource(
   client: ReturnType<typeof createHttpClient>,
   source: NoticeSource,
   existingByRef: Map<string, ExistingNoticeRow>,
+  existingByFallback: Map<string, ExistingNoticeRow>,
 ): Promise<ScrapedNotice[]> {
   const html = parse(await fetchHtml(client, source.listUrl))
   const wrappers = html.querySelectorAll('.recent-post-wrapper')
@@ -263,31 +271,41 @@ async function scrapeSource(
       )
       if (!title) return null
 
-      const publishedDate =
+      const scrapedPublishedDate =
         normalizeText(wrapper.querySelector('.nep_date')?.textContent) || null
 
       const detailUrl = normalizeUrl(
         wrapper.querySelector('a')?.getAttribute('href'),
         source.listUrl,
       )
-      const externalRef = getExternalRefFromUrl(detailUrl)
-      const existingAttachmentUrl =
-        (externalRef ? existingByRef.get(externalRef)?.attachmentUrl : null) ??
-        null
-      const attachmentUrl = detailUrl
-        ? ((await scrapeDetailAttachment(
-            client,
-            detailUrl,
-            existingAttachmentUrl,
-          )) ?? detailUrl)
+      const scrapedExternalRef = getExternalRefFromUrl(detailUrl)
+      const existing = findExistingNotice(
+        {
+          category: source.category,
+          title,
+          publishedDate: scrapedPublishedDate,
+          externalRef: scrapedExternalRef,
+        },
+        existingByRef,
+        existingByFallback,
+      )
+      const existingAttachmentUrl = existing?.attachmentUrl ?? null
+      const scrapedAttachmentUrl = detailUrl
+        ? (await scrapeDetailAttachment(client, detailUrl, existingAttachmentUrl))
         : null
+
+      const publishedDate = scrapedPublishedDate ?? existing?.publishedDate ?? null
+      const sourceUrl = detailUrl ?? existing?.sourceUrl ?? null
+      const externalRef = scrapedExternalRef ?? existing?.externalRef ?? null
+      const attachmentUrl =
+        scrapedAttachmentUrl ?? existingAttachmentUrl ?? sourceUrl ?? null
 
       return {
         category: source.category,
         title,
         publishedDate,
         attachmentUrl,
-        sourceUrl: detailUrl,
+        sourceUrl,
         externalRef,
       } satisfies ScrapedNotice
     }),
@@ -347,7 +365,35 @@ function buildScrapedKey(item: ScrapedNotice): string {
     : `fallback::${buildFallbackKey(item.category, item.title, item.publishedDate)}`
 }
 
+function findExistingNotice(
+  input: ExistingNoticeLookupInput,
+  existingByRef: Map<string, ExistingNoticeRow>,
+  existingByFallback: Map<string, ExistingNoticeRow>,
+): ExistingNoticeRow | undefined {
+  return (
+    (input.externalRef ? existingByRef.get(input.externalRef) : undefined) ??
+    existingByFallback.get(
+      buildFallbackKey(input.category, input.title, input.publishedDate),
+    )
+  )
+}
+
+let activeSyncPromise: Promise<SyncNoticesResult> | null = null
+
 export async function syncExamNotices(): Promise<SyncNoticesResult> {
+  if (activeSyncPromise) {
+    return await activeSyncPromise
+  }
+
+  activeSyncPromise = runSyncExamNotices()
+  try {
+    return await activeSyncPromise
+  } finally {
+    activeSyncPromise = null
+  }
+}
+
+async function runSyncExamNotices(): Promise<SyncNoticesResult> {
   const client = createHttpClient()
 
   const existingRows: ExistingNoticeRow[] = await db
@@ -371,10 +417,23 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
     }
   }
 
+  const existingByFallback = new Map<string, ExistingNoticeRow>()
+  for (const row of existingRows) {
+    existingByFallback.set(
+      buildFallbackKey(row.category, row.title, row.publishedDate),
+      row,
+    )
+  }
+
   const scrapedBySourceSettled = await Promise.allSettled(
     NOTICE_SOURCES.map(async (source) => ({
       source,
-      scraped: await scrapeSource(client, source, existingByRef),
+      scraped: await scrapeSource(
+        client,
+        source,
+        existingByRef,
+        existingByFallback,
+      ),
     })),
   )
   const scrapedBySource = scrapedBySourceSettled.map((entry, index) => {
@@ -406,15 +465,6 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
   }
   const dedupedScraped = Array.from(dedupedMap.values())
 
-  const existingByFallback = new Map<string, ExistingNoticeRow>()
-
-  for (const row of existingRows) {
-    existingByFallback.set(
-      buildFallbackKey(row.category, row.title, row.publishedDate),
-      row,
-    )
-  }
-
   const inserts: NewNotice[] = []
   const updates: Array<{
     id: number
@@ -427,11 +477,7 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
 
   for (const item of dedupedScraped) {
     const payload = toNoticePayload(item)
-    const existing =
-      (item.externalRef ? existingByRef.get(item.externalRef) : undefined) ??
-      existingByFallback.get(
-        buildFallbackKey(item.category, item.title, item.publishedDate),
-      )
+    const existing = findExistingNotice(item, existingByRef, existingByFallback)
 
     if (!existing) {
       inserts.push(payload)
@@ -484,11 +530,7 @@ export async function syncExamNotices(): Promise<SyncNoticesResult> {
     insertedRows.map((row) => row.id),
   )
   for (const item of dedupedScraped) {
-    const existing =
-      (item.externalRef ? existingByRef.get(item.externalRef) : undefined) ??
-      existingByFallback.get(
-        buildFallbackKey(item.category, item.title, item.publishedDate),
-      )
+    const existing = findExistingNotice(item, existingByRef, existingByFallback)
     if (existing) recentlyTouchedNoticeIds.add(existing.id)
   }
 
