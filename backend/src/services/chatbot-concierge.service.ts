@@ -4,11 +4,16 @@ import studentSupportKbData from "../data/student_support_kb.json" with {
 };
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ENV from "../config/ENV.js";
+import {
+  buildAppContext,
+  type AppContextTopic,
+} from "./chatbot-context.service.js";
 
 export type ConciergeAction =
   | "show_route"
   | "show_location"
-  | "show_multiple_locations";
+  | "show_multiple_locations"
+  | "text_answer";
 
 export type ConciergeIntent =
   | "route_navigation"
@@ -19,7 +24,13 @@ export type ConciergeIntent =
   | "office_lookup"
   | "deadline_query"
   | "escalation"
-  | "unknown";
+  | "unknown"
+  | "notice_query"
+  | "event_query"
+  | "club_query"
+  | "lost_found_query"
+  | "marketplace_query"
+  | "app_help";
 
 type SourceType = "official_page" | "office_confirmed" | "map_data";
 
@@ -142,11 +153,72 @@ const SUPPORT_HINTS = [
   "complaint",
   "health",
   "clinic",
-  "notice",
   "library",
   "borrow",
   "id card",
-  "lost",
+];
+
+const NOTICE_HINTS = [
+  "notice",
+  "notices",
+  "result",
+  "results",
+  "exam routine",
+  "exam center",
+  "application form",
+  "summarize notice",
+  "latest notice",
+  "recent notice",
+];
+
+const EVENT_HINTS = [
+  "event",
+  "events",
+  "upcoming event",
+  "workshop",
+  "hackathon",
+  "seminar",
+  "competition",
+  "register for",
+  "what events",
+];
+
+const CLUB_HINTS = [
+  "club",
+  "clubs",
+  "society",
+  "organization",
+  "student club",
+  "active club",
+  "list club",
+];
+
+const LOST_FOUND_HINTS = [
+  "lost and found",
+  "lost item",
+  "found item",
+  "missing item",
+  "anyone found",
+  "lost something",
+];
+
+const MARKETPLACE_HINTS = [
+  "book marketplace",
+  "sell book",
+  "buy book",
+  "marketplace",
+  "textbook",
+  "second hand book",
+  "available book",
+];
+
+const APP_HELP_HINTS = [
+  "how to use",
+  "app help",
+  "what can you do",
+  "help me",
+  "what features",
+  "how does this app",
 ];
 
 const LOCATION_ALIAS_MAP: Record<string, string> = {
@@ -373,6 +445,14 @@ function inferIntentFromQuery(query: string): ConciergeIntent {
   if (includesAny(normalized, LOCATION_HINTS)) {
     return "location_lookup";
   }
+
+  // ── App-wide intents ────────────────────────────────────────────────────
+  if (includesAny(normalized, NOTICE_HINTS)) return "notice_query";
+  if (includesAny(normalized, EVENT_HINTS)) return "event_query";
+  if (includesAny(normalized, CLUB_HINTS)) return "club_query";
+  if (includesAny(normalized, LOST_FOUND_HINTS)) return "lost_found_query";
+  if (includesAny(normalized, MARKETPLACE_HINTS)) return "marketplace_query";
+  if (includesAny(normalized, APP_HELP_HINTS)) return "app_help";
 
   return "unknown";
 }
@@ -737,6 +817,171 @@ Return only JSON:
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// App-wide context resolution (hybrid: live DB data + LLM)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const APP_INTENT_TOPICS: Partial<Record<ConciergeIntent, AppContextTopic>> = {
+  notice_query: "notices",
+  event_query: "events",
+  club_query: "clubs",
+  lost_found_query: "lost_found",
+  marketplace_query: "marketplace",
+  app_help: "all",
+};
+
+const APP_KNOWLEDGE = `
+Smart Pulchowk is a campus companion app for Pulchowk Campus (IOE, Tribhuvan University) students.
+Key features:
+- Notices: IOE exam results, routines, application forms, and general campus notices (auto-synced from exam.ioe.tu.edu.np).
+- Events: Browse and register for campus events organized by student clubs.
+- Clubs: View active student clubs, their profiles, missions, and social links.
+- Map & Navigation: Interactive campus map with building locations and route guidance.
+- Book Marketplace: Buy and sell second-hand textbooks with other students.
+- Lost & Found: Report or search for lost/found items on campus.
+- Chat: Direct messaging between students for book deals.
+- Notifications: Push notifications for new notices, events, and chat messages.
+- Calendar: Academic calendar view.
+- Classroom: Classroom and course information.
+`.trim();
+
+const APP_FAQ = `
+MARKETPLACE FAQ:
+- Q: How do I sell a book? A: Go to Marketplace tab -> "Sell a Book". Fill title, author, price, condition, upload photos.
+- Q: How do I send a purchase request? A: Open listing -> "Request to Buy" -> optional message.
+- Q: Where are my sent requests? A: Activity icon (top-right) or Marketplace Activity -> "Requests" tab.
+- Q: Where are requests I've received? A: Marketplace Activity -> "Inquiries" tab.
+- Q: How to accept/reject request? A: Marketplace Activity -> Inquiries -> "Accept" or "Reject".
+- Q: How to contact seller? A: After request is accepted, "Contact Seller" button appears on listing/Requests tab.
+- Q: Where are saved books? A: Marketplace Activity -> "Saved" tab.
+- Q: How to delete a chat? A: Long-press conversation in chat list -> trash icon.
+- Q: How to delete my listing? A: Marketplace Activity -> Selling -> Find listing -> delete icon.
+- Q: How to mark as sold? A: Marketplace Activity -> Selling -> "Mark as Sold".
+- Q: How to cancel a sent request? A: Marketplace Activity -> Requests -> Find pending request -> "Cancel".
+- Q: How to rate a seller? A: After request is accepted and completed, "Rate Seller" button appears in Requests tab.
+- Q: Can I report/block users? A: Yes, via the 3-dot menu (⋮) on listing/profile.
+
+CLASSROOM FAQ:
+- Q: How setup profile? A: Done automatically based on college email; displays subjects/assignments for your semester.
+- Q: How do I submit an assignment? A: Classroom tab -> Find assignment -> "Upload File" (PDF/Image) -> "Submit Assignment".
+- Q: Can I resubmit? A: Yes, before grading. 
+- Q: How to check grades? A: Look for "Returned/Graded" status in Classroom list; tap for feedback.
+- Q: How to add subject (Teachers)? A: Classroom -> "Add Subject" tab -> Select Faculty/Semester/Subject.
+- Q: How to create assignment (Teachers)? A: Classroom -> "Assign" tab -> Select subject/category/due date.
+- Q: How to view submissions (Teachers)? A: Classroom -> "Managed" tab -> tap assignment to see student list.
+- Q: Data not loading? A: Pull down on Classroom screen to refresh/sync.
+
+NOTICES FAQ:
+- Q: Dept notices? A: Automatically filtered by faculty/semester from your email.
+- Q: Search old notices? A: Use search bar at top of Notices tab.
+- Q: Important notices? A: Highlighted with border or pinned to top.
+- Q: Push notifications for notices? A: Enable "Notices" in Settings -> Notification Settings.
+- Q: Download attachments? A: Open notice -> tap thumbnail to view/save PDF/image.
+
+EVENTS FAQ:
+- Q: Register for event? A: Tap event -> "Register" or "Join" button at bottom.
+- Q: My events? A: See "My Events" or calendar in Events tab.
+- Q: Sync to device calendar? A: Event details -> "Add to Calendar".
+- Q: See all clubs events? A: Events tab provides a unified feed for all clubs.
+- Q: Directions to venue? A: Tap venue name to open Google Maps.
+
+CLUBS FAQ:
+- Q: How to join? A: Club profile -> "Join" (if recruiting) or use contact links.
+- Q: List of all clubs? A: Main "Clubs" tab lists all registered orgs.
+- Q: Contact club? A: Use Email, WhatsApp, or Social buttons on club profile.
+- Q: Create new club? A: Must register with admin; student council can guide you.
+- Q: See club activities? A: Visit club profile or main Events feed.
+
+LOST & FOUND FAQ:
+- Q: Report found item? A: Lost & Found tab -> "Report" -> "I found something".
+- Q: Find lost item? A: Browse "Lost" tab; use search/category filters.
+- Q: Claim item? A: Tap item -> "Claim Item" to contact finder (verify ownership first).
+- Q: Privacy? A: Phone number only shared with the person you coordinate return with.
+- Q: Manage my reports? A: Profile icon (top right) in Lost & Found -> "My Items".
+
+MAP FAQ:
+- Q: Search building/room? A: Top search bar -> enter name (e.g., "Electrical Block") or room ID.
+- Q: Icon meanings? A: Blue=Academic, Orange=Food, Sports=Athletic. Tap for details.
+- Q: Walking directions? A: Tap marker -> "Directions". Uses GPS or manual start point.
+- Q: Satellite view? A: "Layers" icon -> toggle Satellite view.
+
+NOTIFICATIONS FAQ:
+- Q: Not receiving alerts? A: Check app Settings and phone system permissions.
+- Q: Mark as read? A: Tap to view or swipe right on list item.
+- Q: Delete notification? A: Swipe left on list item (red background).
+- Q: Choose alerts? A: Settings -> Notification Settings; toggle Books, Notices, Events, etc.
+`.trim();
+
+async function resolveWithAppContext(
+  query: string,
+  intent: ConciergeIntent,
+): Promise<ConciergeResponsePayload | null> {
+  const topic = APP_INTENT_TOPICS[intent];
+  if (!topic) return null;
+
+  try {
+    const contextData = await buildAppContext(topic);
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json" },
+    });
+
+    const prompt = `You are Smart Pulchowk Assistant — a smart, friendly campus companion for Pulchowk Campus students.
+
+About the app:
+${APP_KNOWLEDGE}
+
+App FAQ (How-to guidance):
+${APP_FAQ}
+
+Live data from the app:
+${contextData}
+
+User query: ${query}
+
+Instructions:
+- Answer the user's question using the live data and FAQs provided.
+- Be concise, helpful, and student-friendly.
+- If the user asks "how-to" questions, refer to the FAQ section.
+- If the user asks to summarize notices, provide a clear summary grouped by category.
+- If the user asks about events, list them with dates and organizers.
+- If no relevant data is available, say so politely and suggest alternatives.
+- Do NOT make up data that is not in the context above.
+
+Return only JSON:
+{
+  "message": "your helpful response"
+}`;
+
+    const result = await model.generateContent(prompt);
+    const parsed = safeJsonParse(result.response.text()) as {
+      message?: string;
+    } | null;
+
+    if (
+      !parsed ||
+      typeof parsed.message !== "string" ||
+      !parsed.message.trim()
+    ) {
+      return null;
+    }
+
+    return {
+      message: parsed.message.trim(),
+      locations: [],
+      action: "text_answer",
+      intent,
+      verified: true,
+      sources: [`app_context:${topic}`, "llm:gemini-2.5-flash"],
+      follow_up: [],
+    };
+  } catch (error) {
+    console.error("App context resolution failed:", error);
+    return null;
+  }
+}
+
 export async function resolveStudentConciergeQuery(
   query: string,
   options: ResolveOptions = {},
@@ -772,6 +1017,14 @@ export async function resolveStudentConciergeQuery(
   }
 
   const inferredIntent = inferIntentFromQuery(rawQuery);
+
+  // ── App-wide intent resolution (hybrid: live DB + LLM) ──────────────────
+  const isAppIntent = inferredIntent in APP_INTENT_TOPICS;
+  if (isAppIntent && allowLlm) {
+    const appResult = await resolveWithAppContext(rawQuery, inferredIntent);
+    if (appResult) return appResult;
+  }
+
   const supportHeavy =
     inferredIntent === "process_howto" ||
     inferredIntent === "policy_query" ||
@@ -790,6 +1043,12 @@ export async function resolveStudentConciergeQuery(
   if (isLocationLookupQuery(rawQuery) && allowLlm) {
     const llm = await resolveWithLlmNavigation(rawQuery);
     if (llm) return llm;
+  }
+
+  // ── Final fallback: try app context for ambiguous queries ────────────────
+  if (allowLlm) {
+    const appFallback = await resolveWithAppContext(rawQuery, "app_help");
+    if (appFallback) return appFallback;
   }
 
   return buildFallbackResponse(inferIntentFromQuery(rawQuery), rawQuery);
