@@ -153,7 +153,7 @@
       </section>
     {:else if searchQuery.data}
       {@const data = searchQuery.data}
-      <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" transition:fade>
+      <section class="grid items-start grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" transition:fade>
         {#if selectedTypes.includes('clubs')}
         <article class="rounded-2xl border border-cyan-100 bg-white p-4 shadow-sm">
           <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
