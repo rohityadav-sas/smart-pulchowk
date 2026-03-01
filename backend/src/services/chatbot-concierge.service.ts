@@ -831,7 +831,7 @@ const APP_INTENT_TOPICS: Partial<Record<ConciergeIntent, AppContextTopic>> = {
 };
 
 const APP_KNOWLEDGE = `
-PulchowkX is a campus companion app for Pulchowk Campus (IOE, Tribhuvan University) students.
+Smart Pulchowk is a campus companion app for Pulchowk Campus (IOE, Tribhuvan University) students.
 Key features:
 - Notices: IOE exam results, routines, application forms, and general campus notices (auto-synced from exam.ioe.tu.edu.np).
 - Events: Browse and register for campus events organized by student clubs.
@@ -860,7 +860,7 @@ async function resolveWithAppContext(
       generationConfig: { responseMimeType: "application/json" },
     });
 
-    const prompt = `You are PulchowkX Assistant — a smart, friendly campus companion for Pulchowk Campus students.
+    const prompt = `You are Smart Pulchowk Assistant — a smart, friendly campus companion for Pulchowk Campus students.
 
 About the app:
 ${APP_KNOWLEDGE}
