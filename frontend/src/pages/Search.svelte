@@ -225,7 +225,7 @@
       >
         {#if selectedTypes.includes("clubs")}
           <article
-            class="rounded-2xl border border-cyan-100 bg-white p-4 shadow-sm min-h-[250px] flex flex-col"
+            class="rounded-2xl border border-cyan-100 bg-white p-4 shadow-sm min-h-62.5 flex flex-col"
           >
             <h3
               class="text-base font-bold text-slate-900 flex items-center gap-2"
@@ -311,7 +311,7 @@
 
         {#if selectedTypes.includes("events")}
           <article
-            class="rounded-2xl border border-blue-100 bg-white p-4 shadow-sm min-h-[250px] flex flex-col"
+            class="rounded-2xl border border-blue-100 bg-white p-4 shadow-sm min-h-62.5 flex flex-col"
           >
             <h3
               class="text-base font-bold text-slate-900 flex items-center gap-2"
@@ -421,7 +421,7 @@
 
         {#if selectedTypes.includes("books")}
           <article
-            class="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm min-h-[250px] flex flex-col"
+            class="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm min-h-62.5 flex flex-col"
           >
             <h3
               class="text-base font-bold text-slate-900 flex items-center gap-2"
@@ -516,7 +516,7 @@
 
         {#if selectedTypes.includes("notices")}
           <article
-            class="rounded-2xl border border-amber-100 bg-white p-4 shadow-sm min-h-[250px] flex flex-col"
+            class="rounded-2xl border border-amber-100 bg-white p-4 shadow-sm min-h-62.5 flex flex-col"
           >
             <h3
               class="text-base font-bold text-slate-900 flex items-center gap-2"
@@ -617,7 +617,7 @@
 
         {#if selectedTypes.includes("lost_found")}
           <article
-            class="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm min-h-[250px] flex flex-col"
+            class="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm min-h-62.5 flex flex-col"
           >
             <h3
               class="text-base font-bold text-slate-900 flex items-center gap-2"
@@ -714,7 +714,7 @@
 
         {#if selectedTypes.includes("places")}
           <article
-            class="rounded-2xl border border-indigo-100 bg-white p-4 shadow-sm min-h-[250px] flex flex-col"
+            class="rounded-2xl border border-indigo-100 bg-white p-4 shadow-sm min-h-62.5 flex flex-col"
           >
             <h3
               class="text-base font-bold text-slate-900 flex items-center gap-2"

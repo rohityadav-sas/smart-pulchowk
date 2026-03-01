@@ -98,7 +98,6 @@
       prefs = structuredClone(defaultPreferences);
       applyAppearance(defaultPreferences);
     }
-
   });
 
   function applyAppearance(source: AccountPreferences) {
@@ -273,10 +272,12 @@
     </header>
 
     <section class="grid lg:grid-cols-2 gap-4">
-      <div class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3 {highlightedSection ===
-      'notifications'
-        ? 'ring-2 ring-cyan-400 ring-offset-2 border-cyan-300 bg-cyan-50/30 notif-highlight-blink'
-        : ''}">
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3 {highlightedSection ===
+        'notifications'
+          ? 'ring-2 ring-cyan-400 ring-offset-2 border-cyan-300 bg-cyan-50/30 notif-highlight-blink'
+          : ''}"
+      >
         <h3 class="text-base font-black text-slate-900">
           Notification Preferences
         </h3>
@@ -408,10 +409,12 @@
         </label>
       </div>
 
-      <div class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3 {highlightedSection ===
-      'appearance'
-        ? 'ring-2 ring-cyan-400 ring-offset-2 border-cyan-300 bg-cyan-50/30 notif-highlight-blink'
-        : ''}">
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3 {highlightedSection ===
+        'appearance'
+          ? 'ring-2 ring-cyan-400 ring-offset-2 border-cyan-300 bg-cyan-50/30 notif-highlight-blink'
+          : ''}"
+      >
         <h3 class="text-base font-black text-slate-900">Appearance</h3>
         <label class="flex items-center justify-between text-sm text-slate-700">
           <span>Theme</span>
@@ -427,10 +430,12 @@
       </div>
     </section>
 
-    <section class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 {highlightedSection ===
-    'security'
-      ? 'ring-2 ring-cyan-400 ring-offset-2 border-cyan-300 bg-cyan-50/30 notif-highlight-blink'
-      : ''}">
+    <section
+      class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 {highlightedSection ===
+      'security'
+        ? 'ring-2 ring-cyan-400 ring-offset-2 border-cyan-300 bg-cyan-50/30 notif-highlight-blink'
+        : ''}"
+    >
       <h3 class="text-base font-black text-slate-900">Security & Session</h3>
       <p class="text-sm text-slate-500 mt-1">
         Use account controls for session safety and account exports.
@@ -464,4 +469,3 @@
     </section>
   </div>
 </div>
-

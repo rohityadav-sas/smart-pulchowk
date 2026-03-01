@@ -1428,7 +1428,7 @@
               Loading High Quality · {fullscreenProgress}%
             </span>
           </div>
-          <div class="w-48 h-[3px] bg-white/15 rounded-full overflow-hidden">
+          <div class="w-48 h-0.75 bg-white/15 rounded-full overflow-hidden">
             <div
               class="h-full rounded-full transition-all duration-300 ease-out"
               style="width: {fullscreenProgress}%; background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.8)); box-shadow: 0 0 6px rgba(255,255,255,0.25)"
