@@ -56,6 +56,11 @@
     [85.31217093201366, 27.678215308346253],
     [85.329947502668, 27.686583278518555],
   ];
+  // A small padded bounds box keeps the focus near campus while allowing drag at normal zoom levels.
+  const PADDED_PULCHOWK_BOUNDS = [
+    [PULCHOWK_BOUNDS[0][0] - 0.01, PULCHOWK_BOUNDS[0][1] - 0.006],
+    [PULCHOWK_BOUNDS[1][0] + 0.01, PULCHOWK_BOUNDS[1][1] + 0.006],
+  ];
 
   const pulchowkData = pulchowk as FeatureCollection;
 
@@ -1123,6 +1128,16 @@
 
   async function handleMapLoad() {
     await loadIcons();
+    if (map) {
+      map.setCooperativeGestures(false);
+      map.scrollZoom.enable();
+      map.dragPan.enable();
+      map.doubleClickZoom.enable();
+      map.boxZoom.enable();
+      map.keyboard.enable();
+      map.touchZoomRotate.enable();
+      map.touchPitch.enable();
+    }
     tryApplyPendingFocusRequest();
   }
 
@@ -2334,6 +2349,15 @@
 
   <MapLibre
     bind:map
+    interactive={true}
+    cooperativeGestures={false}
+    scrollZoom={true}
+    dragPan={true}
+    boxZoom={true}
+    doubleClickZoom={true}
+    keyboard={true}
+    touchZoomRotate={true}
+    touchPitch={true}
     zoom={16}
     maxZoom={isSatellite ? 18.4 : 22}
     center={mapCenter}
@@ -2347,7 +2371,7 @@
       navigator.clipboard.writeText(`[${longitude}, ${latitude}]`);
     }}
     onload={handleMapLoad}
-    maxBounds={PULCHOWK_BOUNDS as any}
+    maxBounds={PADDED_PULCHOWK_BOUNDS as any}
   >
     {#if isNavigating && isMapFullscreen}
       <div
