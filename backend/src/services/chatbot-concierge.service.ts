@@ -845,6 +845,73 @@ Key features:
 - Classroom: Classroom and course information.
 `.trim();
 
+const APP_FAQ = `
+MARKETPLACE FAQ:
+- Q: How do I sell a book? A: Go to Marketplace tab -> "Sell a Book". Fill title, author, price, condition, upload photos.
+- Q: How do I send a purchase request? A: Open listing -> "Request to Buy" -> optional message.
+- Q: Where are my sent requests? A: Activity icon (top-right) or Marketplace Activity -> "Requests" tab.
+- Q: Where are requests I've received? A: Marketplace Activity -> "Inquiries" tab.
+- Q: How to accept/reject request? A: Marketplace Activity -> Inquiries -> "Accept" or "Reject".
+- Q: How to contact seller? A: After request is accepted, "Contact Seller" button appears on listing/Requests tab.
+- Q: Where are saved books? A: Marketplace Activity -> "Saved" tab.
+- Q: How to delete a chat? A: Long-press conversation in chat list -> trash icon.
+- Q: How to delete my listing? A: Marketplace Activity -> Selling -> Find listing -> delete icon.
+- Q: How to mark as sold? A: Marketplace Activity -> Selling -> "Mark as Sold".
+- Q: How to cancel a sent request? A: Marketplace Activity -> Requests -> Find pending request -> "Cancel".
+- Q: How to rate a seller? A: After request is accepted and completed, "Rate Seller" button appears in Requests tab.
+- Q: Can I report/block users? A: Yes, via the 3-dot menu (⋮) on listing/profile.
+
+CLASSROOM FAQ:
+- Q: How setup profile? A: Done automatically based on college email; displays subjects/assignments for your semester.
+- Q: How do I submit an assignment? A: Classroom tab -> Find assignment -> "Upload File" (PDF/Image) -> "Submit Assignment".
+- Q: Can I resubmit? A: Yes, before grading. 
+- Q: How to check grades? A: Look for "Returned/Graded" status in Classroom list; tap for feedback.
+- Q: How to add subject (Teachers)? A: Classroom -> "Add Subject" tab -> Select Faculty/Semester/Subject.
+- Q: How to create assignment (Teachers)? A: Classroom -> "Assign" tab -> Select subject/category/due date.
+- Q: How to view submissions (Teachers)? A: Classroom -> "Managed" tab -> tap assignment to see student list.
+- Q: Data not loading? A: Pull down on Classroom screen to refresh/sync.
+
+NOTICES FAQ:
+- Q: Dept notices? A: Automatically filtered by faculty/semester from your email.
+- Q: Search old notices? A: Use search bar at top of Notices tab.
+- Q: Important notices? A: Highlighted with border or pinned to top.
+- Q: Push notifications for notices? A: Enable "Notices" in Settings -> Notification Settings.
+- Q: Download attachments? A: Open notice -> tap thumbnail to view/save PDF/image.
+
+EVENTS FAQ:
+- Q: Register for event? A: Tap event -> "Register" or "Join" button at bottom.
+- Q: My events? A: See "My Events" or calendar in Events tab.
+- Q: Sync to device calendar? A: Event details -> "Add to Calendar".
+- Q: See all clubs events? A: Events tab provides a unified feed for all clubs.
+- Q: Directions to venue? A: Tap venue name to open Google Maps.
+
+CLUBS FAQ:
+- Q: How to join? A: Club profile -> "Join" (if recruiting) or use contact links.
+- Q: List of all clubs? A: Main "Clubs" tab lists all registered orgs.
+- Q: Contact club? A: Use Email, WhatsApp, or Social buttons on club profile.
+- Q: Create new club? A: Must register with admin; student council can guide you.
+- Q: See club activities? A: Visit club profile or main Events feed.
+
+LOST & FOUND FAQ:
+- Q: Report found item? A: Lost & Found tab -> "Report" -> "I found something".
+- Q: Find lost item? A: Browse "Lost" tab; use search/category filters.
+- Q: Claim item? A: Tap item -> "Claim Item" to contact finder (verify ownership first).
+- Q: Privacy? A: Phone number only shared with the person you coordinate return with.
+- Q: Manage my reports? A: Profile icon (top right) in Lost & Found -> "My Items".
+
+MAP FAQ:
+- Q: Search building/room? A: Top search bar -> enter name (e.g., "Electrical Block") or room ID.
+- Q: Icon meanings? A: Blue=Academic, Orange=Food, Sports=Athletic. Tap for details.
+- Q: Walking directions? A: Tap marker -> "Directions". Uses GPS or manual start point.
+- Q: Satellite view? A: "Layers" icon -> toggle Satellite view.
+
+NOTIFICATIONS FAQ:
+- Q: Not receiving alerts? A: Check app Settings and phone system permissions.
+- Q: Mark as read? A: Tap to view or swipe right on list item.
+- Q: Delete notification? A: Swipe left on list item (red background).
+- Q: Choose alerts? A: Settings -> Notification Settings; toggle Books, Notices, Events, etc.
+`.trim();
+
 async function resolveWithAppContext(
   query: string,
   intent: ConciergeIntent,
@@ -865,14 +932,18 @@ async function resolveWithAppContext(
 About the app:
 ${APP_KNOWLEDGE}
 
+App FAQ (How-to guidance):
+${APP_FAQ}
+
 Live data from the app:
 ${contextData}
 
 User query: ${query}
 
 Instructions:
-- Answer the user's question using the live data above.
+- Answer the user's question using the live data and FAQs provided.
 - Be concise, helpful, and student-friendly.
+- If the user asks "how-to" questions, refer to the FAQ section.
 - If the user asks to summarize notices, provide a clear summary grouped by category.
 - If the user asks about events, list them with dates and organizers.
 - If no relevant data is available, say so politely and suggest alternatives.
