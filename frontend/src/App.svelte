@@ -40,6 +40,7 @@
   import Settings from "./pages/Settings.svelte";
   import Notifications from "./pages/Notifications.svelte";
   import Sidebar from "./components/Sidebar.svelte";
+  import AIChatBot from "./components/AIChatBot.svelte";
   import { onMount, type Component } from "svelte";
   import { getUnreadNotificationsCount } from "./lib/api";
 
@@ -524,6 +525,10 @@
           <Router bind:instance {routes} />
         </div>
       </main>
+
+      {#if navUser && !isGuestRole}
+        <AIChatBot />
+      {/if}
     </div>
   </div>
 </QueryClientProvider>

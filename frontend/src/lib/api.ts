@@ -6,6 +6,7 @@ const API_BOOKS = '/api/books'
 const API_CLASSROOM = '/api/classroom'
 const API_CHAT = '/api/chat'
 const API_LOST_FOUND = '/api/lost-found'
+const API_CHATBOT = '/api/chatbot'
 
 export interface Club {
   id: number
@@ -2822,6 +2823,29 @@ export async function updateNotificationPreferences(
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(patch),
+    })
+    return await res.json()
+  } catch (error: any) {
+    return { success: false, message: error.message }
+  }
+}
+
+// ── AI Chatbot ──────────────────────────────────────────────────────────────
+
+export async function chatBotQuery(
+  query: string,
+): Promise<{
+  success: boolean
+  data?: { message: string; action?: string; intent?: string; follow_up?: string[] }
+  message?: string
+  errorType?: string
+}> {
+  try {
+    const res = await fetch(`${API_CHATBOT}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ query }),
     })
     return await res.json()
   } catch (error: any) {

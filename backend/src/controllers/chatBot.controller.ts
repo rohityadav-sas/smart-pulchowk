@@ -10,6 +10,15 @@ export const chatAI = async (req: Request, res: Response) => {
       return res.json({
         success: false,
         message: 'No query provided',
+        errorType: 'empty_query',
+      })
+    }
+
+    if (query.length > 500) {
+      return res.json({
+        success: false,
+        message: 'Query is too long. Please keep it under 500 characters.',
+        errorType: 'query_too_long',
       })
     }
 

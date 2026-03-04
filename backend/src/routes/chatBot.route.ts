@@ -4,6 +4,6 @@ import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/chat", chatAI);
+router.post("/chat", requireAuth, chatAI);
 
 export default router;

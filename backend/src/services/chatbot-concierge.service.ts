@@ -224,15 +224,19 @@ const APP_HELP_HINTS = [
 const LOCATION_ALIAS_MAP: Record<string, string> = {
   dean: "dean-office",
   "dean office": "dean-office",
+  "admin building": "dean-office",
+  "main office": "dean-office",
   "exam office": "exam-control-office",
   "exam control": "exam-control-office",
   library: "pulchowk-library",
   fsu: "fsu-office",
   clinic: "fsu-clinic",
+  "health center": "fsu-clinic",
   canteen: "campus-canteen",
   mess: "campus-mess",
   stationery: "om-stationery",
   "print shop": "om-stationery",
+  photocopy: "om-stationery",
   niraula: "niraula-stores",
   robotics: "robotics-club",
   "electrical club": "electrical-club",
@@ -246,11 +250,25 @@ const LOCATION_ALIAS_MAP: Record<string, string> = {
   "girls hostel": "girls-hostel",
   "msc hostel": "msc-hostel",
   "civil department": "dept-civil",
+  "f block": "dept-civil",
   "architecture department": "dept-architecture",
   "electrical department": "dept-electrical-electronics-computer",
+  "e block": "dept-electrical-electronics-computer",
+  "ab block": "dept-electrical-electronics-computer",
+  "computer department": "dept-electrical-electronics-computer",
   "mechanical department": "dept-mechanical-aerospace",
+  "d block": "dept-mechanical-aerospace",
   "applied sciences": "dept-applied-sciences",
   humanities: "dept-science-humanities",
+  gym: "gym-hall",
+  "football ground": "football-ground",
+  "cricket ground": "cricket-ground",
+  "basketball court": "basketball-court",
+  "volleyball court": "volleyball-court",
+  workshop: "workshop-area",
+  "main entrance": "main-entrance",
+  "main gate": "main-entrance",
+  gate: "main-entrance",
 };
 
 const KB = studentSupportKbData as StudentSupportKb;
@@ -367,9 +385,14 @@ function inferActionByLocationCount(count: number): ConciergeAction {
   return "show_multiple_locations";
 }
 
+function countMatches(text: string, terms: string[]): number {
+  return terms.filter((term) => text.includes(term)).length;
+}
+
 function inferIntentFromQuery(query: string): ConciergeIntent {
   const normalized = normalize(query);
 
+  // ── Route navigation (high-confidence pattern) ───────────────────────────
   if (
     normalized.includes("from ") &&
     normalized.includes(" to ") &&
@@ -382,14 +405,22 @@ function inferIntentFromQuery(query: string): ConciergeIntent {
     return "deadline_query";
   }
 
+  // ── App-wide intents (check BEFORE generic single-word intents) ─────────
+  if (includesAny(normalized, NOTICE_HINTS)) return "notice_query";
+  if (includesAny(normalized, EVENT_HINTS)) return "event_query";
+  if (includesAny(normalized, CLUB_HINTS)) return "club_query";
+  if (countMatches(normalized, LOST_FOUND_HINTS) >= 1) return "lost_found_query";
+  if (includesAny(normalized, MARKETPLACE_HINTS)) return "marketplace_query";
+  if (includesAny(normalized, APP_HELP_HINTS)) return "app_help";
+
+  // ── Escalation: require phrase-level match to avoid "lost" false positive
   if (
     includesAny(normalized, [
       "emergency",
       "urgent",
       "complaint",
-      "report",
+      "report harassment",
       "harassment",
-      "lost",
     ])
   ) {
     return "escalation";
@@ -411,17 +442,20 @@ function inferIntentFromQuery(query: string): ConciergeIntent {
 
   if (
     includesAny(normalized, [
-      "where",
-      "office",
       "whom to contact",
       "who handles",
       "which office",
-    ])
+    ]) ||
+    (normalized.includes("where") && normalized.includes("office"))
   ) {
     return "office_lookup";
   }
 
-  if (includesAny(normalized, ["how", "process", "apply", "register"])) {
+  // ── process_howto: require "how to" / "how do" phrase or multi-keyword ──
+  if (
+    includesAny(normalized, ["how to", "how do", "how can", "process", "procedure"]) ||
+    countMatches(normalized, ["apply", "register", "submit", "registration"]) >= 1
+  ) {
     return "process_howto";
   }
 
@@ -445,14 +479,6 @@ function inferIntentFromQuery(query: string): ConciergeIntent {
   if (includesAny(normalized, LOCATION_HINTS)) {
     return "location_lookup";
   }
-
-  // ── App-wide intents ────────────────────────────────────────────────────
-  if (includesAny(normalized, NOTICE_HINTS)) return "notice_query";
-  if (includesAny(normalized, EVENT_HINTS)) return "event_query";
-  if (includesAny(normalized, CLUB_HINTS)) return "club_query";
-  if (includesAny(normalized, LOST_FOUND_HINTS)) return "lost_found_query";
-  if (includesAny(normalized, MARKETPLACE_HINTS)) return "marketplace_query";
-  if (includesAny(normalized, APP_HELP_HINTS)) return "app_help";
 
   return "unknown";
 }
@@ -756,19 +782,33 @@ async function resolveWithLlmNavigation(
       generationConfig: { responseMimeType: "application/json" },
     });
 
-    const compactBuildings = BUILDINGS.map((building) => ({
-      id: building.id,
-      name: building.name,
-      coordinates: building.coordinates,
-      description: building.description ?? "",
-    }));
+    // Pre-filter buildings: top 10 most relevant + any alias matches
+    const aliasIds = findAliasBuildingIds(query);
+    const scored = BUILDINGS.map((b) => ({ b, s: scoreBuildingQuery(b, query) }))
+      .sort((a, b) => b.s - a.s);
+    const seen = new Set<string>();
+    const relevantBuildings: Array<{ id: string; name: string; coordinates: BuildingCoordinates; description: string }> = [];
+    for (const aid of aliasIds) {
+      const b = BUILDING_BY_ID.get(aid);
+      if (b && !seen.has(b.id)) {
+        seen.add(b.id);
+        relevantBuildings.push({ id: b.id, name: b.name, coordinates: b.coordinates, description: b.description ?? "" });
+      }
+    }
+    for (const { b } of scored) {
+      if (relevantBuildings.length >= 10) break;
+      if (!seen.has(b.id)) {
+        seen.add(b.id);
+        relevantBuildings.push({ id: b.id, name: b.name, coordinates: b.coordinates, description: b.description ?? "" });
+      }
+    }
 
     const prompt = `You are a campus navigation assistant for Pulchowk Campus.
 Use only the provided verified building list.
 Do not invent buildings.
 
 Buildings:
-${JSON.stringify(compactBuildings)}
+${JSON.stringify(relevantBuildings)}
 
 User query: ${query}
 
@@ -845,8 +885,9 @@ Key features:
 - Classroom: Classroom and course information.
 `.trim();
 
-const APP_FAQ = `
-MARKETPLACE FAQ:
+// ── Per-topic FAQ sections for selective injection ─────────────────────────
+const FAQ_SECTIONS: Record<string, string> = {
+  marketplace: `MARKETPLACE FAQ:
 - Q: How do I sell a book? A: Go to Marketplace tab -> "Sell a Book". Fill title, author, price, condition, upload photos.
 - Q: How do I send a purchase request? A: Open listing -> "Request to Buy" -> optional message.
 - Q: Where are my sent requests? A: Activity icon (top-right) or Marketplace Activity -> "Requests" tab.
@@ -859,58 +900,75 @@ MARKETPLACE FAQ:
 - Q: How to mark as sold? A: Marketplace Activity -> Selling -> "Mark as Sold".
 - Q: How to cancel a sent request? A: Marketplace Activity -> Requests -> Find pending request -> "Cancel".
 - Q: How to rate a seller? A: After request is accepted and completed, "Rate Seller" button appears in Requests tab.
-- Q: Can I report/block users? A: Yes, via the 3-dot menu (⋮) on listing/profile.
+- Q: Can I report/block users? A: Yes, via the 3-dot menu (⋮) on listing/profile.`,
 
-CLASSROOM FAQ:
+  classroom: `CLASSROOM FAQ:
 - Q: How setup profile? A: Done automatically based on college email; displays subjects/assignments for your semester.
 - Q: How do I submit an assignment? A: Classroom tab -> Find assignment -> "Upload File" (PDF/Image) -> "Submit Assignment".
-- Q: Can I resubmit? A: Yes, before grading. 
+- Q: Can I resubmit? A: Yes, before grading.
 - Q: How to check grades? A: Look for "Returned/Graded" status in Classroom list; tap for feedback.
 - Q: How to add subject (Teachers)? A: Classroom -> "Add Subject" tab -> Select Faculty/Semester/Subject.
 - Q: How to create assignment (Teachers)? A: Classroom -> "Assign" tab -> Select subject/category/due date.
 - Q: How to view submissions (Teachers)? A: Classroom -> "Managed" tab -> tap assignment to see student list.
-- Q: Data not loading? A: Pull down on Classroom screen to refresh/sync.
+- Q: Data not loading? A: Pull down on Classroom screen to refresh/sync.`,
 
-NOTICES FAQ:
+  notices: `NOTICES FAQ:
 - Q: Dept notices? A: Automatically filtered by faculty/semester from your email.
 - Q: Search old notices? A: Use search bar at top of Notices tab.
 - Q: Important notices? A: Highlighted with border or pinned to top.
 - Q: Push notifications for notices? A: Enable "Notices" in Settings -> Notification Settings.
-- Q: Download attachments? A: Open notice -> tap thumbnail to view/save PDF/image.
+- Q: Download attachments? A: Open notice -> tap thumbnail to view/save PDF/image.`,
 
-EVENTS FAQ:
+  events: `EVENTS FAQ:
 - Q: Register for event? A: Tap event -> "Register" or "Join" button at bottom.
 - Q: My events? A: See "My Events" or calendar in Events tab.
 - Q: Sync to device calendar? A: Event details -> "Add to Calendar".
 - Q: See all clubs events? A: Events tab provides a unified feed for all clubs.
-- Q: Directions to venue? A: Tap venue name to open Google Maps.
+- Q: Directions to venue? A: Tap venue name to open Google Maps.`,
 
-CLUBS FAQ:
+  clubs: `CLUBS FAQ:
 - Q: How to join? A: Club profile -> "Join" (if recruiting) or use contact links.
 - Q: List of all clubs? A: Main "Clubs" tab lists all registered orgs.
 - Q: Contact club? A: Use Email, WhatsApp, or Social buttons on club profile.
 - Q: Create new club? A: Must register with admin; student council can guide you.
-- Q: See club activities? A: Visit club profile or main Events feed.
+- Q: See club activities? A: Visit club profile or main Events feed.`,
 
-LOST & FOUND FAQ:
+  lost_found: `LOST & FOUND FAQ:
 - Q: Report found item? A: Lost & Found tab -> "Report" -> "I found something".
 - Q: Find lost item? A: Browse "Lost" tab; use search/category filters.
 - Q: Claim item? A: Tap item -> "Claim Item" to contact finder (verify ownership first).
 - Q: Privacy? A: Phone number only shared with the person you coordinate return with.
-- Q: Manage my reports? A: Profile icon (top right) in Lost & Found -> "My Items".
+- Q: Manage my reports? A: Profile icon (top right) in Lost & Found -> "My Items".`,
 
-MAP FAQ:
+  map: `MAP FAQ:
 - Q: Search building/room? A: Top search bar -> enter name (e.g., "Electrical Block") or room ID.
 - Q: Icon meanings? A: Blue=Academic, Orange=Food, Sports=Athletic. Tap for details.
 - Q: Walking directions? A: Tap marker -> "Directions". Uses GPS or manual start point.
-- Q: Satellite view? A: "Layers" icon -> toggle Satellite view.
+- Q: Satellite view? A: "Layers" icon -> toggle Satellite view.`,
 
-NOTIFICATIONS FAQ:
+  notifications: `NOTIFICATIONS FAQ:
 - Q: Not receiving alerts? A: Check app Settings and phone system permissions.
 - Q: Mark as read? A: Tap to view or swipe right on list item.
 - Q: Delete notification? A: Swipe left on list item (red background).
-- Q: Choose alerts? A: Settings -> Notification Settings; toggle Books, Notices, Events, etc.
-`.trim();
+- Q: Choose alerts? A: Settings -> Notification Settings; toggle Books, Notices, Events, etc.`,
+};
+
+const INTENT_TO_FAQ_KEYS: Partial<Record<ConciergeIntent, string[]>> = {
+  notice_query: ["notices"],
+  event_query: ["events"],
+  club_query: ["clubs"],
+  lost_found_query: ["lost_found"],
+  marketplace_query: ["marketplace"],
+};
+
+function getRelevantFaq(intent: ConciergeIntent): string {
+  const keys = INTENT_TO_FAQ_KEYS[intent];
+  if (keys) {
+    return keys.map((k) => FAQ_SECTIONS[k] ?? "").filter(Boolean).join("\n\n");
+  }
+  // For app_help / unknown, return all FAQ sections
+  return Object.values(FAQ_SECTIONS).join("\n\n");
+}
 
 async function resolveWithAppContext(
   query: string,
@@ -927,13 +985,15 @@ async function resolveWithAppContext(
       generationConfig: { responseMimeType: "application/json" },
     });
 
+    const relevantFaq = getRelevantFaq(intent);
+
     const prompt = `You are Smart Pulchowk Assistant — a smart, friendly campus companion for Pulchowk Campus students.
 
 About the app:
 ${APP_KNOWLEDGE}
 
 App FAQ (How-to guidance):
-${APP_FAQ}
+${relevantFaq}
 
 Live data from the app:
 ${contextData}
@@ -948,6 +1008,7 @@ Instructions:
 - If the user asks about events, list them with dates and organizers.
 - If no relevant data is available, say so politely and suggest alternatives.
 - Do NOT make up data that is not in the context above.
+- Use markdown formatting: **bold** for emphasis, bullet lists with - for steps.
 
 Return only JSON:
 {
