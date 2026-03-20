@@ -9,6 +9,8 @@
 		"eval:student-support": "tsx src/scripts/eval-student-support.ts",
 		"db:generate": "tsx node_modules/drizzle-kit/bin.cjs generate",
 		"db:migrate": "tsx node_modules/drizzle-kit/bin.cjs migrate",
+		"db:bootstrap": "tsx node_modules/drizzle-kit/bin.cjs push && npm run db:setup",
+		"db:setup": "tsx src/scripts/setup-db.ts",
 		"db:studio": "tsx node_modules/drizzle-kit/bin.cjs studio"
 	},
 	"dependencies": {

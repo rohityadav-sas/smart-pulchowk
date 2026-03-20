@@ -21,7 +21,11 @@ export const user = pgTable("user", {
   fcmToken: text("fcm_token"),
   notificationPreferences: jsonb("notification_preferences")
     .$type<NotificationPreferences>()
-    .default(sql`${JSON.stringify(DEFAULT_NOTIFICATION_PREFERENCES)}::jsonb`)
+    .default(
+      sql.raw(
+        `'${JSON.stringify(DEFAULT_NOTIFICATION_PREFERENCES)}'::jsonb`,
+      ),
+    )
     .notNull(),
   lastActiveAt: timestamp("last_active_at").defaultNow(),
 });
