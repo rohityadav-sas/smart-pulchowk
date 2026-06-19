@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { query, replace } from "@mateothegreat/svelte5-router";
+  import { query, replace, route } from "@mateothegreat/svelte5-router";
   import Google from "../icons/google.svelte";
   import { authClient } from "../lib/auth-client";
   import ErrorToast from "../components/ErrorToast.svelte";
@@ -232,7 +232,8 @@
               >
               and
               <a
-                href="#privacy"
+                use:route
+                href="/privacy"
                 class="text-cyan-700 hover:underline font-medium"
                 >Privacy Policy</a
               >.

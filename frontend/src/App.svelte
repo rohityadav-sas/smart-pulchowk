@@ -39,6 +39,7 @@
   import Admin from "./pages/Admin.svelte";
   import Settings from "./pages/Settings.svelte";
   import Notifications from "./pages/Notifications.svelte";
+  import Privacy from "./pages/Privacy.svelte";
   import Sidebar from "./components/Sidebar.svelte";
   import AIChatBot from "./components/AIChatBot.svelte";
   import { onMount, type Component } from "svelte";
@@ -438,6 +439,10 @@
     {
       path: /^\/settings\/?$/,
       component: Settings,
+    },
+    {
+      path: "privacy",
+      component: Privacy,
     },
   ];
 </script>
